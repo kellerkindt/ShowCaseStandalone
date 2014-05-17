@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
 import com.kellerkindt.scs.interfaces.PriceRangeHandler;
+import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.Term;
 
 /**
@@ -33,6 +34,9 @@ import com.kellerkindt.scs.utilities.Term;
  * @author michael <michael at kellerkindt.com>
  */
 public class Range extends SimpleCommand {
+	
+	public static final String ARG_GLOBAL	= "global";
+	public static final String ARG_REMOVE	= "remove";
 
 	public Range(ShowCaseStandalone scs, String...permissions) {
 		super(scs, permissions, false, 2);
@@ -43,6 +47,7 @@ public class Range extends SimpleCommand {
 		
 		List<String> list = new ArrayList<String>();
 		
+		// materials to range
 		if (args.length <= 1) {
 			for (Material material : Material.values()) {
 				if (args.length == 0 || material.name().toLowerCase().startsWith(args[0].toLowerCase())) {
@@ -50,6 +55,27 @@ public class Range extends SimpleCommand {
 				}
 			}
 		}
+		
+		// materials to remove from range
+		if (args.length > 0 && args.length <= 2 && args[0].equalsIgnoreCase(ARG_REMOVE)) {
+			for (Material material : Material.values()) {
+				if (args.length == 1 || material.name().toLowerCase().startsWith(args[1].toLowerCase())) {
+					list.add(material.name());
+				}
+			}
+		}
+		
+		
+		// remove can only be at first position
+		if (args.length == 0 || (args.length == 1 && ARG_REMOVE.toLowerCase().startsWith(args[0]))) {
+			list.add(ARG_REMOVE);
+		}
+		
+		// global can be at first and or at second if the first one is remove
+		if (args.length == 0 || (args.length == 1 && ARG_GLOBAL.startsWith(args[0].toLowerCase())) || (args.length > 0 && args.length <= 2 && args[0].equalsIgnoreCase(ARG_REMOVE) && ARG_GLOBAL.startsWith(args[1].toLowerCase()))) {
+			list.add(ARG_GLOBAL);
+		}
+		
 		
 		// nothing to do
 		return list;
@@ -59,16 +85,16 @@ public class Range extends SimpleCommand {
 	public void execute(CommandSender sender, String[] args) throws CommandException {
 		
 		// try to get the material?
-		Material material = Material.getMaterial(args[0].toUpperCase());
+		Material 	material 	= Material.getMaterial(args[0].toUpperCase());
+		boolean		global		= material == null && ARG_GLOBAL.equalsIgnoreCase(args[0]);
+		boolean		remove		= material == null && ARG_REMOVE.equalsIgnoreCase(args[0]);
 		
 		// failed? because global is requested?
-		if (material == null && !"global".equalsIgnoreCase(args[0]) && !"remove".equalsIgnoreCase(args[0])) {
+		if (material == null && !global && !remove) {
 			throw new MissingOrIncorrectArgumentException();
 		}
 		
 		PriceRangeHandler 	handler = scs.getPriceRangeHandler();
-		boolean				global	= material == null && "global".equalsIgnoreCase(args[1]);
-		boolean				remove	= material == null && "remove".equalsIgnoreCase(args[1]);
 		double				min		= 0;
 		double				max		= Double.MAX_VALUE;
 		
@@ -153,15 +179,49 @@ public class Range extends SimpleCommand {
 				throw new MissingOrIncorrectArgumentException();
 			}
 			
-			material = Material.getMaterial(args[1].toUpperCase());
-			
-			if (material == null) {
-				throw new MissingOrIncorrectArgumentException();
+
+			if (ARG_GLOBAL.equalsIgnoreCase(args[1])) {
+				handler.setGlobalMin(0);
+				handler.setGlobalMax(Double.MAX_VALUE);
+				message = Term.MESSAGE_PRICERANGE_GLOBAL.get(Double.toString(min), Double.toString(max));
 			}
 			
-			handler.remove(material);
-			message = Term.MESSAGE_PRICERANGE_REMOVED.get(material.toString());
+			else {
+				material = Material.getMaterial(args[1].toUpperCase());
+				
+				if (material == null) {
+					throw new MissingOrIncorrectArgumentException();
+				}
+				
+				handler.remove(material);
+				message = Term.MESSAGE_PRICERANGE_REMOVED.get(material.toString());
+			}
+			
 		}
+		
+		
+		
+		
+		
+		// update all shops
+		for (Shop shop : scs.getShopHandler()) {
+			
+			// ignore this shop shop?
+			if (!global && !shop.getItemStack().getType().equals(material)) {
+				continue;
+			}
+			
+			// get the current price
+			double price = shop.getPrice();
+			
+			// fit the price
+			price = Math.min(price, max);
+			price = Math.max(price, min);
+			
+			// set the price
+			shop.setPrice(price);
+		}
+		
 		
 		
 		// aaaaaand finally, send it to the sender
