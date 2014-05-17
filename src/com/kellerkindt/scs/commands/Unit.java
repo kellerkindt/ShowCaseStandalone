@@ -49,15 +49,16 @@ public class Unit extends SimpleCommand {
 		Player			player	= (Player)sender;
 		PlayerSession 	session = scs.getPlayerSessionHandler().getSession(player);
         
-        if(args.length > 1){
+        if(args.length >= 1){
             int unit = 0;
             
             try { 
                 unit = Integer.parseInt(args[1]);  
             } catch (Exception e) {}
             
-            if(unit < 1)
+            if(unit < 1) {
                 throw new MissingOrIncorrectArgumentException();
+            }
 
             session.setUnitSize(unit);
             scs.sendMessage(player, Term.MESSAGE_SET_UNIT.get(""+unit));
