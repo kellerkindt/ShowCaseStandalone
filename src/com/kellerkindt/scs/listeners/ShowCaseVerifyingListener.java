@@ -17,6 +17,8 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import java.util.logging.Level;
+
 import javax.naming.InsufficientResourcesException;
 
 import org.bukkit.Material;
@@ -544,9 +546,14 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 			double		price	= shop.getPrice();
 			Throwable	cause	= null;
 			
+			// check whether the owner can be determined if the shop is not an unlimited shop
+			if (!shop.isUnlimited() && (shop.getOwner() == null || scs.getPlayerName(shop.getOwner()) == null)) {
+				scs.log(Level.SEVERE, "Couldn't determine the owner(-s name) for a shop, transaction aborted! owners-UUID="+shop.getOwner()+", shops-UUID="+shop.getUUID(), false);
+				cause = new RuntimeException("This shop is (currently) broken!");
+			}
 	
 			// fix amount
-			if (amount > shop.getAmount() && !shop.isUnlimited()) {
+			else if (amount > shop.getAmount() && !shop.isUnlimited()) {
 				scpbe.setQuantity(shop.getAmount());
 				amount = scpbe.getQuantity();
 			}
@@ -581,10 +588,15 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 			BuyShop		shop	= scpse.getShop();
 			double		price	= shop.getPrice();
 			Throwable	cause	= null;
-			
+
+			// check whether the owner can be determined if the shop is not an unlimited shop
+			if (!shop.isUnlimited() && (shop.getOwner() == null || scs.getPlayerName(shop.getOwner()) == null)) {
+				scs.log(Level.SEVERE, "Couldn't determine the owner(-s name) for a shop, transaction aborted! owners-UUID="+shop.getOwner()+", shops-UUID="+shop.getUUID(), false);
+				cause = new RuntimeException("This shop is (currently) broken!");
+			}
 	
 			// fix amount
-			if (amount > (shop.getMaxAmount()-shop.getAmount()) && !shop.isUnlimited()) {
+			else if (amount > (shop.getMaxAmount()-shop.getAmount()) && !shop.isUnlimited()) {
 				scpse.setQuantity(shop.getMaxAmount()-shop.getAmount());
 				amount = scpse.getQuantity();
 			}
@@ -614,6 +626,16 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 	@EventHandler (ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onShowCasePlayerExchangeEvent(ShowCasePlayerExchangeEvent scpee) {
 		if (scpee.verify()) {
+			
+			Shop shop = scpee.getShop();
+			
+			// check whether the owner can be determined if the shop is not an unlimited shop
+			if (!shop.isUnlimited() && (shop.getOwner() == null || scs.getPlayerName(shop.getOwner()) == null)) {
+				scs.log(Level.SEVERE, "Couldn't determine the owner(-s name) for a shop, transaction aborted! owners-UUID="+shop.getOwner()+", shops-UUID="+shop.getUUID(), false);
+				scpee.setCancelled(true);
+				scpee.setCause(new RuntimeException("This shop is (currently) broken!"));
+				return;
+			}
 			
 			if (!scs.canUse(scpee.getPlayer())) {
 				scpee.setCancelled(true);
