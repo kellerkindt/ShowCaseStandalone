@@ -730,7 +730,8 @@ public class SimpleShopHandler implements ShopHandler {
 			
 			Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
 			
-			
+			// prevent item from being merged (at least in some cases)
+			item.getItemStack().getItemMeta().setDisplayName(UUID.randomUUID().toString());
 			
 			
 			/*
