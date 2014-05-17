@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import com.kellerkindt.scs.LocationSelector;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseCreateEvent;
+import com.kellerkindt.scs.shops.BuyShop;
 import com.kellerkindt.scs.shops.Shop;
 
 /**
@@ -77,7 +78,14 @@ public abstract class Create extends SimpleCommand {
 		if (ARGUMENT_UNLIMITED.equalsIgnoreCase(arg)) {
 			shop.setUnlimited(true);
 		} else {
-			shop.setAmount(Integer.parseInt(arg));
+			int amount = Integer.parseInt(arg);
+			
+			if (shop instanceof BuyShop) {
+				((BuyShop) shop).setMaxAmount(amount);
+				
+			} else {
+				shop.setAmount(Integer.parseInt(arg));
+			}
 		}
 	}
 	
