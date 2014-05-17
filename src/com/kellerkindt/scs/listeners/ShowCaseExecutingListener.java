@@ -230,7 +230,6 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 	 */
 	@EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
 	public void onShowCaseItemAddEvent (ShowCaseItemAddEvent sciae) {
-		System.out.println ("going to add item");
 		Shop			shop	= sciae.getShop();
 		ExchangeShop	shopEx	= shop instanceof ExchangeShop ? ((ExchangeShop)shop) : null;
 		int				amount	= sciae.getAmount();
