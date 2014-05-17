@@ -247,7 +247,7 @@ public class InventoryListener implements Listener {
 		}
 		
 		// call the event
-		scs.callShowCaseEvent(event);
+		scs.callShowCaseEvent(event, null);
 	}
 	
 	

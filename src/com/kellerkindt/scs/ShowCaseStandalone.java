@@ -529,10 +529,25 @@ public class ShowCaseStandalone extends JavaPlugin {
 	/**
      * Calls the given ShowCaseEvent
      * @param event Event to call
+     * @param The sender that caused this event
      * @return Whether the event was cancelled
      */
-    public boolean callShowCaseEvent (ShowCaseEvent event) {
+    public boolean callShowCaseEvent (ShowCaseEvent event, CommandSender sender) {
     	getServer().getPluginManager().callEvent(event);
+    	
+    	if (sender != null) {
+			// send the error message
+			if (event.isCancelled() && event.getCause() != null) {
+				// an error occurred
+				scs.sendMessage(sender, event.getCause().getMessage());
+	
+				
+			} else if (!event.isCancelled() && event.getMsgSuccessfully() != null) {
+				// successfully
+				scs.sendMessage(sender, event.getMsgSuccessfully());
+			}
+    	}
+    	
     	return event.isCancelled();
 	}
     
@@ -627,7 +642,7 @@ public class ShowCaseStandalone extends JavaPlugin {
 					// get the shop
 					Shop shop = getShopHandler().getShop(location.getBlock());
 					
-					if (shop != null) {
+					if (shop != null && manipulator.requiresValidShop()) {
 						// manipulate the shop at the selected position
 						manipulator.manipulate(shop);
 						

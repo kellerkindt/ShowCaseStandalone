@@ -207,20 +207,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 			
 		if (event != null) {
 			// perform the event
-			scs.callShowCaseEvent(event);
-			
-			// check for an error
-			if (event.isCancelled() && event.getCause() != null) {
-				// an error occurred
-				scs.sendMessage(scie.getPlayer(), event.getCause().getMessage());
-				
-				
-			} else if (!event.isCancelled() && event.getMsgSuccessfully() != null) {
-				/// successfully
-				scs.sendMessage(scie.getPlayer(), event.getMsgSuccessfully());
-			}
-			
-			
+			scs.callShowCaseEvent(event, scie.getPlayer());
 		}
 	}
 	
@@ -291,6 +278,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 	public void onShowCaseDeleteEvent (ShowCaseDeleteEvent scde) {
 		scs.getShopHandler().hide		(scde.getShop());
 		scs.getShopHandler().removeShop	(scde.getShop());
+		scde.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_DESTROYED.get());
 	}	
 	
 	/**

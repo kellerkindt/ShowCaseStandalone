@@ -88,19 +88,7 @@ public class PlayerListener implements Listener {
 		
 		if (event != null) {			
 			// dispatch event
-			scs.callShowCaseEvent(event);
-			
-			// send the error message
-			if (event.isCancelled() && event.getCause() != null) {
-				// an error occurred
-				scs.sendMessage(player, event.getCause().getMessage());
-
-				
-			} else if (!event.isCancelled() && event.getMsgSuccessfully() != null) {
-				// successfully
-				scs.sendMessage(player, event.getMsgSuccessfully());
-			}
-			
+			scs.callShowCaseEvent(event, player);
 			
 			/*
 			 *  cancel the current event so nothing else does work with the interaction,

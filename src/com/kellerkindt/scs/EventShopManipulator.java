@@ -31,16 +31,26 @@ public class EventShopManipulator implements ShopManipulator {
 	private CommandSender		sender;
 	private ShowCaseEvent 		event;
 	private ShowCaseStandalone	scs;
+	private boolean				requiresValid;
 
 	
 	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender) {
 		this(scs, sender, null);
 	}
 	
+	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, boolean reqValid) {
+		this(scs, sender, null, reqValid);
+	}
+	
 	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event) {
-		this.scs	= scs;
-		this.sender	= sender;
-		this.event	= event;
+		this(scs, sender, event, true);
+	}
+	
+	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event, boolean reqValid) {
+		this.scs			= scs;
+		this.sender			= sender;
+		this.event			= event;
+		this.requiresValid	= reqValid;
 	}
 	
 	/**
@@ -57,19 +67,12 @@ public class EventShopManipulator implements ShopManipulator {
 		ShowCaseEvent event = getEvent(shop);
 		
 		// call it
-		scs.callShowCaseEvent(event);
+		scs.callShowCaseEvent(event, sender);
 		
-		
-		// send the error message
-		if (event.isCancelled() && event.getCause() != null) {
-			// an error occurred
-			scs.sendMessage(sender, event.getCause().getMessage());
-
-			
-		} else if (!event.isCancelled() && event.getMsgSuccessfully() != null) {
-			// successfully
-			scs.sendMessage(sender, event.getMsgSuccessfully());
-		}
-		
+	}
+	
+	@Override
+	public boolean requiresValidShop() {
+		return requiresValid;
 	}
 }

@@ -116,7 +116,7 @@ public abstract class Create extends SimpleCommand {
 			public void onLocationSelected(Location location) {
 				// update the location and perform the event
 				shop.setLocation(location);
-				scs.callShowCaseEvent(new ShowCaseCreateEvent(player, shop));
+				scs.callShowCaseEvent(new ShowCaseCreateEvent(player, shop), player);
 			}
 		});
 	}
