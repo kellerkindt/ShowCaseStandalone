@@ -56,7 +56,7 @@ public class SignListener implements Listener {
 	
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.LOW)
 	public void onShowCaseInteractEvent (ShowCaseInteractEvent event) {
-		if (event.getTodo() == null && event.getPlayer().getItemInHand() != null) {
+		if (event.getPlayer().getItemInHand() != null) {
 			if (event.getPlayer().getItemInHand().getType() == Material.SIGN && event.hasRightClicked()) {
 				// cancel the event and allow a player to place the sign
 				event.setCancelled(true);

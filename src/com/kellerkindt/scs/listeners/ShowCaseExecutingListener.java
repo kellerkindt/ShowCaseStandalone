@@ -18,7 +18,6 @@
 package com.kellerkindt.scs.listeners;
 
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -43,7 +42,6 @@ import com.kellerkindt.scs.events.ShowCasePlayerSellEvent;
 import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
 import com.kellerkindt.scs.events.ShowCaseRemoveEvent;
 import com.kellerkindt.scs.interfaces.ShowCaseListener;
-import com.kellerkindt.scs.internals.Todo;
 import com.kellerkindt.scs.shops.BuyShop;
 import com.kellerkindt.scs.shops.DisplayShop;
 import com.kellerkindt.scs.shops.ExchangeShop;
@@ -179,104 +177,34 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 		
 		Player	player	= scie.getPlayer();
 		Shop	shop	= scie.getShop();
-		Todo	todo	= scie.getTodo();
-		double	amount	= todo != null ? todo.Amount : 0;
 		
 		ShowCaseEvent	event	= null;
 		
-		// nothing to do here
-		if (todo == null) {
-			// just to be really really sure ^^
-			if (shop == null) {
-				return;
-			}
+		// just to be really really sure ^^
+		if (shop == null) {
+			return;
+		}
+		
+		// quantity is one by default, if the player is sneaking it's its set sneak amount
+		int quantity = player.isSneaking() ? scs.getPlayerSessionHandler().getSession(player).getUnitSize() : 1;
+		
+		// buy / sell / exchange
+		if (shop instanceof BuyShop) {
+			event 	= new ShowCasePlayerSellEvent(player, (BuyShop)shop, quantity);
 			
-			// quantity is one by default, if the player is sneaking it's its set sneak amount
-			int quantity = player.isSneaking() ? scs.getPlayerSessionHandler().getSession(player).getUnitSize() : 1;
+		} else if (shop instanceof SellShop) {
+			event 	= new ShowCasePlayerBuyEvent(player, (SellShop)shop, quantity);
 			
-			// buy / sell / exchange
-			if (shop instanceof BuyShop) {
-				event 	= new ShowCasePlayerSellEvent(player, (BuyShop)shop, quantity);
-				
-			} else if (shop instanceof SellShop) {
-				event 	= new ShowCasePlayerBuyEvent(player, (SellShop)shop, quantity);
-				
-			} else if (shop instanceof ExchangeShop) {
-				event 	= new ShowCasePlayerExchangeEvent(player, (ExchangeShop)shop, quantity);
-				
-			} else if (shop instanceof DisplayShop) {
-				event = new ShowCaseInfoEvent(player, shop);
-				
-			}
+		} else if (shop instanceof ExchangeShop) {
+			event 	= new ShowCasePlayerExchangeEvent(player, (ExchangeShop)shop, quantity);
 			
-			
-			
-		} else {
-			switch (todo.Type) {
-				// add items
-				case ADD_ITEMS:
-					event 	= new ShowCaseItemAddEvent(player, shop, (int)amount, shop.getItemStack());
-					break;
-					
-				// add a member
-				case ADD_MEMBER:
-					event 	= new ShowCaseMemberAddEvent(player, shop, todo.String);
-					event.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_ADDED_MEMBER.get());
-					break;
-					
-				// create a new shop
-				case CREATE:
-					event 	= new ShowCaseCreateEvent(player, shop);
-					event.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_CREATED.get());
-					break;
-					
-				// deletes a shop
-				case DESTROY:
-					event	= new ShowCaseDeleteEvent(player, shop);
-					event.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_DESTROYED.get());
-					break;
-					
-				// remove items
-				case GET_ITEMS:
-					event 	= new ShowCaseItemRemoveEvent(player, shop, (int)amount, shop.getItemStack());
-					break;
-					
-				// set the new limit of a shop
-				case LIMIT:
-					event 	= new ShowCaseLimitEvent(player, shop, (int)amount);
-					break;
-					
-				// remove a shop
-				case REMOVE:
-					event 	= new ShowCaseRemoveEvent(player, shop);
-					event.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_REMOVED.get());
-					break;
-					
-				// removes a member
-				case REMOVE_MEMBER:
-					event	= new ShowCaseMemberRemoveEvent(player, shop, todo.String);
-					event.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_REMOVED_MEMBER.get());
-					break;
-					
-				// sets the new owner of a shop
-				case SET_OWNER:
-					
-					event	= new ShowCaseOwnerSetEvent(player, shop, todo.String);
-					event.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(todo.String));
-					break;
-					
-				// sets the new price of a shop
-				case SET_PRICE:
-					event 	= new ShowCasePriceSetEvent(player, shop, amount);
-					break;
-					
-				default:
-					scs.log(Level.SEVERE, "UNKNOWN TODO.TYPE - PLEASE CONTACT A DEVELOPER", false);
-					break;
-				
-			}
+		} else if (shop instanceof DisplayShop) {
+			event = new ShowCaseInfoEvent(player, shop);
 			
 		}
+			
+			
+			
 		if (event != null) {
 			// perform the event
 			scs.callShowCaseEvent(event);
@@ -334,6 +262,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 		String	member	= scmae.getMember();
 		
 		shop.addMember( scs.getPlayerUUID(member) );
+		scmae.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_ADDED_MEMBER.get());
 	}
 	
 	/**
@@ -352,6 +281,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 		
 		// remove the money
 		scs.getBalanceHandler().sub(scce.getPlayer(), cost);
+		scce.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_CREATED.get());
 	}
 	
 	/**
@@ -416,6 +346,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 	public void onShowCaseRemoveEvent (ShowCaseRemoveEvent scre) {
 		scs.getShopHandler().hide		(scre.getShop());
 		scs.getShopHandler().removeShop	(scre.getShop());
+		scre.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_REMOVED.get());
 	}
 	
 	/**
@@ -425,6 +356,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 	@EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
 	public void onShowCaseMemberRemoveEvent (ShowCaseMemberRemoveEvent scmre) {
 		scmre.getShop().removeMember( scs.getPlayerUUID(scmre.getMember()) );
+		scmre.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_REMOVED_MEMBER.get());
 	}
 	
 	/**
@@ -434,7 +366,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
 	@EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
 	public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent scose) {
 		scose.getShop().setOwner( scs.getPlayerUUID(scose.getNewOwnerName()) );
-		
+		scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getNewOwnerName()));
 	}
 	
 	/**

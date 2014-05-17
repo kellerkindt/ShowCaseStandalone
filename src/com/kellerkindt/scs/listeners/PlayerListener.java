@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
 			
 		} else if (shop != null && action == Action.RIGHT_CLICK_BLOCK) {
 			// interact with the shop
-			event = new ShowCaseInteractEvent(player, shop, null, true);
+			event = new ShowCaseInteractEvent(player, shop, true);
 			
 		} else if (shop != null && action == Action.LEFT_CLICK_BLOCK) {
 			// info event

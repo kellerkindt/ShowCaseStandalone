@@ -111,11 +111,6 @@ public class InventoryListener implements Listener {
 			return;
 		}
 		
-		// open the inventory only if there are no todos
-		if (scie.getTodo() != null) {
-			return;
-		}
-		
 		// show the inventory to the owner and members
 		if (shop.isOwnerOrMember(scie.getPlayer().getUniqueId())) {
 			// get the inventory

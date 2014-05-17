@@ -19,7 +19,6 @@ package com.kellerkindt.scs.events;
 
 import org.bukkit.entity.Player;
 
-import com.kellerkindt.scs.internals.Todo;
 import com.kellerkindt.scs.shops.Shop;
 
 /**
@@ -30,12 +29,10 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseInteractEvent extends ShowCaseShopEvent {
 
-	private Todo	todo			= null;
 	private boolean	rightClicked	= true;
 	
-	public ShowCaseInteractEvent (Player player, Shop shop, Todo todo, boolean rightClicked) {
+	public ShowCaseInteractEvent (Player player, Shop shop, boolean rightClicked) {
 		super(player, shop);
-		this.todo	= todo;
 	}
 	
 	/**
@@ -50,20 +47,6 @@ public class ShowCaseInteractEvent extends ShowCaseShopEvent {
 	 */
 	public boolean hasLeftClicked () {
 		return !hasRightClicked();
-	}
-	
-	/**
-	 * @return Whether a Todo is involved in this event
-	 */
-	public boolean hasTodo () {
-		return getTodo() != null;
-	}
-	
-	/**
-	 * @return The Todo that is involved in this event or null
-	 */
-	public Todo getTodo () {
-		return todo;
 	}
 	
 }
