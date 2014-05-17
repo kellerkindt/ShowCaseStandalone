@@ -248,11 +248,13 @@ public enum Term {
 	public String get (String ...value) {
 		String 	term	= this.term;
 		
-		if (!isSet())
+		if (!isSet()) {
 			return missing + this.toString();
+		}
 		
-		for (int i = 0; i < value.length; i++) 
-			term = term.replace(indicator+(i+1), value[i]);
+		for (int i = 0; i < value.length; i++) {
+			term = term.replace(indicator+(i+1), value[i] != null ? value[i] : "<unknown>");
+		}
 		
 		return term;
 	}
