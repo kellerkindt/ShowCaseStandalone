@@ -35,7 +35,6 @@ import com.kellerkindt.scs.commands.Add;
 import com.kellerkindt.scs.commands.Amount;
 import com.kellerkindt.scs.commands.Buy;
 import com.kellerkindt.scs.commands.Clear;
-import com.kellerkindt.scs.commands.CommandException;
 import com.kellerkindt.scs.commands.Destroy;
 import com.kellerkindt.scs.commands.Disable;
 import com.kellerkindt.scs.commands.Display;
@@ -189,18 +188,13 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
 			// execute it
 			cmd.execute(sender, Arrays.copyOfRange(args, 1, args.length));
 			
-		} catch (CommandException ce) {
-			// TODO
-			ce.printStackTrace();
-			
 		} catch (Throwable t) {
 			t.printStackTrace();
 			scs.sendMessage(sender, Term.ERROR_MISSING_OR_INCORRECT_ARGUMENT.get());
 			
-		} finally {
-			// TODO
-			return true;
 		}
+		
+		return true;
 	}
 	
 	
