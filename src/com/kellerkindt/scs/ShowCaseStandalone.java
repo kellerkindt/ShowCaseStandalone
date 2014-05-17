@@ -32,6 +32,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -848,6 +849,17 @@ public class ShowCaseStandalone extends JavaPlugin {
 	 */
 	public StorageHandler<PlayerSessionHandler> getPlayerSessionStorage () {
 		return sessionStorage;
+	}
+	
+	/**
+	 * @param material	{@link Material} to check for
+	 * @param price		Price to check
+	 * @return Whether the given price is in the set range for the given {@link Material}
+	 */
+	public boolean inPriceRange (Material material, double price) {
+		PriceRange range = getPriceRangeHandler().getRange(material);
+		
+		return range == null || (range.getMin() >= price && price <= range.getMax());
 	}
 	
 	/**

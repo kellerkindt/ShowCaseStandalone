@@ -43,6 +43,7 @@ import com.kellerkindt.scs.events.ShowCasePlayerExchangeEvent;
 import com.kellerkindt.scs.events.ShowCasePlayerSellEvent;
 import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
 import com.kellerkindt.scs.events.ShowCaseRemoveEvent;
+import com.kellerkindt.scs.events.ShowCaseShopEvent;
 import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
 import com.kellerkindt.scs.interfaces.ShowCaseListener;
 import com.kellerkindt.scs.shops.BuyShop;
@@ -219,6 +220,23 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 			}
 		}
 	}
+	
+	private boolean handlePriceRangeEventCheck (ShowCaseShopEvent event, double price) {
+		Material	material	= event.getShop().getItemStack().getType();
+		PriceRange	range		= scs.getPriceRangeHandler().getRange(material);
+		
+		if (price >= range.getMax() || price <= range.getMin()) {
+			event.setCancelled(true);
+			event.setCause(new RuntimeException(
+					Term.ERROR_PRICE_NOT_IN_RANGE.get(
+							Double.toString( range.getMin() ),
+							Double.toString( range.getMax() == Double.MAX_VALUE ? Double.POSITIVE_INFINITY : range.getMax() )
+						)));
+			return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * @see com.kellerkindt.scs.interfaces.ShowCaseListener#onShowCaseCreateEvent(com.kellerkindt.scs.events.ShowCaseCreateEvent)
@@ -234,7 +252,6 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 			Shop		shop		= scce.getShop();
 			int			itemRemove	= shop.getAmount();
 			Material	material	= shop.getItemStack().getType();
-			PriceRange	range		= scs.getPriceRangeHandler().getRange(material);
 			
 			double	cost			= scs.getCreatePrice		(shop.getClass());
 			String	permCreate		= scs.getCreatePermission	(shop.getClass());
@@ -299,16 +316,6 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 				scce.setCause(new InsufficientPermissionException(Term.BLACKLIST_WORLD.get()));
 			}
 			
-			// check price range
-			else if (shop.getPrice() > range.getMax() || shop.getPrice() < range.getMin()) {
-				scce.setCancelled(true);
-				scce.setCause(new RuntimeException(
-						Term.ERROR_PRICE_NOT_IN_RANGE.get(
-								Double.toString( range.getMin() ),
-								Double.toString( range.getMax() == Double.MAX_VALUE ? Double.POSITIVE_INFINITY : range.getMax() )
-							)));
-			}
-			
 			// check the inventory
 			else if (itemRemove > 0) {
 				int canRemove = ItemStackUtilities.countCompatibleItemStacks(player.getInventory(), shop.getItemStack(), scs.compareItemMeta(shop.getItemStack()));
@@ -322,6 +329,11 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 					// remove the items
 					ItemStackUtilities.removeFromInventory(player.getInventory(), shop.getItemStack(), itemRemove, scs.compareItemMeta(shop.getItemStack()));
 				}
+			}
+			
+			else {
+				// check the price
+				handlePriceRangeEventCheck(scce, shop.getPrice());
 			}
 		}
 	}
@@ -506,9 +518,16 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 	@Override
 	@EventHandler (ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onShowCasePriceSetEvent(ShowCasePriceSetEvent scpse) {
-		if (scpse.verify() && !scs.canManage(scpse.getPlayer(), scpse.getShop(), false)) {
-			scpse.setCancelled(true);
-			scpse.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_SET_PRICE.get()));
+		if (scpse.verify()) {
+			
+			if (!scs.canManage(scpse.getPlayer(), scpse.getShop(), false)) {
+				scpse.setCancelled(true);
+				scpse.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_SET_PRICE.get()));
+				
+			} else {	
+				// also verify the price
+				handlePriceRangeEventCheck(scpse, scpse.getPrice());
+			}
 		}
 	}
 
