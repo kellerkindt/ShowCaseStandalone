@@ -82,8 +82,6 @@ public class BlockListener implements Listener{
 	
 	@EventHandler (priority = EventPriority.NORMAL)
 	public void onHangingPlaced (HangingPlaceEvent event) {
-
-		System.out.println ("hanging placed");
 		
 		// BlockState
 		Hanging	hanging = event.getEntity();
