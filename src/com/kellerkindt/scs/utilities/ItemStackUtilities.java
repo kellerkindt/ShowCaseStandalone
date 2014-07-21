@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -120,6 +121,10 @@ public abstract class ItemStackUtilities {
 			}
 		}
 		
+		if (added > 0 && inventory.getHolder() instanceof Player) {
+			((Player)inventory.getHolder()).updateInventory();
+		}
+		
 		// all added
 		return added;
 	}
@@ -178,8 +183,13 @@ public abstract class ItemStackUtilities {
 		
 		
 		// remove items
-		for (ItemStack is : remove)
+		for (ItemStack is : remove) {
 			inventory.removeItem(is);
+		}
+		
+		if (removed > 0 && inventory.getHolder() instanceof Player) {
+			((Player)inventory.getHolder()).updateInventory();
+		}
 		
 		
 		return removed;
