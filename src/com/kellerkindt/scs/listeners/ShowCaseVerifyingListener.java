@@ -227,7 +227,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
 		Material	material	= event.getShop().getItemStack().getType();
 		PriceRange	range		= scs.getPriceRangeHandler().getRange(material);
 		
-		if (price >= range.getMax() || price <= range.getMin()) {
+		if (price > range.getMax() || price < range.getMin()) {
 			event.setCancelled(true);
 			event.setCause(new RuntimeException(
 					Term.ERROR_PRICE_NOT_IN_RANGE.get(
