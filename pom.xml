@@ -258,7 +258,7 @@
       <repository>
           <id>upstream</id>
           <name>Upstream</name>
-          <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/11/repository</url>
+          <url>${env.Jenkins.Repository}</url>
       </repository>
   </distributionManagement>
   
@@ -269,7 +269,7 @@
 	   <repositories>
 	      <repository>
 	         <id>upstream</id>
-	         <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/11/repository</url>
+	         <url>${env.Jenkins.Repository}</url>
 	         <releases>
 	             <enabled>true</enabled>
 	         </releases>
@@ -281,7 +281,7 @@
 	 <pluginRepositories>
 	    <pluginRepository>
 	          <id>upstream</id>
-	          <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/11/repository</url>
+	          <url>${env.Jenkins.Repository}</url>
 	          <releases>
 	            <enabled>true</enabled>
 	          </releases>
