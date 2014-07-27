@@ -253,7 +253,7 @@
       
   </dependencies>
   
-  
+  <!-- 
   <distributionManagement>
       <repository>
           <id>upstream</id>
@@ -292,4 +292,5 @@
 	  </pluginRepositories>
 	</profile>
   </profiles>
+  -->
 </project>
