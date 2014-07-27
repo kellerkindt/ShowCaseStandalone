@@ -1,0 +1,255 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.kellerkindt</groupId>
+  <artifactId>ShowCaseStandalone</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>ShowCaseStandalone</name>
+  <description>Plugin for Bukkits Minecraft Api</description>
+  
+  
+  <properties>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+      
+      <build.number>-1</build.number>
+      <build.date>${maven.build.timestamp}</build.date>
+      <build.builder>UNKNOWN</build.builder>
+  </properties>
+  
+  
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <includes>
+            <include>**/*.java</include>
+            <include>*.yml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>lib</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+        
+      <!-- compiler -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      
+      
+      <!-- packager (needed to add data to the manifest) -->
+      <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+	          <archive>
+	              <manifestEntries>
+	                  <buildNumber>${build.number}</buildNumber>
+	                  <buildDate>${build.date}</buildDate>
+	                  <builder>${build.builder}</builder>
+	              </manifestEntries>
+	          </archive>
+          </configuration>
+      </plugin>
+      
+      <!-- replacer that updates the version number in the plugin.yml -->
+      <plugin>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>maven-replacer-plugin</artifactId>
+          <executions>
+              <execution>
+                  <phase>process-resources</phase>
+              </execution>
+          </executions>
+          <configuration>
+              <basedir>target/classes</basedir>
+              <file>plugin.yml</file>
+              <token>version: [\d.]*</token>
+              <value>version: ${build.number}</value>
+              <regexFlags>
+                  <regex>MULTILINE</regex>
+              </regexFlags>
+          </configuration>
+      </plugin>
+      
+    </plugins>
+  </build>
+  
+  <repositories>
+      <repository>
+          <id>bukkit-repo</id>
+          <url>http://repo.bukkit.org/content/groups/public/</url>
+      </repository>
+      
+      <repository>
+          <id>Plugin Metrics</id>
+          <url>http://repo.mcstats.org/content/repositories/public</url>
+      </repository>
+      
+      <!-- essentials -->
+      <repository>
+	  	<id>ess-repo</id>
+		<url>http://repo.ess3.net/content/groups/public</url>
+	  </repository>
+	  
+      <!-- Vault -->
+      <repository>
+          <id>Vault</id>
+          <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
+      </repository>
+      
+      <!-- WorldEdit / WorldGuard and many more -->
+      <repository>
+          <id>sk89q</id>
+          <url>http://maven.sk89q.com/artifactory/libs-snapshot-local//</url>
+      </repository>
+  </repositories>
+  
+  <dependencies>
+      
+      <!-- BUKKIT -->
+      <dependency>
+          <groupId>org.bukkit</groupId>
+          <artifactId>bukkit</artifactId>
+          <scope>provided</scope>
+          <version>1.7.9-R0.3-SNAPSHOT</version>
+      </dependency>
+      
+      <!-- mcstats / metrics -->
+      <dependency>
+          <groupId>org.mcstats</groupId>
+          <artifactId>metrics</artifactId>
+          <version>R6</version>
+          <scope>compile</scope>
+      </dependency>
+      
+      <!-- essentials -->
+      <dependency>
+          <groupId>net.ess3</groupId>
+          <artifactId>Essentials</artifactId>
+          <version>2.13-SNAPSHOT</version>
+      </dependency>
+      
+      <!-- Vault -->
+      <dependency>
+          <groupId>net.milkbowl.vault</groupId>
+          <artifactId>Vault</artifactId>
+          <version>1.4.1</version>
+      </dependency>
+      
+      <!-- WorldEdit -->
+      <dependency>
+          <groupId>com.sk89q</groupId>
+          <artifactId>worldedit</artifactId>
+          <version>6.0.0-SNAPSHOT</version>
+      </dependency>
+      
+      <!-- WorldGuard -->
+      <dependency>
+          <groupId>com.sk89q</groupId>
+          <artifactId>worldguard</artifactId>
+          <version>5.9.1-SNAPSHOT</version>
+      </dependency>
+      
+      
+      <!-- local -->
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>BOSEconomy</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/BOSEconomy.jar</systemPath>
+      </dependency>      
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>DropChest</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/DropChest.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>DropChest-0.8.2</artifactId>
+          <version>0.8.2</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/DropChest_0.8.2.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>DropChest-NH</artifactId>
+          <version>NH</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/DropChest-NH.jar</systemPath>
+      </dependency>
+      
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>HyperConomy</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/HyperConomy.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>iConomy</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/iConomy.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>iConomy6</artifactId>
+          <version>6</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/iConomy6.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>iConomy8</artifactId>
+          <version>8</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/iConomy8.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>iLogTransactions</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/iLogTransactions.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>Residence</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/Residence.jar</systemPath>
+      </dependency>
+      
+      <dependency>
+          <groupId>local</groupId>
+          <artifactId>Towny</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/Towny.jar</systemPath>
+      </dependency>
+      
+  </dependencies>
+</project>

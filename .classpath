@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java|*.yml" kind="src" output="target/classes" path="src">
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -12,26 +12,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/BOSEconomy.jar"/>
-	<classpathentry kind="lib" path="lib/DropChest_0.8.2.jar"/>
-	<classpathentry kind="lib" path="lib/DropChest-NH.jar"/>
-	<classpathentry kind="lib" path="lib/DropChest.jar"/>
-	<classpathentry kind="lib" path="lib/DynamicEconomy.jar"/>
-	<classpathentry kind="lib" path="lib/Essentials.jar"/>
-	<classpathentry kind="lib" path="lib/EssentialsChat.jar"/>
-	<classpathentry kind="lib" path="lib/EssentialsProtect.jar"/>
-	<classpathentry kind="lib" path="lib/EssentialsSpawn.jar"/>
-	<classpathentry kind="lib" path="lib/HyperConomy.jar"/>
-	<classpathentry kind="lib" path="lib/iConomy.jar"/>
-	<classpathentry kind="lib" path="lib/iConomy6.jar"/>
-	<classpathentry kind="lib" path="lib/iConomy8.jar"/>
-	<classpathentry kind="lib" path="lib/iLogTransactions.jar"/>
-	<classpathentry kind="lib" path="lib/Permissions.jar"/>
-	<classpathentry kind="lib" path="lib/Residence.jar"/>
-	<classpathentry kind="lib" path="lib/Towny.jar"/>
-	<classpathentry kind="lib" path="lib/Vault.jar"/>
-	<classpathentry kind="lib" path="lib/WorldEdit.jar"/>
-	<classpathentry kind="lib" path="lib/WorldGuard.jar"/>
-	<classpathentry kind="lib" path="lib/craftbukkit-1.7.9-R0.1-20140418.182938-15.jar"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

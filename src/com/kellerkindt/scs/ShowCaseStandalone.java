@@ -53,6 +53,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import com.kellerkindt.scs.Properties.EconomySystem;
 import com.kellerkindt.scs.balance.BOSEconomyBalance;
@@ -98,7 +99,6 @@ import com.kellerkindt.scs.storage.YamlPlayerSessionStorage;
 import com.kellerkindt.scs.storage.YamlPriceStorage;
 import com.kellerkindt.scs.storage.YamlShopStorage;
 import com.kellerkindt.scs.utilities.Messaging;
-import com.kellerkindt.scs.utilities.Metrics;
 import com.kellerkindt.scs.utilities.Term;
 import com.kellerkindt.scs.utilities.TermLoader;
 

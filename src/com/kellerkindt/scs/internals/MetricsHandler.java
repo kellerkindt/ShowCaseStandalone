@@ -25,13 +25,13 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
 
 import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
 import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.utilities.Metrics;
-import com.kellerkindt.scs.utilities.Metrics.Graph;
-import com.kellerkindt.scs.utilities.Metrics.Plotter;
 
 public class MetricsHandler implements Listener {
 	
