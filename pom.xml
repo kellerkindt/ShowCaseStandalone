@@ -258,7 +258,7 @@
       <repository>
           <id>upstream</id>
           <name>Upstream</name>
-          <url>${env.Jenkins.Repository}</url>
+          <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/${build.number}/repository</url>
       </repository>
   </distributionManagement>
   
