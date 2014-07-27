@@ -254,6 +254,15 @@
   </dependencies>
   
   
+  <distributionManagement>
+      <repository>
+          <id>upstream</id>
+          <name>Upstream</name>
+          <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/11/repository</url>
+      </repository>
+  </distributionManagement>
+  
+  
   <profiles>
 	<profile>
 	   <id>upstream</id>
