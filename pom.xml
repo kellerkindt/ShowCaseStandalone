@@ -293,11 +293,16 @@
           <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/${build.number}/repository</url>
       </repository>
       -->
-      <repository>
-          <id>upstream</id>
-          <name>Upstream</name>
-          <url>${env.Jenkins.Repository}</url>
-      </repository>
+      	<repository>
+	         <id>upstream</id>
+	         <url>${env.Jenkins.Repository}</url>
+	         <releases>
+	             <enabled>true</enabled>
+	         </releases>
+	         <snapshots>
+	            <enabled>true</enabled>
+	         </snapshots>
+	      </repository>
   </distributionManagement>
 
 </project>
