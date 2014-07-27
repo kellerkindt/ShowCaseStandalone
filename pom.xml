@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kellerkindt</groupId>
   <artifactId>ShowCaseStandalone</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>ShowCaseStandalone</name>
   <description>Plugin for Bukkits Minecraft Api</description>
   
