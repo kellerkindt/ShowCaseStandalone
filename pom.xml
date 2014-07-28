@@ -86,6 +86,20 @@
           </configuration>
       </plugin>
       
+      
+      <!-- disable the doclint, which requires valid javadoc parameters everywhere -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+              <execution>
+                  <configuration>
+                      <additionalparam>-Xdoclint:none</additionalparam>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+      
     </plugins>
   </build>
   
