@@ -105,6 +105,26 @@
           </executions>
       </plugin>
       
+      
+      
+      <!-- copy metrics into this jar -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <executions>
+              <execution>
+                  <phase>prepare-package</phase>
+                  <goals>
+                      <goal>unpack-dependencies</goal>
+                  </goals>
+                  <configuration>
+                      <includeGroupIds>org.mcstats</includeGroupIds>
+                      <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+      
     </plugins>
   </build>
   
