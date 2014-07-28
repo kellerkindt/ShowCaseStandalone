@@ -16,7 +16,7 @@
       
       
       <repository.url.host>https://maven.tallbyte.com/</repository.url.host>
-      <repository.url.path>content/repositories/tallbyte/</repository.url.path>
+      <repository.url.path>content/repositories/snapshots/</repository.url.path>
       <repository.url>${repository.url.host}${repository.url.path}</repository.url>
   </properties>
   
