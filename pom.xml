@@ -295,6 +295,7 @@
       -->
       	<repository>
 	         <id>tallbyte-repository</id>
+	         <url>${env.Jenkins.Repository}</url>
 	         <releases>
 	             <enabled>true</enabled>
 	         </releases>
