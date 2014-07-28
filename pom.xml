@@ -93,6 +93,10 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <executions>
               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                      <goal>compile</goal>
+                  </goals>
                   <configuration>
                       <additionalparam>-Xdoclint:none</additionalparam>
                   </configuration>
