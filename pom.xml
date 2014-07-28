@@ -13,6 +13,11 @@
       <build.number>-1</build.number>
       <build.date>${maven.build.timestamp}</build.date>
       <build.builder>UNKNOWN</build.builder>
+      
+      
+      <repository.url.host>https://maven.tallbyte.com/</repository.url.host>
+      <repository.url.path>content/repositories/tallbyte/</repository.url.path>
+      <repository.url>${repository.url.host}${repository.url.path}</repository.url>
   </properties>
   
   
@@ -277,16 +282,9 @@
   
   
   <distributionManagement>
-      <!-- 
-      <repository>
-          <id>upstream</id>
-          <name>Upstream</name>
-          <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone_maven-test/Build/${build.number}/repository</url>
-      </repository>
-      -->
       	<repository>
 	         <id>tallbyte-repository</id>
-	         <url>${tallbyte.repository}</url>
+	         <url>${repository.url}</url>
 	         <releases>
 	             <enabled>true</enabled>
 	         </releases>
