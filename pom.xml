@@ -229,14 +229,6 @@
       
       <dependency>
           <groupId>local</groupId>
-          <artifactId>iLogTransactions</artifactId>
-          <version>UNKNOWN</version>
-          <scope>system</scope>
-          <systemPath>${project.basedir}/lib/iLogTransactions.jar</systemPath>
-      </dependency>
-      
-      <dependency>
-          <groupId>local</groupId>
           <artifactId>Residence</artifactId>
           <version>UNKNOWN</version>
           <scope>system</scope>

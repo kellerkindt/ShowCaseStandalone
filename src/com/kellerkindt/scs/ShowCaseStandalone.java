@@ -30,7 +30,6 @@ import java.util.logging.Level;
 
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -80,7 +79,6 @@ import com.kellerkindt.scs.listeners.DropChestListener;
 import com.kellerkindt.scs.listeners.DropChestListenerV2;
 import com.kellerkindt.scs.listeners.EntityListener;
 import com.kellerkindt.scs.listeners.HopperListener;
-import com.kellerkindt.scs.listeners.ILogTransactionListener;
 import com.kellerkindt.scs.listeners.InventoryListener;
 import com.kellerkindt.scs.listeners.PlayerListener;
 import com.kellerkindt.scs.listeners.ResidenceListener;
@@ -298,11 +296,6 @@ public class ShowCaseStandalone extends JavaPlugin {
 		// init listeners
 		if (getConfiguration().isDisplayShopUsingSigns()) {
 			registerEvents(new SignListener(this));
-		}
-		
-		// iLogTransaction listener
-		if (Bukkit.getPluginManager().getPlugin("iLogTransactions") != null) {
-			registerEvents(new ILogTransactionListener(this));
 		}
 		
 		try {
