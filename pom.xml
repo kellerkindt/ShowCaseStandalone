@@ -283,6 +283,13 @@
 	</profile>
   </profiles>
   
+  <servers>
+      <server>
+          <id>tallbyte-repository</id>
+          <username>${username}</username>
+          <password>${password}</password>
+      </server>
+  </servers>
   
   
   <distributionManagement>
