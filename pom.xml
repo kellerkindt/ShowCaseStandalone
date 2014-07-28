@@ -36,6 +36,7 @@
         <directory>lib</directory>
         <excludes>
           <exclude>**/*.java</exclude>
+          <exclude>**/*.jar</exclude>
         </excludes>
       </resource>
     </resources>
