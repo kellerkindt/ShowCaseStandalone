@@ -20,6 +20,7 @@ package com.kellerkindt.scs.listeners;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -57,6 +58,7 @@ import com.kellerkindt.scs.commands.Sell;
 import com.kellerkindt.scs.commands.Undo;
 import com.kellerkindt.scs.commands.Unit;
 import com.kellerkindt.scs.commands.Version;
+import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
 import com.kellerkindt.scs.utilities.Term;
 
 public class CommandExecutorListener implements CommandExecutor, TabCompleter {
@@ -189,8 +191,17 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
 			cmd.execute(sender, Arrays.copyOfRange(args, 1, args.length));
 			
 		} catch (Throwable t) {
-			t.printStackTrace();
-			scs.sendMessage(sender, Term.ERROR_MISSING_OR_INCORRECT_ARGUMENT.get());
+			
+			// only print the exception if somehow expected
+			if (!(t instanceof MissingOrIncorrectArgumentException)) {
+				t.printStackTrace();
+				scs.sendMessage(sender, Term.ERROR_MISSING_OR_INCORRECT_ARGUMENT.get());
+			}
+			
+			else {
+				scs.log(Level.WARNING, "Incorrect command call by "+sender.getName(), false);
+				scs.sendMessage(sender, t.getMessage());
+			}
 			
 		}
 		
