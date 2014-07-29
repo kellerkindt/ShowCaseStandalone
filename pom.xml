@@ -289,36 +289,6 @@
       
   </dependencies>
   
-  <profiles>
-	<profile>
-	   <id>upstream</id>
-	   <repositories>
-	      <repository>
-	         <id>upstream</id>
-	         <url>${env.Jenkins.Repository}</url>
-	         <releases>
-	             <enabled>true</enabled>
-	         </releases>
-	         <snapshots>
-	            <enabled>true</enabled>
-	         </snapshots>
-	      </repository>
-	    </repositories>
-	 <pluginRepositories>
-	    <pluginRepository>
-	          <id>upstream</id>
-	          <url>${env.Jenkins.Repository}</url>
-	          <releases>
-	            <enabled>true</enabled>
-	          </releases>
-	          <snapshots>
-	            <enabled>true</enabled>
-	         </snapshots>
-	    </pluginRepository>
-	  </pluginRepositories>
-	</profile>
-  </profiles>
-  
   
   <distributionManagement>
       	<repository>
