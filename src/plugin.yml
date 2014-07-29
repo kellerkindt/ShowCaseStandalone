@@ -1,7 +1,8 @@
 name: ShowCaseStandalone
 main: com.kellerkindt.scs.ShowCaseStandalone
-version: 0
 authors: [kellerkindt, sorklin, bitfreeze, Ryzko, rtainc]
+version: 0
+
 softdepend:
   - My Worlds
   - Multiverse

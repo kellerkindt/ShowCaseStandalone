@@ -79,8 +79,23 @@
           <configuration>
               <basedir>target/classes</basedir>
               <file>plugin.yml</file>
-              <token>version: [\d.]*</token>
-              <value>version: ${build.number}</value>
+              <replacements>
+                  <replacement>
+                      <token>version: [\d.]*</token>
+                      <value>version: ${build.number}</value>
+                  </replacement>
+                  
+                  <replacement>
+                      <token>build-date: unknown</token>
+                      <value>build-date: ${build.date}</value>
+                  </replacement>
+                  
+                  <replacement>
+                      <token>builder: unknown</token>
+                      <value>builder: ${builder}</value>
+                  </replacement>
+              </replacements>
+              
               <regexFlags>
                   <regex>MULTILINE</regex>
               </regexFlags>

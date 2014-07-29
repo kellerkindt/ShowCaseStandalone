@@ -44,12 +44,11 @@ public class Version extends SimpleCommand {
 	@Override
 	public void execute(CommandSender sender, String[] args) throws CommandException {
 		scs.sendMessage(sender, Term.MESSAGE_VERSION_1.get());
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_2.get(Properties.buildNumber+""));
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_3.get(Properties.buildDate));
+		scs.sendMessage(sender, Term.MESSAGE_VERSION_2.get(scs.getDescription().getVersion()));
 		scs.sendMessage(sender, Term.MESSAGE_VERSION_4.get(Properties.BUILD_AUTHOR));
 		scs.sendMessage(sender, Term.MESSAGE_VERSION_5.get(Properties.BUILD_CONTRIBUTOR));
 		
-		if (scs.isAdmin(sender) && Properties.buildIsDev) {
+		if (scs.isAdmin(sender) && Properties.BUILD_ISDEV) {
 			scs.sendMessage(sender, Term.WARNING_DEV_VERSION.get());
 		}
 	}

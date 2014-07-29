@@ -191,7 +191,7 @@ public class ShowCaseStandalone extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		log(Level.INFO, "Starting build "+Properties.buildNumber +", made on "+Properties.buildDate +" by "+Properties.BUILD_AUTHOR +" with help by "+Properties.BUILD_CONTRIBUTOR, false);
+		log(Level.INFO, "Starting b"+getDescription().getVersion()+", created by "+Properties.BUILD_AUTHOR +" with great contribution by "+Properties.BUILD_CONTRIBUTOR, false);
 		
 		// setup startup
 		startup		= new Date();
@@ -200,6 +200,8 @@ public class ShowCaseStandalone extends JavaPlugin {
 		// load the configuration
 		log(Level.INFO, "Loading configuration.", false);
 		loadSCSConfig(this.getConfig());
+		
+
 		
 		
 		
@@ -346,7 +348,7 @@ public class ShowCaseStandalone extends JavaPlugin {
 		
 
 		// Warning if this is a dev-build
-		if (Properties.buildIsDev) {
+		if (Properties.BUILD_ISDEV) {
 			Messaging.send(getServer().getConsoleSender(), Term.WARNING_DEV_VERSION.get());
 		}
 		
@@ -917,7 +919,7 @@ public class ShowCaseStandalone extends JavaPlugin {
 		this.config = new SCSConfiguration(config);
 		
 		// check the locale version
-		if (Properties.localeVersion > getConfiguration().getLocalizationVersion()) {
+		if (Properties.VERSION_LOCALE > getConfiguration().getLocalizationVersion()) {
 			log(Level.INFO, "Locale file has changed.  Overwriting default locale files with new versions.", false);
 			log(Level.INFO, "If you are using a custom locale file, please update with any changes you need.", false);
 			
@@ -925,7 +927,7 @@ public class ShowCaseStandalone extends JavaPlugin {
 				this.saveResource(defaultName, true);
 			}
 			
-			this.config.setLocalizationVersion(Properties.localeVersion);
+			this.config.setLocalizationVersion(Properties.VERSION_LOCALE);
 			saveConfig();
 		}
 		
