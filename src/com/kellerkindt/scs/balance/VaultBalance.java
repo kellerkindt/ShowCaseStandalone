@@ -43,15 +43,11 @@ public class VaultBalance implements Balance {
 	
 	@Override
 	public boolean hasEnough(Player p, double amount) {
-		return hasEnough(p.getName(), amount);
+		return hasEnough(p.getUniqueId(), amount);
 	}
 	
 	public boolean hasEnough(UUID id, double amount) {
-		return hasEnough(scs.getPlayerName(id), amount);
-	}
-
-	private boolean hasEnough(String p, double amount) {
-		return economy.has(p, amount);
+		return economy.has(scs.getServer().getOfflinePlayer(id), amount);
 	}
 
 	@Override
@@ -61,30 +57,22 @@ public class VaultBalance implements Balance {
 
 	@Override
 	public void add(Player p, double amount) {
-		add(p.getName(), amount);
+		add(p.getUniqueId(), amount);
 	}
 	
 	@Override
 	public void add(UUID id, double amount) {
-		add(scs.getPlayerName(id), amount);
-	}
-
-	private void add(String p, double amount) {
-		economy.depositPlayer(p, amount);
+		economy.depositPlayer(scs.getServer().getOfflinePlayer(id), amount);
 	}
 
 	@Override
 	public void sub(Player p, double amount) {
-		sub(p.getName(), amount);
+		sub(p.getUniqueId(), amount);
 	}
 	
 	@Override
 	public void sub(UUID id, double amount) {
-		sub(scs.getPlayerName(id), amount);
-	}
-
-	private void sub(String p, double amount) {
-		economy.withdrawPlayer(p, amount);
+		economy.withdrawPlayer(scs.getServer().getOfflinePlayer(id), amount);
 	}
 
 	@Override
