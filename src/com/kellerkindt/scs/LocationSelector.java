@@ -25,9 +25,9 @@ import org.bukkit.Location;
  */
 public interface LocationSelector {
 
-	
-	/**
-	 * @param location {@link Location} that has been selected
-	 */
-	public void onLocationSelected (Location location);
+    
+    /**
+     * @param location {@link Location} that has been selected
+     */
+    public void onLocationSelected (Location location);
 }

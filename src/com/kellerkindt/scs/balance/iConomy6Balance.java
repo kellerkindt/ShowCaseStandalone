@@ -18,7 +18,6 @@
 package com.kellerkindt.scs.balance;
 
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -29,92 +28,85 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
 
 public class iConomy6Balance implements Balance {
-	private iConomy iconomy;
-	private Accounts accounts;
-	private ShowCaseStandalone scs;
+    
+    private iConomy             iconomy;
+    private Accounts            accounts;
+    private ShowCaseStandalone  scs;
 
-	public iConomy6Balance(ShowCaseStandalone scs, Plugin plugin) {
-		// super (scs);
-		this.iconomy = (iConomy) plugin;
-		this.scs = scs;
-		accounts = new Accounts();
-	}
+    public iConomy6Balance(ShowCaseStandalone scs, Plugin plugin) {
+        this.iconomy    = (iConomy) plugin;
+        this.scs        = scs;
+        this.accounts   = new Accounts();
+    }
 
-	@Override
-	public String getClassName() {
-		return iconomy.getClass().getName();
-	}
+    @Override
+    public String getClassName() {
+        return iconomy.getClass().getName();
+    }
 
-	@Override
-	public boolean hasEnough(Player p, double amount) {
-		return hasEnough(p.getName(), amount);
-	}
+    @Override
+    public boolean hasEnough(Player p, double amount) {
+        return hasEnough(p.getName(), amount);
+    }
 
-	@Override
-	public boolean hasEnough(UUID id, double amount) {
-		return hasEnough(scs.getPlayerName(id), amount);
-	}
+    @Override
+    public boolean hasEnough(UUID id, double amount) {
+        return hasEnough(scs.getPlayerName(id), amount);
+    }
 
-	private boolean hasEnough(String p, double amount) {
-		if (accounts.exists(p))
-			return accounts.get(p).getHoldings().hasEnough(amount);
-		else {
-			scs.getServer()
-					.getLogger()
-					.log(Level.WARNING,
-							"[ShowCaseStl] interacting failed with player " + p);
-			return false;
-		}
-	}
+    private boolean hasEnough(String p, double amount) {
+        if (accounts.exists(p)) {
+            return accounts.get(p).getHoldings().hasEnough(amount);
+        } else {
+            scs.getLogger().warning("Player has no account: "+p);
+            return false;
+        }
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return iconomy.isEnabled();
-	}
+    @Override
+    public boolean isEnabled() {
+        return iconomy.isEnabled();
+    }
 
-	@Override
-	public void add(Player p, double amount) {
-		add(p.getName(), amount);
-	}
+    @Override
+    public void add(Player p, double amount) {
+        add(p.getName(), amount);
+    }
 
-	@Override
-	public void add(UUID id, double amount) {
-		add(scs.getPlayerName(id), amount);
-	}
+    @Override
+    public void add(UUID id, double amount) {
+        add(scs.getPlayerName(id), amount);
+    }
 
-	private void add(String p, double amount) {
-		if (accounts.exists(p))
-			accounts.get(p).getHoldings().add(amount);
-		else
-			scs.getServer()
-					.getLogger()
-					.log(Level.WARNING,
-							"[ShowCaseStl] interacting failed with player " + p);
-	}
+    private void add(String p, double amount) {
+        if (accounts.exists(p)) {
+            accounts.get(p).getHoldings().add(amount);
+        } else {
+            scs.getLogger().warning("Player has no account: "+p);
+        }
+    }
 
-	@Override
-	public void sub(Player p, double amount) {
-		sub(p.getName(), amount);
-	}
-	
-	@Override
-	public void sub(UUID id, double amount) {
-		sub(scs.getPlayerName(id), amount);
-	}
+    @Override
+    public void sub(Player p, double amount) {
+        sub(p.getName(), amount);
+    }
+    
+    @Override
+    public void sub(UUID id, double amount) {
+        sub(scs.getPlayerName(id), amount);
+    }
 
-	private void sub(String p, double amount) {
-		if (accounts.exists(p))
-			accounts.get(p).getHoldings().subtract(amount);
-		else
-			scs.getServer()
-					.getLogger()
-					.log(Level.WARNING,
-							"[ShowCaseStl] interacting failed with player " + p);
-	}
+    private void sub(String p, double amount) {
+        if (accounts.exists(p)) {
+            accounts.get(p).getHoldings().subtract(amount);
+        } else {
+            scs.getLogger().warning("Player has no account: "+p);
+        }
+    }
 
-	@Override
-	public String format(double amount) {
-		return iConomy.format(amount);
-	}
+    @Override
+    public String format(double amount) {
+        return iConomy.format(amount);
+    }
 
 }

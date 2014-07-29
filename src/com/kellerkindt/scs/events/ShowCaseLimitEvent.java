@@ -27,35 +27,35 @@ import com.kellerkindt.scs.shops.Shop;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public class ShowCaseLimitEvent extends ShowCaseShopEvent {
-	
-	private int limit;
-	private int limitBefore;
+    
+    private int limit;
+    private int limitBefore;
 
-	public ShowCaseLimitEvent(Player player, Shop shop, int limit) {
-		super(player, shop);
-		
-		this.limit			= limit;
-		this.limitBefore	= shop instanceof BuyShop ? ((BuyShop)shop).getMaxAmount() : 0;
-	}
-	
-	/**
-	 * @return The limit that was set before (if the given shop is not a BuyShop it is always 0)
-	 */
-	public int getLimitBefore () {
-		return limitBefore;
-	}
-	
-	/**
-	 * @return The new limit to set
-	 */
-	public int getLimit () {
-		return limit;
-	}
+    public ShowCaseLimitEvent(Player player, Shop shop, int limit) {
+        super(player, shop);
+        
+        this.limit            = limit;
+        this.limitBefore    = shop instanceof BuyShop ? ((BuyShop)shop).getMaxAmount() : 0;
+    }
+    
+    /**
+     * @return The limit that was set before (if the given shop is not a BuyShop it is always 0)
+     */
+    public int getLimitBefore () {
+        return limitBefore;
+    }
+    
+    /**
+     * @return The new limit to set
+     */
+    public int getLimit () {
+        return limit;
+    }
 
-	/**
-	 * @param limit The new limit to set
-	 */
-	public void setLimit (int limit) {
-		this.limit	= limit;
-	}
+    /**
+     * @param limit The new limit to set
+     */
+    public void setLimit (int limit) {
+        this.limit    = limit;
+    }
 }

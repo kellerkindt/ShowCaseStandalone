@@ -26,57 +26,57 @@ import com.kellerkindt.scs.shops.Shop;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public abstract class ShowCaseShopEvent extends ShowCaseEvent {
-	
-	private Player		player		= null;
-	private Shop		shop		= null;
-	
-	public ShowCaseShopEvent (Player player, Shop shop) {
-		this.player	= player;
-		this.shop	= shop;
-	}
-	
-	/**
-	 * @see com.kellerkindt.scs.events.ShowCaseEvent#setVerify(boolean)
-	 */
-	@Override
-	public ShowCaseShopEvent setVerify(boolean verify) {
-		return (ShowCaseShopEvent)super.setVerify(verify);
-	}
-	
-	/**
-	 * @return Whether a Player is involved in this event
-	 */
-	public boolean hasPlayer () {
-		return getPlayer() != null;
-	}
-	
-	/**
-	 * @return Whether a Shop is involved in this event
-	 */
-	public boolean hasShop () {
-		return getShop() != null;
-	}
-	
-	/**
-	 * @return The player that is involved in this event or null
-	 */
-	public Player getPlayer () {
-		return player;
-	}
-	
-	
-	/**
-	 * @return The Shop that is involved in this event or null
-	 */
-	public Shop getShop () {
-		return shop;
-	}
-	
-	/**
-	 * @param shop {@link Shop} to handle in this event
-	 */
-	public void setShop (Shop shop) {
-		this.shop = shop;
-	}
-	
+    
+    private Player        player        = null;
+    private Shop        shop        = null;
+    
+    public ShowCaseShopEvent (Player player, Shop shop) {
+        this.player    = player;
+        this.shop    = shop;
+    }
+    
+    /**
+     * @see com.kellerkindt.scs.events.ShowCaseEvent#setVerify(boolean)
+     */
+    @Override
+    public ShowCaseShopEvent setVerify(boolean verify) {
+        return (ShowCaseShopEvent)super.setVerify(verify);
+    }
+    
+    /**
+     * @return Whether a Player is involved in this event
+     */
+    public boolean hasPlayer () {
+        return getPlayer() != null;
+    }
+    
+    /**
+     * @return Whether a Shop is involved in this event
+     */
+    public boolean hasShop () {
+        return getShop() != null;
+    }
+    
+    /**
+     * @return The player that is involved in this event or null
+     */
+    public Player getPlayer () {
+        return player;
+    }
+    
+    
+    /**
+     * @return The Shop that is involved in this event or null
+     */
+    public Shop getShop () {
+        return shop;
+    }
+    
+    /**
+     * @param shop {@link Shop} to handle in this event
+     */
+    public void setShop (Shop shop) {
+        this.shop = shop;
+    }
+    
 }

@@ -33,33 +33,33 @@ import com.kellerkindt.scs.utilities.Term;
  * @author michael <michael at kellerkindt.com>
  */
 public class Message extends SimpleCommand {
-	
-	public static final String 			MESSAGE_RECEIVE	= "receive";
-	public static final String 			MESSAGE_IGNORE	= "ignore";
-	public static final List<String>	LIST_TAB		= Arrays.asList(MESSAGE_RECEIVE, MESSAGE_IGNORE);
+    
+    public static final String             MESSAGE_RECEIVE    = "receive";
+    public static final String             MESSAGE_IGNORE    = "ignore";
+    public static final List<String>    LIST_TAB        = Arrays.asList(MESSAGE_RECEIVE, MESSAGE_IGNORE);
 
-	public Message(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, true);
-	}
+    public Message(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, true);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		List<String> 	list 	= new ArrayList<String>();
-		String 			current	= args.length > 0 ? args[0] : "";
-		
-		for (String string : LIST_TAB) {
-			if (string.toLowerCase().startsWith(current.toLowerCase())) {
-				list.add(string);
-			}
-		}
-		
-		return list;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        List<String>     list     = new ArrayList<String>();
+        String             current    = args.length > 0 ? args[0] : "";
+        
+        for (String string : LIST_TAB) {
+            if (string.toLowerCase().startsWith(current.toLowerCase())) {
+                list.add(string);
+            }
+        }
+        
+        return list;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		 // get the players session
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+         // get the players session
         PlayerSession session = scs.getPlayerSessionHandler().getSession((Player)sender);
         
         //This is the catch all message (meaning true or false isn't specified):
@@ -70,17 +70,17 @@ public class Message extends SimpleCommand {
         // set?
         if(args.length > 0)
             if(args[0].equalsIgnoreCase(MESSAGE_IGNORE)){
-            	session.setShowTransactionMessage(false);
+                session.setShowTransactionMessage(false);
                 msg = Term.IGNORE_TRANSACTION.get("ignored");
                 
             } else if (args[0].equalsIgnoreCase(MESSAGE_RECEIVE)) {
-            	session.setShowTransactionMessage(true);
+                session.setShowTransactionMessage(true);
                 msg = Term.IGNORE_TRANSACTION.get("received");
             }
         
         
         scs.sendMessage(sender, msg);
-	}
-	
-	
+    }
+    
+    
 }

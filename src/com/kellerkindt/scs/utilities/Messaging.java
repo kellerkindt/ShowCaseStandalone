@@ -206,7 +206,7 @@ public class Messaging {
     }
     
     public static void send(Player player, Term term) {
-    	send(player, term.get());
+        send(player, term.get());
     }
 
     /**

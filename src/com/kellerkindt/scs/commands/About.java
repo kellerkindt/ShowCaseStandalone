@@ -31,26 +31,26 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class About extends SimpleCommand {
 
-	public About(ShowCaseStandalone scs, String ...permissions) {
-		super(scs, permissions);
-	}
-	
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    public About(ShowCaseStandalone scs, String ...permissions) {
+        super(scs, permissions);
+    }
+    
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		scs.sendMessage(
-				sender,
-				Term.MESSAGE_ABOUT.get(
-						Properties.BUILD_AUTHOR,
-						Properties.BUILD_CONTRIBUTOR,
-						Properties.URL_BUKKIT
-						)
-				);
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        scs.sendMessage(
+                sender,
+                Term.MESSAGE_ABOUT.get(
+                        Properties.BUILD_AUTHOR,
+                        Properties.BUILD_CONTRIBUTOR,
+                        Properties.URL_BUKKIT
+                        )
+                );
+    }
 
 }

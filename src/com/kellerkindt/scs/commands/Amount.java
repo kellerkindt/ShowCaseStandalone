@@ -33,29 +33,29 @@ import com.kellerkindt.scs.shops.Shop;
  * @author michael <michael at kellerkindt.com>
  */
 public class Amount extends SimpleCommand {
-	
-	public Amount (ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, true, 1);
-	}
+    
+    public Amount (ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, true, 1);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		
-		final int 		amount 	= Integer.parseInt( args[0] );
-		final Player	player	= (Player)sender;
-		
-		registerShopManipulator(player, new EventShopManipulator(scs, sender) {
-			@Override
-			public ShowCaseEvent getEvent(Shop shop) {
-				return new ShowCaseLimitEvent(player, shop, amount);
-			}
-		});
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        
+        final int         amount     = Integer.parseInt( args[0] );
+        final Player    player    = (Player)sender;
+        
+        registerShopManipulator(player, new EventShopManipulator(scs, sender) {
+            @Override
+            public ShowCaseEvent getEvent(Shop shop) {
+                return new ShowCaseLimitEvent(player, shop, amount);
+            }
+        });
+    }
 
 }

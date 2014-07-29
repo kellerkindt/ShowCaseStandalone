@@ -30,75 +30,76 @@ import cosine.boseconomy.BOSEconomy;
 
 
 public class BOSEconomyBalance implements Balance {
-	
-	private ShowCaseStandalone	scs;
-	private BOSEconomy 			economy;
-	
-	public BOSEconomyBalance (ShowCaseStandalone scs, Plugin plugin) {
-		this.scs		= scs;
-		this.economy 	= (BOSEconomy)plugin;
-	}
-	
+    
+    private ShowCaseStandalone  scs;
+    private BOSEconomy          economy;
+    
+    public BOSEconomyBalance (ShowCaseStandalone scs, Plugin plugin) {
+        this.scs        = scs;
+        this.economy    = (BOSEconomy)plugin;
+    }
+    
     @Override
-	public String getClassName () {
-		return economy.getClass().getName();
-	}
-	
+    public String getClassName () {
+        return economy.getClass().getName();
+    }
+    
     @Override
     public boolean hasEnough(UUID id, double amount) {
-    	return hasEnough(scs.getPlayerName(id), amount);
+        return hasEnough(scs.getPlayerName(id), amount);
     }
     
     @Override
     public boolean hasEnough(Player p, double amount) {
-    	return hasEnough(p.getName(), amount);
+        return hasEnough(p.getName(), amount);
     }
     
-	private boolean hasEnough (String name, double amount) {
-		return economy.getPlayerMoneyDouble(name) >= amount;
-	}
-	
+    private boolean hasEnough (String name, double amount) {
+        return economy.getPlayerMoneyDouble(name) >= amount;
+    }
+    
     @Override
-	public boolean isEnabled () {
-		return economy.isEnabled();
-	}
-	
+    public boolean isEnabled () {
+        return economy.isEnabled();
+    }
+    
     @Override
-	public void add (Player p, double amount) {
-		add (p.getName(), amount);
-	}
-	
+    public void add (Player p, double amount) {
+        add (p.getName(), amount);
+    }
+    
     @Override
-	public void add (UUID id, double amount) {
-    	add(scs.getPlayerName(id), amount);
-	}
+    public void add (UUID id, double amount) {
+        add(scs.getPlayerName(id), amount);
+    }
     
     private void add (String name, double amount) {
-    	economy.addPlayerMoney(name, amount, false);
+        economy.addPlayerMoney(name, amount, false);
     }
         
        
-	
+    
     @Override
-	public void sub (Player p, double amount) {
-		sub(p.getName(), amount);
-	}
-	
+    public void sub (Player p, double amount) {
+        sub(p.getName(), amount);
+    }
+    
     @Override
-	public void sub (UUID id, double amount) {
-		sub(scs.getPlayerName(id), amount);
-	}
+    public void sub (UUID id, double amount) {
+        sub(scs.getPlayerName(id), amount);
+    }
     
     private void sub (String name, double amount) {
-    	economy.addPlayerMoney(name, -amount, false);
+        economy.addPlayerMoney(name, -amount, false);
     }
 
     @Override
     public String format(double amount) {
         String currency = economy.getMoneyNamePlural();
 
-        if(amount == 1) 
+        if(amount == 1)  {
             currency = economy.getMoneyName();
+        }
 
         return amount + " " + currency;
     }

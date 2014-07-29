@@ -42,94 +42,94 @@ import com.kellerkindt.scs.events.ShowCaseRemoveEvent;
  */
 public interface ShowCaseListener extends Listener {
 
-	/**
-	 * Is called, if a player requested information about a Shop
-	 * @param event	ShowCaseInfoEvent with needed information about the shop and player
-	 */
-	public void onShowCaseInfoEvent (ShowCaseInfoEvent event);
-	
-	/**
-	 * Is called, if a player requested an interaction between him and the shop
-	 * @param event	ShowCaseInteractEvent with needed information about the shop and player
-	 */
-	public void onShowCaseInteractEvent (ShowCaseInteractEvent event);
-	
-	/**
-	 * Is called, if items should be added to a shop
-	 * @param event	ShowCaseItemAddEvent with needed information about the shop and player
-	 */
-	public void onShowCaseItemAddEvent (ShowCaseItemAddEvent event);
-	
-	/**
-	 * Is called, if a member should be added to a shop
-	 * @param event	ShowCaseMemberAddEvent with needed information about the shop and the member to add
-	 */
-	public void onShowCaseMemberAddEvent (ShowCaseMemberAddEvent event);
-	
-	/**
-	 * Is called, if a new shop should be created
-	 * @param event	ShowCaseCreateEvent with needed information about the shop and player
-	 */
-	public void onShowCaseCreateEvent (ShowCaseCreateEvent event);
-	
-	/**
-	 * Is called, if a shop should be deleted
-	 * @param event	ShowCaseDeleteEvent with needed information about the shop and player
-	 */
-	public void onShowCaseDeleteEvent (ShowCaseDeleteEvent event);	
-	
-	/**
-	 * Is called, if items should be removed from a shop
-	 * @param event	ShowCaseItemRemoveEvent with needed information about the shop and player
-	 */
-	public void onShowCaseItemRemoveEvent (ShowCaseItemRemoveEvent event);
-	
-	
-	/**
-	 * Is called, if a new limit should set for the shop
-	 * @param event ShowCaseLimitEvent with needed information about the shop and player
-	 */
-	public void onShowCaseLimitEvent (ShowCaseLimitEvent event);
-	
-	/**
-	 * Is called, if the shop should be removed
-	 * @param event	ShowCaseRemoveEvent with needed information about the shop and player
-	 */
-	public void onShowCaseRemoveEvent (ShowCaseRemoveEvent event);
-	
-	/**
-	 * Is called, if a member should be removed
-	 * @param event	ShowCaseMemeberRemoveEvent with needed information about the shop and player
-	 */
-	public void onShowCaseMemberRemoveEvent (ShowCaseMemberRemoveEvent event);
-	
-	/**
-	 * Is called, if the owner of a shop should be set to another one
-	 * @param event	ShowCaseOwnerSetEvent with needed information about the shop and player
-	 */
-	public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent event);
-	
-	/**
-	 * Is called, if the price of a shop should be set to another one
-	 * @param event ShowCasePriceSetEvent with needed information about the shop and player
-	 */
-	public void onShowCasePriceSetEvent (ShowCasePriceSetEvent event);
-	
-	/**
-	 * Is called, if the player wants to buy something from a shop
-	 * @param event ShowCasePlayerBuyEvent with needed information about the shop and player
-	 */
-	public void onShowCasePlayerBuyEvent (ShowCasePlayerBuyEvent event);
-	
-	/**
-	 * Is called, if the player wants to sell something to a shop
-	 * @param event ShowCasePlayerSellEvent with needed information about the shop and player
-	 */
-	public void onShowCasePlayerSellEvent (ShowCasePlayerSellEvent event);
-	
-	/**
-	 * Is called, if the player wants to exchange items from a shop
-	 * @param event ShowCasePlayerExchangeEvent with needed information about the shop and player
-	 */
-	public void onShowCasePlayerExchangeEvent (ShowCasePlayerExchangeEvent event);
+    /**
+     * Is called, if a player requested information about a Shop
+     * @param event    ShowCaseInfoEvent with needed information about the shop and player
+     */
+    public void onShowCaseInfoEvent (ShowCaseInfoEvent event);
+    
+    /**
+     * Is called, if a player requested an interaction between him and the shop
+     * @param event    ShowCaseInteractEvent with needed information about the shop and player
+     */
+    public void onShowCaseInteractEvent (ShowCaseInteractEvent event);
+    
+    /**
+     * Is called, if items should be added to a shop
+     * @param event    ShowCaseItemAddEvent with needed information about the shop and player
+     */
+    public void onShowCaseItemAddEvent (ShowCaseItemAddEvent event);
+    
+    /**
+     * Is called, if a member should be added to a shop
+     * @param event    ShowCaseMemberAddEvent with needed information about the shop and the member to add
+     */
+    public void onShowCaseMemberAddEvent (ShowCaseMemberAddEvent event);
+    
+    /**
+     * Is called, if a new shop should be created
+     * @param event    ShowCaseCreateEvent with needed information about the shop and player
+     */
+    public void onShowCaseCreateEvent (ShowCaseCreateEvent event);
+    
+    /**
+     * Is called, if a shop should be deleted
+     * @param event    ShowCaseDeleteEvent with needed information about the shop and player
+     */
+    public void onShowCaseDeleteEvent (ShowCaseDeleteEvent event);    
+    
+    /**
+     * Is called, if items should be removed from a shop
+     * @param event    ShowCaseItemRemoveEvent with needed information about the shop and player
+     */
+    public void onShowCaseItemRemoveEvent (ShowCaseItemRemoveEvent event);
+    
+    
+    /**
+     * Is called, if a new limit should set for the shop
+     * @param event ShowCaseLimitEvent with needed information about the shop and player
+     */
+    public void onShowCaseLimitEvent (ShowCaseLimitEvent event);
+    
+    /**
+     * Is called, if the shop should be removed
+     * @param event    ShowCaseRemoveEvent with needed information about the shop and player
+     */
+    public void onShowCaseRemoveEvent (ShowCaseRemoveEvent event);
+    
+    /**
+     * Is called, if a member should be removed
+     * @param event    ShowCaseMemeberRemoveEvent with needed information about the shop and player
+     */
+    public void onShowCaseMemberRemoveEvent (ShowCaseMemberRemoveEvent event);
+    
+    /**
+     * Is called, if the owner of a shop should be set to another one
+     * @param event    ShowCaseOwnerSetEvent with needed information about the shop and player
+     */
+    public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent event);
+    
+    /**
+     * Is called, if the price of a shop should be set to another one
+     * @param event ShowCasePriceSetEvent with needed information about the shop and player
+     */
+    public void onShowCasePriceSetEvent (ShowCasePriceSetEvent event);
+    
+    /**
+     * Is called, if the player wants to buy something from a shop
+     * @param event ShowCasePlayerBuyEvent with needed information about the shop and player
+     */
+    public void onShowCasePlayerBuyEvent (ShowCasePlayerBuyEvent event);
+    
+    /**
+     * Is called, if the player wants to sell something to a shop
+     * @param event ShowCasePlayerSellEvent with needed information about the shop and player
+     */
+    public void onShowCasePlayerSellEvent (ShowCasePlayerSellEvent event);
+    
+    /**
+     * Is called, if the player wants to exchange items from a shop
+     * @param event ShowCasePlayerExchangeEvent with needed information about the shop and player
+     */
+    public void onShowCasePlayerExchangeEvent (ShowCasePlayerExchangeEvent event);
 }

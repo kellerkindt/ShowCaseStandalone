@@ -33,31 +33,31 @@ import com.kellerkindt.scs.shops.Shop;
  * @author michael <michael at kellerkindt.com>
  */
 public class Get extends SimpleCommand {
-	
-	public Get(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, true);
-	}
+    
+    public Get(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, true);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do at all
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do at all
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		
-		// prepare
-		final int 		amount 	= args.length > 0 ? Integer.parseInt(args[0]) : Integer.MAX_VALUE;
-		final Player	player	= (Player)sender;
-		
-		registerShopManipulator(player, new EventShopManipulator(scs, sender){
-			@Override
-			public ShowCaseEvent getEvent(Shop shop) {
-				return new ShowCaseItemRemoveEvent(player, shop, amount, shop.getItemStack());
-			}
-		});
-		
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        
+        // prepare
+        final int         amount     = args.length > 0 ? Integer.parseInt(args[0]) : Integer.MAX_VALUE;
+        final Player    player    = (Player)sender;
+        
+        registerShopManipulator(player, new EventShopManipulator(scs, sender){
+            @Override
+            public ShowCaseEvent getEvent(Shop shop) {
+                return new ShowCaseItemRemoveEvent(player, shop, amount, shop.getItemStack());
+            }
+        });
+        
+    }
 
 }

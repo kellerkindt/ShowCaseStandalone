@@ -20,28 +20,28 @@ package com.kellerkindt.scs.exceptions;
 import com.kellerkindt.scs.utilities.Term;
 
 public class InsufficientPermissionException extends Exception {
-	private final static long serialVersionUID = 1l;
-	private String message;
-	
-	/*
-	 * Setting the message of the Exception to a new String
-	 */
-	public InsufficientPermissionException () {
-		this.message = Term.ERROR_INSUFFICIENT_PERMISSION.get();
-	}
-	
-	/*
-	 * Setting the message of the Exception to the given message
-	 */
-	public InsufficientPermissionException (String message) {
-		this.message = message;
-	}
-	
-	/*
-	 * returns the message
-	 */
-	@Override
-	public String getMessage () {
-		return this.message;
-	}
+    private final static long serialVersionUID = 1l;
+    private String message;
+    
+    /*
+     * Setting the message of the Exception to a new String
+     */
+    public InsufficientPermissionException () {
+        this.message = Term.ERROR_INSUFFICIENT_PERMISSION.get();
+    }
+    
+    /*
+     * Setting the message of the Exception to the given message
+     */
+    public InsufficientPermissionException (String message) {
+        this.message = message;
+    }
+    
+    /*
+     * returns the message
+     */
+    @Override
+    public String getMessage () {
+        return this.message;
+    }
 }

@@ -22,12 +22,12 @@ package com.kellerkindt.scs.interfaces;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public interface ConfigurationChangedListener {
-	
-	/**
-	 * @param key		Key that has been changed
-	 * @param newValue	New value that has been set
-	 * @param oldValue	Old value
-	 */
-	public void onChanged (String key, Object newValue, Object oldValue);
+    
+    /**
+     * @param key        Key that has been changed
+     * @param newValue    New value that has been set
+     * @param oldValue    Old value
+     */
+    public void onChanged (String key, Object newValue, Object oldValue);
 
 }

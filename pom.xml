@@ -57,13 +57,13 @@
       <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <configuration>
-	          <archive>
-	              <manifestEntries>
-	                  <buildNumber>${build.number}</buildNumber>
-	                  <buildDate>${build.date}</buildDate>
-	                  <builder>${build.builder}</builder>
-	              </manifestEntries>
-	          </archive>
+              <archive>
+                  <manifestEntries>
+                      <buildNumber>${build.number}</buildNumber>
+                      <buildDate>${build.date}</buildDate>
+                      <builder>${build.builder}</builder>
+                  </manifestEntries>
+              </archive>
           </configuration>
       </plugin>
       
@@ -156,10 +156,10 @@
       
       <!-- essentials -->
       <repository>
-	  	<id>ess-repo</id>
-		<url>http://repo.ess3.net/content/groups/public</url>
-	  </repository>
-	  
+          <id>ess-repo</id>
+        <url>http://repo.ess3.net/content/groups/public</url>
+      </repository>
+      
       <!-- Vault -->
       <repository>
           <id>Vault</id>
@@ -305,47 +305,47 @@
   </dependencies>
   
   <profiles>
-	<profile>
-	   <id>upstream</id>
-	   <repositories>
-	      <repository>
-	         <id>upstream</id>
-	         <url>${env.Jenkins.Repository}</url>
-	         <releases>
-	             <enabled>true</enabled>
-	         </releases>
-	         <snapshots>
-	            <enabled>true</enabled>
-	         </snapshots>
-	      </repository>
-	    </repositories>
-	 <pluginRepositories>
-	    <pluginRepository>
-	          <id>upstream</id>
-	          <url>${env.Jenkins.Repository}</url>
-	          <releases>
-	            <enabled>true</enabled>
-	          </releases>
-	          <snapshots>
-	            <enabled>true</enabled>
-	         </snapshots>
-	    </pluginRepository>
-	  </pluginRepositories>
-	</profile>
+    <profile>
+       <id>upstream</id>
+       <repositories>
+          <repository>
+             <id>upstream</id>
+             <url>${env.Jenkins.Repository}</url>
+             <releases>
+                 <enabled>true</enabled>
+             </releases>
+             <snapshots>
+                <enabled>true</enabled>
+             </snapshots>
+          </repository>
+        </repositories>
+     <pluginRepositories>
+        <pluginRepository>
+              <id>upstream</id>
+              <url>${env.Jenkins.Repository}</url>
+              <releases>
+                <enabled>true</enabled>
+              </releases>
+              <snapshots>
+                <enabled>true</enabled>
+             </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
   </profiles>
   
   
   <distributionManagement>
-      	<repository>
-	         <id>tallbyte-repository</id>
-	         <url>${repository.url}</url>
-	         <releases>
-	             <enabled>true</enabled>
-	         </releases>
-	         <snapshots>
-	            <enabled>true</enabled>
-	         </snapshots>
-	      </repository>
+          <repository>
+             <id>tallbyte-repository</id>
+             <url>${repository.url}</url>
+             <releases>
+                 <enabled>true</enabled>
+             </releases>
+             <snapshots>
+                <enabled>true</enabled>
+             </snapshots>
+          </repository>
   </distributionManagement>
 
 </project>

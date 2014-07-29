@@ -28,30 +28,30 @@ import com.kellerkindt.scs.shops.ExchangeShop;
  */
 public class ShowCasePlayerExchangeEvent extends ShowCaseShopEvent {
 
-	private int quantity;
-	
-	public ShowCasePlayerExchangeEvent (Player player, ExchangeShop shop, int quantity) {
-		super(player, shop);
-		
-		this.quantity	= quantity;
-	}
-	
-	/**
-	 * @return The amount of items to exchange
-	 */
-	public int getQuantity () {
-		return quantity;
-	}
-	
-	/**
-	 * @param quantity The new quantity
-	 */
-	public void setQuantity (int quantity) {
-		this.quantity	= quantity;
-	}
-	
-	@Override
-	public ExchangeShop getShop() {
-		return (ExchangeShop)super.getShop();
-	}
+    private int quantity;
+    
+    public ShowCasePlayerExchangeEvent (Player player, ExchangeShop shop, int quantity) {
+        super(player, shop);
+        
+        this.quantity    = quantity;
+    }
+    
+    /**
+     * @return The amount of items to exchange
+     */
+    public int getQuantity () {
+        return quantity;
+    }
+    
+    /**
+     * @param quantity The new quantity
+     */
+    public void setQuantity (int quantity) {
+        this.quantity    = quantity;
+    }
+    
+    @Override
+    public ExchangeShop getShop() {
+        return (ExchangeShop)super.getShop();
+    }
 }

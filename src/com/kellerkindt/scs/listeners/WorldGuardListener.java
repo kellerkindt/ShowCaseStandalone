@@ -30,30 +30,30 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.GlobalRegionManager;
 
 public class WorldGuardListener implements Listener {
-	
-	private WorldGuardPlugin	worldGuard;
-	
-	public WorldGuardListener (ShowCaseStandalone scs, Plugin wGuard) {
-		
-		if (wGuard instanceof WorldGuardPlugin)
-			worldGuard	= (WorldGuardPlugin)wGuard;
-		else
-			throw new ClassCastException("Given Plugin is not WG");
-	}
+    
+    private WorldGuardPlugin    worldGuard;
+    
+    public WorldGuardListener (ShowCaseStandalone scs, Plugin wGuard) {
+        
+        if (wGuard instanceof WorldGuardPlugin)
+            worldGuard    = (WorldGuardPlugin)wGuard;
+        else
+            throw new ClassCastException("Given Plugin is not WG");
+    }
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-	public void onShopCreate (ShowCaseCreateEvent event) {
-		if (event.isCancelled())
-			return;
-		
-		Location	location	= event.getShop().getLocation();
-		Player		player		= event.getPlayer();
-		
-		GlobalRegionManager	manager 	= worldGuard.getGlobalRegionManager();
-		boolean				isAllowed	= manager.canBuild(player, location);
-		
-		if (!isAllowed) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
+    public void onShopCreate (ShowCaseCreateEvent event) {
+        if (event.isCancelled())
+            return;
+        
+        Location    location    = event.getShop().getLocation();
+        Player        player        = event.getPlayer();
+        
+        GlobalRegionManager    manager     = worldGuard.getGlobalRegionManager();
+        boolean                isAllowed    = manager.canBuild(player, location);
+        
+        if (!isAllowed) {
+            event.setCancelled(true);
+        }
+    }
 }

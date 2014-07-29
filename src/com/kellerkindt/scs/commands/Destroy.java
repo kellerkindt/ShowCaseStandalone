@@ -34,28 +34,28 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class Destroy extends SimpleCommand {
 
-	public Destroy(ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, true);
-	}
-	
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    public Destroy(ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, true);
+    }
+    
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		final Player player = (Player)sender;
-		
-		registerShopManipulator(player, new EventShopManipulator(scs, sender){
-			@Override
-			public ShowCaseEvent getEvent(Shop shop) {
-				return new ShowCaseDeleteEvent(player, shop);
-			}
-		});
-		
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        final Player player = (Player)sender;
+        
+        registerShopManipulator(player, new EventShopManipulator(scs, sender){
+            @Override
+            public ShowCaseEvent getEvent(Shop shop) {
+                return new ShowCaseDeleteEvent(player, shop);
+            }
+        });
+        
+    }
 
 }

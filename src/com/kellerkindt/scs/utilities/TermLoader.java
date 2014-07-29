@@ -24,67 +24,66 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
 
 public class TermLoader {
-	private static final String regexFilter	= "(\\s+?|.+?)[ ]*:[ ]*\\\"(\\s+?|.+?)\\\"";
-	private static final String regexKey	= "$1";
-	private static final String regexValue	= "$2";
-	private static final String encoding	= "UTF8";
-	
-	private TermLoader () {}
-	
-	/**
-	 * Loads the terms from the given File
-	 * @param filename
-	 * @throws IOException
-	 */
-	public static void loadTerms (File file) throws IOException {
-		// init the input stream
-		InputStream fis		= new FileInputStream	(file);
-		
-		try {
-			// load the terms
-			loadTerms(fis);
-		} finally {
-			fis.close();
-		}
-	}
-	
-	/**
-	 * Loads the terms from the given InputStream
-	 * @param is	InputStream to load from
-	 * @throws IOException
-	 */
-	public static void loadTerms (InputStream is) throws IOException {
-		InputStreamReader		isr		= new InputStreamReader	(is, encoding);
-		BufferedReader			br		= new BufferedReader	(isr);
-		
-		String					line	= null;
-		HashMap<String, String>	terms	= new HashMap<String, String>();
-		
-		while ((line = br.readLine()) != null) {
-			String key		= line.replaceAll(regexFilter, regexKey);
-			String value	= line.replaceAll(regexFilter, regexValue);
+    private static final String regexFilter = "(\\s+?|.+?)[ ]*:[ ]*\\\"(\\s+?|.+?)\\\"";
+    private static final String regexKey    = "$1";
+    private static final String regexValue  = "$2";
+    private static final String encoding    = "UTF8";
+    
+    private TermLoader () {}
+    
+    /**
+     * Loads the terms from the given File
+     * @param filename
+     * @throws IOException
+     */
+    public static void loadTerms (File file) throws IOException {
+        // init the input stream
+        InputStream fis        = new FileInputStream    (file);
+        
+        try {
+            // load the terms
+            loadTerms(fis);
+        } finally {
+            fis.close();
+        }
+    }
+    
+    /**
+     * Loads the terms from the given InputStream
+     * @param is    InputStream to load from
+     * @throws IOException
+     */
+    public static void loadTerms (InputStream is) throws IOException {
+        InputStreamReader        isr        = new InputStreamReader    (is, encoding);
+        BufferedReader            br        = new BufferedReader    (isr);
+        
+        String                    line    = null;
+        HashMap<String, String>    terms    = new HashMap<String, String>();
+        
+        while ((line = br.readLine()) != null) {
+            String key        = line.replaceAll(regexFilter, regexKey);
+            String value    = line.replaceAll(regexFilter, regexValue);
 
-			terms.put(key, value);
-		}
-		
-		br.close();
-		isr.close();
-		
-		for (Term term :Term.values()) {
-			// get the term value
-			String termValue = terms.get(term.toString());
-			
-			// check whether the value is valid
-			if (termValue == null) {
-				ShowCaseStandalone.slog(Level.INFO, "Missing Term: "+term.toString());
-			} else {
-				term.setTerm(termValue);
-			}
-		}
-	}
+            terms.put(key, value);
+        }
+        
+        br.close();
+        isr.close();
+        
+        for (Term term :Term.values()) {
+            // get the term value
+            String termValue = terms.get(term.toString());
+            
+            // check whether the value is valid
+            if (termValue == null) {
+                ShowCaseStandalone.get().getLogger().warning("Missing Term: "+term.toString());
+            } else {
+                term.setTerm(termValue);
+            }
+        }
+    }
 }

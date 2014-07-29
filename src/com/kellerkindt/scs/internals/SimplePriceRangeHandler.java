@@ -32,97 +32,102 @@ import com.kellerkindt.scs.interfaces.PriceRangeHandler;
  */
 public class SimplePriceRangeHandler implements PriceRangeHandler {
 
-	private Map<Material, PriceRange> map	= new HashMap<Material, PriceRange>();
-	
-	private double	globalMin	= 0;
-	private double	globalMax	= Double.MAX_VALUE;
+    private Map<Material, PriceRange> map    = new HashMap<Material, PriceRange>();
+    
+    private double    globalMin    = 0;
+    private double    globalMax    = Double.MAX_VALUE;
 
-	@Override
-	public Iterator<PriceRange> iterator() {
-		return map.values().iterator();
-	}
+    @Override
+    public int size() {
+        return map.size();
+    }
+    
+    @Override
+    public Iterator<PriceRange> iterator() {
+        return map.values().iterator();
+    }
 
-	@Override
-	public double getGlobalMax() {
-		return globalMax;
-	}
+    @Override
+    public double getGlobalMax() {
+        return globalMax;
+    }
 
-	@Override
-	public double getGlobalMin() {
-		return globalMin;
-	}
+    @Override
+    public double getGlobalMin() {
+        return globalMin;
+    }
 
-	@Override
-	public void setGlobalMax(double max) {
-		this.globalMax = max;
-	}
+    @Override
+    public void setGlobalMax(double max) {
+        this.globalMax = max;
+    }
 
-	@Override
-	public void setGlobalMin(double min) {
-		this.globalMin = min;
-	}
+    @Override
+    public void setGlobalMin(double min) {
+        this.globalMin = min;
+    }
 
-	@Override
-	public PriceRange getRange(Material material) {
-		// try to get it
-		PriceRange range = map.get(material);
-		
-		// does not exist?
-		if (range == null) {
-			range = new PriceRange(this, material);
-			// do not add to the map!
-		}
-		
-		return range;
-	}
+    @Override
+    public PriceRange getRange(Material material) {
+        // try to get it
+        PriceRange range = map.get(material);
+        
+        // does not exist?
+        if (range == null) {
+            range = new PriceRange(this, material);
+            // do not add to the map!
+        }
+        
+        return range;
+    }
 
-	@Override
-	public void setRange(PriceRange range) {
-		map.put(range.getMaterial(), range);
-		range.setPriceRangeHandler(this);
-	}
+    @Override
+    public void setRange(PriceRange range) {
+        map.put(range.getMaterial(), range);
+        range.setPriceRangeHandler(this);
+    }
 
-	@Override
-	public double getMin(Material material) {
-		return getMin(material, true);
-	}
+    @Override
+    public double getMin(Material material) {
+        return getMin(material, true);
+    }
 
-	@Override
-	public double getMin(Material material, boolean limitByGlobalMin) {
-		return getRange(material).getMin(limitByGlobalMin);
-	}
+    @Override
+    public double getMin(Material material, boolean limitByGlobalMin) {
+        return getRange(material).getMin(limitByGlobalMin);
+    }
 
-	@Override
-	public double getMax(Material material) {
-		return getMax(material, true);
-	}
+    @Override
+    public double getMax(Material material) {
+        return getMax(material, true);
+    }
 
-	@Override
-	public double getMax(Material material, boolean limitByGlobalMax) {
-		return getRange(material).getMax(limitByGlobalMax);
-	}
+    @Override
+    public double getMax(Material material, boolean limitByGlobalMax) {
+        return getRange(material).getMax(limitByGlobalMax);
+    }
 
-	@Override
-	public void setMin(Material material, double min) {
-		// get the old one
-		PriceRange range = getRange(material);
-		
-		// overwrite it
-		map.put(material, new PriceRange(this, material, min, range.getMax(false)));
-	}
+    @Override
+    public void setMin(Material material, double min) {
+        // get the old one
+        PriceRange range = getRange(material);
+        
+        // overwrite it
+        map.put(material, new PriceRange(this, material, min, range.getMax(false)));
+    }
 
-	@Override
-	public void setMax(Material material, double max) {
-		// get the old one
-		PriceRange range = getRange(material);
-		
-		// overwrite it
-		map.put(material, new PriceRange(this, material, range.getMin(false), max));
-	}
+    @Override
+    public void setMax(Material material, double max) {
+        // get the old one
+        PriceRange range = getRange(material);
+        
+        // overwrite it
+        map.put(material, new PriceRange(this, material, range.getMin(false), max));
+    }
 
-	@Override
-	public void remove(Material material) {
-		map.remove(material);
-	}
-	
+    @Override
+    public void remove(Material material) {
+        map.remove(material);
+    }
+    
 }

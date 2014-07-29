@@ -27,34 +27,34 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCasePriceSetEvent extends ShowCaseShopEvent {
 
-	private double price;
-	private double priceBefore;
-	
-	public ShowCasePriceSetEvent (Player player, Shop shop, double price) {
-		super(player, shop);
-		
-		this.price			= price;
-		this.priceBefore	= shop.getPrice();
-	}
-	
-	/**
-	 * @return The price at the moment the event was created
-	 */
-	public double getPriceBefore () {
-		return priceBefore;
-	}
-	
-	/**
-	 * @return The new price to set
-	 */
-	public double getPrice () {
-		return price;
-	}
-	
-	/**
-	 * @param price The new price to set
-	 */
-	public void setPrice (double price) {
-		this.price = price;
-	}
+    private double price;
+    private double priceBefore;
+    
+    public ShowCasePriceSetEvent (Player player, Shop shop, double price) {
+        super(player, shop);
+        
+        this.price            = price;
+        this.priceBefore    = shop.getPrice();
+    }
+    
+    /**
+     * @return The price at the moment the event was created
+     */
+    public double getPriceBefore () {
+        return priceBefore;
+    }
+    
+    /**
+     * @return The new price to set
+     */
+    public double getPrice () {
+        return price;
+    }
+    
+    /**
+     * @param price The new price to set
+     */
+    public void setPrice (double price) {
+        this.price = price;
+    }
 }

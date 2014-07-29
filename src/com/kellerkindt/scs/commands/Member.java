@@ -38,63 +38,63 @@ import com.kellerkindt.scs.shops.Shop;
  * @author michael <michael at kellerkindt.com>
  */
 public class Member extends SimpleCommand {
-	
-	public static final String MEMBER_LIST		= "list";
-	public static final String MEMBER_ADD		= "add";
-	public static final String MEMBER_REMOVE	= "remove";
-	
-	public static final List<String> LIST_TAB	= Arrays.asList(MEMBER_LIST, MEMBER_ADD, MEMBER_REMOVE);
+    
+    public static final String MEMBER_LIST        = "list";
+    public static final String MEMBER_ADD        = "add";
+    public static final String MEMBER_REMOVE    = "remove";
+    
+    public static final List<String> LIST_TAB    = Arrays.asList(MEMBER_LIST, MEMBER_ADD, MEMBER_REMOVE);
 
-	public Member(ShowCaseStandalone scs, String ...permissions) {
-		super(scs, permissions, true, 2);
-	}
+    public Member(ShowCaseStandalone scs, String ...permissions) {
+        super(scs, permissions, true, 2);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		List<String> list 	= new ArrayList<String>();
-		String		 current= args.length > 0 ? args[0] : "";
-		
-		for (String cmd : LIST_TAB) {
-			if (cmd.toLowerCase().startsWith(current.toLowerCase())) {
-				list.add(cmd);
-			}
-		}
-		
-		return list;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        List<String> list     = new ArrayList<String>();
+        String         current= args.length > 0 ? args[0] : "";
+        
+        for (String cmd : LIST_TAB) {
+            if (cmd.toLowerCase().startsWith(current.toLowerCase())) {
+                list.add(cmd);
+            }
+        }
+        
+        return list;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		final Player	player	= (Player)sender;
-		final String	cmd		= args[0];
-		final String	member	= args.length > 1 ? args[1] : "";
-		
-		// verify the command
-		if (!MEMBER_LIST.equalsIgnoreCase(cmd) && !MEMBER_ADD.equalsIgnoreCase(cmd) && !MEMBER_REMOVE.equalsIgnoreCase(cmd)) {
-			throw new MissingOrIncorrectArgumentException();
-		}
-		
-		registerShopManipulator(player, new EventShopManipulator(scs, sender){
-			@Override
-			public ShowCaseEvent getEvent(Shop shop) {
-				if (MEMBER_LIST.equalsIgnoreCase(cmd)) {
-					// TODO
-					return new ShowCaseInfoEvent(player, shop);
-				}
-				
-				else if (MEMBER_ADD.equalsIgnoreCase(cmd)) {
-					return new ShowCaseMemberAddEvent(player, shop, member);
-				}
-				
-				else if (MEMBER_REMOVE.equalsIgnoreCase(cmd)) {
-					return new ShowCaseMemberRemoveEvent(player, shop, member);
-				}
-				
-				// should never happen since there is a check before
-				return null;
-			}
-		});
-	}
-	
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        final Player    player    = (Player)sender;
+        final String    cmd        = args[0];
+        final String    member    = args.length > 1 ? args[1] : "";
+        
+        // verify the command
+        if (!MEMBER_LIST.equalsIgnoreCase(cmd) && !MEMBER_ADD.equalsIgnoreCase(cmd) && !MEMBER_REMOVE.equalsIgnoreCase(cmd)) {
+            throw new MissingOrIncorrectArgumentException();
+        }
+        
+        registerShopManipulator(player, new EventShopManipulator(scs, sender){
+            @Override
+            public ShowCaseEvent getEvent(Shop shop) {
+                if (MEMBER_LIST.equalsIgnoreCase(cmd)) {
+                    // TODO
+                    return new ShowCaseInfoEvent(player, shop);
+                }
+                
+                else if (MEMBER_ADD.equalsIgnoreCase(cmd)) {
+                    return new ShowCaseMemberAddEvent(player, shop, member);
+                }
+                
+                else if (MEMBER_REMOVE.equalsIgnoreCase(cmd)) {
+                    return new ShowCaseMemberRemoveEvent(player, shop, member);
+                }
+                
+                // should never happen since there is a check before
+                return null;
+            }
+        });
+    }
+    
 }

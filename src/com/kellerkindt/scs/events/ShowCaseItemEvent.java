@@ -27,45 +27,45 @@ import com.kellerkindt.scs.shops.Shop;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public abstract class ShowCaseItemEvent extends ShowCaseShopEvent {
-	
-	private int			amount			= 0;
-	private int			amountBefore	= 0;
-	private ItemStack	stack			= null;
-	
-	public ShowCaseItemEvent (Player player, Shop shop, int amount, ItemStack stack) {
-		super (player, shop);
-		
-		this.amount			= amount;
-		this.amountBefore	= shop.getAmount();
-		this.stack			= stack;
-	}
-	
-	/**
-	 * @return The ItemStack to change the amount of
-	 */
-	public ItemStack getItemStack () {
-		return stack;
-	}
-	
-	/**
-	 * @return The amount of the shop at the creation of this event
-	 */
-	public int getAmountBefore () {
-		return amountBefore;
-	}
-	
-	/**
-	 * @return The amount to add
-	 */
-	public int getAmount () {
-		return amount;
-	}
-	
-	/**
-	 * @param amount The amount to add
-	 */
-	public void setAmount (int amount) {
-		this.amount	= amount;
-	}
+    
+    private int            amount            = 0;
+    private int            amountBefore    = 0;
+    private ItemStack    stack            = null;
+    
+    public ShowCaseItemEvent (Player player, Shop shop, int amount, ItemStack stack) {
+        super (player, shop);
+        
+        this.amount            = amount;
+        this.amountBefore    = shop.getAmount();
+        this.stack            = stack;
+    }
+    
+    /**
+     * @return The ItemStack to change the amount of
+     */
+    public ItemStack getItemStack () {
+        return stack;
+    }
+    
+    /**
+     * @return The amount of the shop at the creation of this event
+     */
+    public int getAmountBefore () {
+        return amountBefore;
+    }
+    
+    /**
+     * @return The amount to add
+     */
+    public int getAmount () {
+        return amount;
+    }
+    
+    /**
+     * @param amount The amount to add
+     */
+    public void setAmount (int amount) {
+        this.amount    = amount;
+    }
 
 }

@@ -56,48 +56,48 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityExplode(EntityExplodeEvent event) {
-    	if(event.isCancelled()) {
-    		return;
-    	}
-    	
-    	// save the ShowCase?
-    	if (scs.getConfiguration().isCancelingExplosions()) {
-    	
-    		Iterator<Block> blocks 	= event.blockList().iterator();
-    		Block			block	= null;
-    		
-    		while (blocks.hasNext()) {
-    			
-    			// next block
-    			block = blocks.next();
-    			
-    			// is shop block?s
-    			if (scs.getShopHandler().isShopBlock(block)) {
-    				// remove
-    				blocks.remove();
-    			}
-    		}
-    	
-    	
-    	// delete the ShowCase
-    	} else {
-    		
-    		// iterate through
-    		for (Block block : event.blockList()) {
-    			
-    			// get the shop
-    			Shop shop = scs.getShopHandler().getShop(block);
-    			
-    			// is valid?
-    			if (shop != null) {
-    				// delete
-    				scs.getShopHandler().removeShop(shop);
-    				
-    				// message to the owner
-    				scs.sendMessageToOwner(shop, Term.MESSAGE_EXPLODED.get(shop.getItemStack().getItemMeta().getDisplayName()));
-    			}
-    		}
-    		
-    	}
+        if(event.isCancelled()) {
+            return;
+        }
+        
+        // save the ShowCase?
+        if (scs.getConfiguration().isCancelingExplosions()) {
+        
+            Iterator<Block> blocks     = event.blockList().iterator();
+            Block            block    = null;
+            
+            while (blocks.hasNext()) {
+                
+                // next block
+                block = blocks.next();
+                
+                // is shop block?s
+                if (scs.getShopHandler().isShopBlock(block)) {
+                    // remove
+                    blocks.remove();
+                }
+            }
+        
+        
+        // delete the ShowCase
+        } else {
+            
+            // iterate through
+            for (Block block : event.blockList()) {
+                
+                // get the shop
+                Shop shop = scs.getShopHandler().getShop(block);
+                
+                // is valid?
+                if (shop != null) {
+                    // delete
+                    scs.getShopHandler().removeShop(shop);
+                    
+                    // message to the owner
+                    scs.sendMessageToOwner(shop, Term.MESSAGE_EXPLODED.get(shop.getItemStack().getItemMeta().getDisplayName()));
+                }
+            }
+            
+        }
     }
 }

@@ -36,88 +36,88 @@ import com.kellerkindt.scs.shops.Shop;
  * @author michael <michael at kellerkindt.com>
  */
 public abstract class Create extends SimpleCommand {
-	
-	public static final String			ARGUMENT_UNLIMITED	= "unlimited";
-	public static final String			MATERIAL_CURRENT 	= "this";
-	public static final List<String> 	TAB_MATERIAL_LIST;
-	
-	static {
-		TAB_MATERIAL_LIST	= new ArrayList<String>();
-		TAB_MATERIAL_LIST.add(MATERIAL_CURRENT);
-		
-		for (Material material : Material.values()) {
-			TAB_MATERIAL_LIST.add(material.name());
-		}
-	}
-	
+    
+    public static final String            ARGUMENT_UNLIMITED    = "unlimited";
+    public static final String            MATERIAL_CURRENT     = "this";
+    public static final List<String>     TAB_MATERIAL_LIST;
+    
+    static {
+        TAB_MATERIAL_LIST    = new ArrayList<String>();
+        TAB_MATERIAL_LIST.add(MATERIAL_CURRENT);
+        
+        for (Material material : Material.values()) {
+            TAB_MATERIAL_LIST.add(material.name());
+        }
+    }
+    
 
-	public Create(ShowCaseStandalone scs, String ... permissions) {
-		this(scs, permissions, 3);
-	}
-	
-	public Create(ShowCaseStandalone scs, String[] permissions, int minArgs) {
-		super(scs, permissions, true, minArgs);
-	}
-	
-	/**
-	 * @param size Argument size to check
-	 * @return Whether to add the material list to the auto completions for the given argument size
-	 */
-	protected boolean tabCompleteForArgumentSize (int size) {
-		return size == 1;
-	}
-	
-	/**
-	 * Sets the amount on the shop (parsing the argument
-	 * as Integer, or setting the shop to unlimited)
-	 * 
-	 * @param arg	Argument to parse
-	 * @param shop	{@link Shop} to set the amount for
-	 */
-	protected void setAmount(Shop shop, String arg) {
-		if (ARGUMENT_UNLIMITED.equalsIgnoreCase(arg)) {
-			shop.setUnlimited(true);
-		} else {
-			int amount = Integer.parseInt(arg);
-			
-			if (shop instanceof BuyShop) {
-				((BuyShop) shop).setMaxAmount(amount);
-				
-			} else {
-				shop.setAmount(Integer.parseInt(arg));
-			}
-		}
-	}
-	
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		
-		List<String> list = null;
-		
-		// first argument is the material type
-		if (tabCompleteForArgumentSize(args.length)) {
-			list = new ArrayList<String>();
-			
-			for (String name : TAB_MATERIAL_LIST) {
-				if (name.toLowerCase().startsWith(args[args.length-1].toLowerCase())) {
-					list.add(name);
-				}
-			}
-		}
-		
-		return list;
-	}
-	
-	
-	public void registerShopToCreate (final Player player, final Shop shop) {
-		registerLocationSelector(player, new LocationSelector() {
-			
-			@Override
-			public void onLocationSelected(Location location) {
-				// update the location and perform the event
-				shop.setLocation(location);
-				scs.callShowCaseEvent(new ShowCaseCreateEvent(player, shop), player);
-			}
-		});
-	}
+    public Create(ShowCaseStandalone scs, String ... permissions) {
+        this(scs, permissions, 3);
+    }
+    
+    public Create(ShowCaseStandalone scs, String[] permissions, int minArgs) {
+        super(scs, permissions, true, minArgs);
+    }
+    
+    /**
+     * @param size Argument size to check
+     * @return Whether to add the material list to the auto completions for the given argument size
+     */
+    protected boolean tabCompleteForArgumentSize (int size) {
+        return size == 1;
+    }
+    
+    /**
+     * Sets the amount on the shop (parsing the argument
+     * as Integer, or setting the shop to unlimited)
+     * 
+     * @param arg    Argument to parse
+     * @param shop    {@link Shop} to set the amount for
+     */
+    protected void setAmount(Shop shop, String arg) {
+        if (ARGUMENT_UNLIMITED.equalsIgnoreCase(arg)) {
+            shop.setUnlimited(true);
+        } else {
+            int amount = Integer.parseInt(arg);
+            
+            if (shop instanceof BuyShop) {
+                ((BuyShop) shop).setMaxAmount(amount);
+                
+            } else {
+                shop.setAmount(Integer.parseInt(arg));
+            }
+        }
+    }
+    
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        
+        List<String> list = null;
+        
+        // first argument is the material type
+        if (tabCompleteForArgumentSize(args.length)) {
+            list = new ArrayList<String>();
+            
+            for (String name : TAB_MATERIAL_LIST) {
+                if (name.toLowerCase().startsWith(args[args.length-1].toLowerCase())) {
+                    list.add(name);
+                }
+            }
+        }
+        
+        return list;
+    }
+    
+    
+    public void registerShopToCreate (final Player player, final Shop shop) {
+        registerLocationSelector(player, new LocationSelector() {
+            
+            @Override
+            public void onLocationSelected(Location location) {
+                // update the location and perform the event
+                shop.setLocation(location);
+                scs.callShowCaseEvent(new ShowCaseCreateEvent(player, shop), player);
+            }
+        });
+    }
 }

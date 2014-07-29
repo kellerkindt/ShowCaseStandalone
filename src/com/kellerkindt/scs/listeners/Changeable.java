@@ -23,18 +23,18 @@ package com.kellerkindt.scs.listeners;
  */
 public interface Changeable {
 
-	/**
-	 * Resets whether this has changed
-	 */
-	public void resetHasChanged ();
-	
-	/**
-	 * @return The current hash-code
-	 */
-	public int hashCode ();
-	
-	/**
-	 * @return Whether this has changed since the last {@link #hasChanged()}
-	 */
-	public boolean hasChanged ();
+    /**
+     * Resets whether this has changed
+     */
+    public void resetHasChanged ();
+    
+    /**
+     * @return The current hash-code
+     */
+    public int hashCode ();
+    
+    /**
+     * @return Whether this has changed since the last {@link #hasChanged()}
+     */
+    public boolean hasChanged ();
 }

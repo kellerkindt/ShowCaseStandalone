@@ -31,79 +31,79 @@ import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class TownyListener implements Listener {
-	
-	private ShowCaseStandalone	scs;
-	
-	public TownyListener (ShowCaseStandalone scs) {
-		this.scs = scs;
-	}
+    
+    private ShowCaseStandalone    scs;
+    
+    public TownyListener (ShowCaseStandalone scs) {
+        this.scs = scs;
+    }
 
-	@EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
-	public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
-		
-		Location			location	= event.getShop().getLocation();
-		Player				player		= event.getPlayer();
-		
-		// http://code.google.com/a/eclipselabs.org/p/towny/issues/detail?id=1400
-		if (!TownyUniverse.getTownBlock(location).hasTown()) {
-			return;
-		}
+    @EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
+    public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
+        
+        Location            location    = event.getShop().getLocation();
+        Player                player        = event.getPlayer();
+        
+        // http://code.google.com/a/eclipselabs.org/p/towny/issues/detail?id=1400
+        if (!TownyUniverse.getTownBlock(location).hasTown()) {
+            return;
+        }
 
-		if (!scs.getConfiguration().isTownyAllowingInWilderness())
-			if (isWilderness(location))
-				event.setCancelled(true);
-		
-		try {
-			if (scs.getConfiguration().isTownyNeedingToBeOwner())
-				if (!isPlotOwner(player, location))
-					event.setCancelled(true);
-			
-		} catch (NotRegisteredException nre) {}
-		
-		try {
-			if (scs.getConfiguration().isTownyNeedingResident())
-				if (!hasResident(player, location))
-					event.setCancelled(true);
-			
-		} catch (NotRegisteredException nre) {}
-		
-	}
-	
-	
-	/**
-	 * @param location
-	 * @return true if the given location is wilderness
-	 */
-	public boolean isWilderness (Location location) {
-		return TownyUniverse.isWilderness(location.getBlock());
-	}
-	
-	/**
-	 * @param player
-	 * @param location
-	 * @return true if the given player is owner in the given plot
-	 * @throws NotRegisteredException 
-	 */
-	public boolean isPlotOwner (Player player, Location location) throws NotRegisteredException {
-		TownBlockOwner	owner	= TownyUniverse.getDataSource().getResident(player.getName());
-		return TownyUniverse.getTownBlock(location).isOwner(owner);
-	}
-	
-	/**
-	 * @param player
-	 * @param location
-	 * @return	true if the given player has a resident in the town 
-	 * @throws NotRegisteredException 
-	 */
-	public boolean hasResident (Player player, Location location) throws NotRegisteredException {
-		return TownyUniverse.getTownBlock(location).getTown().hasResident(player.getName());
-	}
-	
-	/**
-	 * @param location
-	 * @return	true if the given block is in a shop plot
-	 */
-	public boolean isInsideShopPlot (Location location) {
-		return TownyUniverse.getTownBlock(location).getType() == TownBlockType.COMMERCIAL;
-	}
+        if (!scs.getConfiguration().isTownyAllowingInWilderness())
+            if (isWilderness(location))
+                event.setCancelled(true);
+        
+        try {
+            if (scs.getConfiguration().isTownyNeedingToBeOwner())
+                if (!isPlotOwner(player, location))
+                    event.setCancelled(true);
+            
+        } catch (NotRegisteredException nre) {}
+        
+        try {
+            if (scs.getConfiguration().isTownyNeedingResident())
+                if (!hasResident(player, location))
+                    event.setCancelled(true);
+            
+        } catch (NotRegisteredException nre) {}
+        
+    }
+    
+    
+    /**
+     * @param location
+     * @return true if the given location is wilderness
+     */
+    public boolean isWilderness (Location location) {
+        return TownyUniverse.isWilderness(location.getBlock());
+    }
+    
+    /**
+     * @param player
+     * @param location
+     * @return true if the given player is owner in the given plot
+     * @throws NotRegisteredException 
+     */
+    public boolean isPlotOwner (Player player, Location location) throws NotRegisteredException {
+        TownBlockOwner    owner    = TownyUniverse.getDataSource().getResident(player.getName());
+        return TownyUniverse.getTownBlock(location).isOwner(owner);
+    }
+    
+    /**
+     * @param player
+     * @param location
+     * @return    true if the given player has a resident in the town 
+     * @throws NotRegisteredException 
+     */
+    public boolean hasResident (Player player, Location location) throws NotRegisteredException {
+        return TownyUniverse.getTownBlock(location).getTown().hasResident(player.getName());
+    }
+    
+    /**
+     * @param location
+     * @return    true if the given block is in a shop plot
+     */
+    public boolean isInsideShopPlot (Location location) {
+        return TownyUniverse.getTownBlock(location).getType() == TownBlockType.COMMERCIAL;
+    }
 }

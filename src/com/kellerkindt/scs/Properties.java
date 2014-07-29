@@ -22,78 +22,82 @@ package com.kellerkindt.scs;
 
 
 public class Properties {
-	public enum EconomySystem {
-		AUTO				(new String[]{"com.iConomy.iConomy", "com.iCo6.iConomy", "com.iCo8.iConomy", "com.earth2me.essentials.Essentials", "cosine.boseconomy.BOSEconomy", "net.milkbowl.vault.Vault"}),
-		iConomy				(new String[]{"com.iConomy.iConomy", "com.iCo6.iConomy", "com.iCo8.iConomy"}),
-		EssentialsEconomy	(new String[]{"com.earth2me.essentials.Essentials"}),
-		BOSEconomy			(new String[]{"cosine.boseconomy.BOSEconomy"}),
-		Vault				(new String[]{"net.milkbowl.vault.Vault"}),
-		;
-		public final String classNames[];
-		private EconomySystem (String classNames[]) {
-			this.classNames	= classNames;
-		}
-		
-		/**
-		 * @param name Name of the {@link EconomySystem} to get
-		 * @return The {@link EconomySystem} for the given name or null
-		 */
-		public static EconomySystem getForName (String name) {
-			for (EconomySystem system : values()) {
-				if (system.toString().equalsIgnoreCase(name)) {
-					return system;
-				}
-			}
-			
-			return null;
-		}
-	}
-	
+    public enum EconomySystem {
+        AUTO                (new String[]{"com.iConomy.iConomy", "com.iCo6.iConomy", "com.iCo8.iConomy", "com.earth2me.essentials.Essentials", "cosine.boseconomy.BOSEconomy", "net.milkbowl.vault.Vault"}),
+        iConomy             (new String[]{"com.iConomy.iConomy", "com.iCo6.iConomy", "com.iCo8.iConomy"}),
+        EssentialsEconomy   (new String[]{"com.earth2me.essentials.Essentials"}),
+        BOSEconomy          (new String[]{"cosine.boseconomy.BOSEconomy"}),
+        Vault               (new String[]{"net.milkbowl.vault.Vault"}),
+        ;
+        public final String classNames[];
+        private EconomySystem (String classNames[]) {
+            this.classNames    = classNames;
+        }
+        
+        /**
+         * @param name Name of the {@link EconomySystem} to get
+         * @return The {@link EconomySystem} for the given name or null
+         */
+        public static EconomySystem getForName (String name) {
+            for (EconomySystem system : values()) {
+                if (system.toString().equalsIgnoreCase(name)) {
+                    return system;
+                }
+            }
+            
+            return null;
+        }
+    }
+    
 
-	public static final String URL_BUKKIT 			= "http://dev.bukkit.org/server-mods/scs";
-	
-	public static final String 	BUILD_AUTHOR		= "kellerkindt";			// Author of the plugin
-	public static final String  BUILD_CONTRIBUTOR	= "sorklin, Ryzko";			// every very helpful person
-	public static final boolean BUILD_ISDEV			= true;
+    public static final String  URL_BUKKIT              = "http://dev.bukkit.org/server-mods/scs";
+    
+    public static final String  BUILD_AUTHOR            = "kellerkindt";            // Author of the plugin
+    public static final String  BUILD_CONTRIBUTOR       = "sorklin, Ryzko";            // every very helpful person
+    public static final boolean BUILD_ISDEV             = true;
 
         
-    //Don't forget to update this number if any text changes in the locale files.
-    public static final double  VERSION_LOCALE		= 2.9;
-    public static final int		VERSION_STORAGE		= 7;
-    public static final int		VERSION_SHOP		= 1;
+    // don't forget to update these versions on locale, storage or shop changes
+    public static final double  VERSION_LOCALE          = 2.9;
+    public static final int     VERSION_STORAGE         = 7;
+    public static final int     VERSION_SHOP            = 1;
       
-//
-//	/*
-//	 * For SimpleShopHandler (Thread which checks if the items are dead)
-//	 * Note: i'm slowing this down as much as possible, to conserve server CPU.  60 is default
-//         * but is configurable in the config.yml
-//	 */
-//	public static long   intervall = 60;
-//	
-//	
-	// shop values
-	public static final boolean	DEFAULT_STACK_TO_MAX	= false;
-	public static final int		DEFAULT_STACK_AMOUNT	= 0;					// 0 makes it not pickupable!! o.O
-	public static final int		DEFAULT_PICKUP_DELAY	= Integer.MAX_VALUE;	// less pickup events
-	
-	// TODO
-	public static final String  	dataEncoding	= "UTF-8";
-	
-	public static final String		commentSign			= "comment";
-	public static final String  	seperator			= ";";
-	public static final String[]	defaultLocaleFiles 	= {"locale_EN.yml", "locale_DE.yml"};
+    
+    // default values
+    public static final boolean DEFAULT_STACK_TO_MAX    = false;
+    public static final int     DEFAULT_STACK_AMOUNT    = 0;                    // 0 makes it not pickupable!! o.O
+    public static final int     DEFAULT_PICKUP_DELAY    = Integer.MAX_VALUE;    // less pickup events
+    public static final String[]DEFAULT_LOCALES         = {"locale_EN.yml", "locale_DE.yml"};
+    
+    public static final String  PATH_STORAGE                        = "yaml-storage";
+    public static final String  PATH_SESSIONS                       = "sessions.yml";
+    public static final String  PATH_PRICERANGE                     = "pricerange.yml";
         
-        //Permissions.  I made these more granular, in case people want to limit users to certain types.
-	// TODO rename
-	public static final String 		PERMISSION_USE 					= "scs.use";
-	public static final String		PERMISSION_CREATE_BUY 				= "scs.create.buy";
-	public static final String 		PERMISSION_CREATE_SELL 				= "scs.create.sell";
-	public static final String 		PERMISSION_CREATE_DISPLAY 			= "scs.create.display";
-	public static final String		permCreateDisplayNoItem		= "scs.create.display.reqnoitem";
-	public static final String 		PERMISSION_CREATE_EXCHANGE 			= "scs.create.exchange";
-	public static final String 		permCreateUnlimited 		= "scs.create.unlimited";
-	public static final String 		PERMISSION_REMOVE 					= "scs.remove";
-	public static final String 		PERMISSION_ADMIN 					= "scs.admin";
-	public static final String 		PERMISSION_MANAGE 					= "scs.manage";
-	public static final String 		PERMISSION_REPAIR					= "scs.repair";
+    
+    // permissions
+    public static final String  PERMISSION_USE                      = "scs.use";
+    public static final String  PERMISSION_CREATE_BUY               = "scs.create.buy";
+    public static final String  PERMISSION_CREATE_SELL              = "scs.create.sell";
+    public static final String  PERMISSION_CREATE_DISPLAY           = "scs.create.display";
+    public static final String  PERMISSION_CREATE_DISPLAY_NOITEM    = "scs.create.display.reqnoitem";
+    public static final String  PERMISSION_CREATE_EXCHANGE          = "scs.create.exchange";
+    public static final String  PERMISSION_CREATE_UNLIMITED         = "scs.create.unlimited";
+    public static final String  PERMISSION_REMOVE                   = "scs.remove";
+    public static final String  PERMISSION_ADMIN                    = "scs.admin";
+    public static final String  PERMISSION_MANAGE                   = "scs.manage";
+    public static final String  PERMISSION_REPAIR                   = "scs.repair";
+    
+    // serialization
+    public static final String ALIAS_SHOP_BUY                       = "scs.buy";
+    public static final String ALIAS_SHOP_SELL                      = "scs.sell";
+    public static final String ALIAS_SHOP_DISPLAY                   = "scs.display";
+    public static final String ALIAS_SHOP_EXCHANGE                  = "scs.exchange";
+    public static final String ALIAS_PLAYERSESSION                  = "scs.playersession";
+    public static final String ALIAS_PRICERANGE                     = "scs.pricerange";
+    public static final String ALIAS_TRANSACTION                    = "scs.transaction";
+    public static final String ALIAS_TRANSACTION_SHOPTYPE           = "scs.transaction.shoptype";
+    
+    // name of the key added to a player to mark it for a location-selection
+    public static final String METADATA_PLAYER_LOCATIONSELECTOR     = "scs.locationselector";
+    
 }

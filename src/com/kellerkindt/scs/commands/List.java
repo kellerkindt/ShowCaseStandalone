@@ -30,64 +30,64 @@ import com.kellerkindt.scs.utilities.Term;
  * @author michael <michael at kellerkindt.com>
  */
 public class List extends SimpleCommand {
-	
-	public static final String SEPERATOR	= ",";
+    
+    public static final String SEPERATOR    = ",";
 
-	public List(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, false, 1);
-	}
+    public List(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, false, 1);
+    }
 
-	@Override
-	public java.util.List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public java.util.List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		String 					player		= args[0];
-		int						ownerOf		= 0;
-		int						memberOf	= 0;
-		java.util.List<String>	worlds		= new ArrayList<String>();
-		StringBuilder			sWorlds		= new StringBuilder();
-		
-		for (Shop p : scs.getShopHandler()) {
-			boolean addWorld	= false;
-			
-			// check for owner
-			if (p.isOwner(scs.getPlayerUUID(player))) {
-				ownerOf++;
-				addWorld	= true;
-			}
-			
-			// check for member
-			else if (p.isMember(scs.getPlayerUUID(player))) {
-				memberOf++;
-				addWorld	= true;
-			}
-			
-			// get world name
-			String	world	= p.getLocation().getWorld().getName();
-			
-			// add world name
-			if (addWorld && !worlds.contains(world)) {
-				worlds.add(world);
-			}
-		}
-		
-		
-		boolean seperator = false;
-		for (String s : worlds) {
-			if (seperator)
-				sWorlds.append(SEPERATOR);
-			
-			sWorlds.append(s);
-			
-			seperator = true;
-		}
-		
-		scs.sendMessage(sender, Term.MESSAGE_LIST.get(player, ""+ownerOf, ""+memberOf, sWorlds.toString()));
-	}
-	
-	
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        String                     player        = args[0];
+        int                        ownerOf        = 0;
+        int                        memberOf    = 0;
+        java.util.List<String>    worlds        = new ArrayList<String>();
+        StringBuilder            sWorlds        = new StringBuilder();
+        
+        for (Shop p : scs.getShopHandler()) {
+            boolean addWorld    = false;
+            
+            // check for owner
+            if (p.isOwner(scs.getPlayerUUID(player))) {
+                ownerOf++;
+                addWorld    = true;
+            }
+            
+            // check for member
+            else if (p.isMember(scs.getPlayerUUID(player))) {
+                memberOf++;
+                addWorld    = true;
+            }
+            
+            // get world name
+            String    world    = p.getLocation().getWorld().getName();
+            
+            // add world name
+            if (addWorld && !worlds.contains(world)) {
+                worlds.add(world);
+            }
+        }
+        
+        
+        boolean seperator = false;
+        for (String s : worlds) {
+            if (seperator)
+                sWorlds.append(SEPERATOR);
+            
+            sWorlds.append(s);
+            
+            seperator = true;
+        }
+        
+        scs.sendMessage(sender, Term.MESSAGE_LIST.get(player, ""+ownerOf, ""+memberOf, sWorlds.toString()));
+    }
+    
+    
 }

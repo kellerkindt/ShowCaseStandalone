@@ -27,103 +27,103 @@ import org.bukkit.event.HandlerList;
  */
 public abstract class ShowCaseEvent extends Event implements Cancellable {
 
-	// Bukkit-EventSystem
-	private static final HandlerList	handler	= new HandlerList();
+    // Bukkit-EventSystem
+    private static final HandlerList    handler    = new HandlerList();
 
-	// cancelled or not
-	private boolean 	cancelled 		= false;
-	private boolean		verify			= true;
-	private Throwable	cause			= null;
-	private String		msgSuccessfully	= null;
-	
+    // cancelled or not
+    private boolean     cancelled         = false;
+    private boolean        verify            = true;
+    private Throwable    cause            = null;
+    private String        msgSuccessfully    = null;
+    
 
-	/**
-	 * @see org.bukkit.event.Cancellable#isCancelled()
-	 */
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-	
-	/**
-	 * @return Whether this Event has a cause why it was cancelled
-	 */
-	public boolean hasCause () {
-		return getCause() != null;
-	}
-	
-	/**
-	 * @return The cause why this event was cancelled or null
-	 */
-	public Throwable getCause () {
-		return cause;
-	}
+    /**
+     * @see org.bukkit.event.Cancellable#isCancelled()
+     */
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+    
+    /**
+     * @return Whether this Event has a cause why it was cancelled
+     */
+    public boolean hasCause () {
+        return getCause() != null;
+    }
+    
+    /**
+     * @return The cause why this event was cancelled or null
+     */
+    public Throwable getCause () {
+        return cause;
+    }
 
-	/**
-	 * @see org.bukkit.event.Cancellable#setCancelled(boolean)
-	 */
-	@Override
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;
-	}
-	
-	/**
-	 * @param cause Cause to set, why this Event was cancelled
-	 */
-	public void setCause (Throwable cause) {
-		this.cause	= cause;
-	}
-	
-	/**
-	 * Sets whether the event should be verified,
-	 * if set to false, the event will not be cancelled
-	 * if i.e. permissions are missing, it will be executed 
-	 * @param verify Whether the event should be verified
-	 * @return itself
-	 */
-	public ShowCaseEvent setVerify (boolean verify)  {
-		this.verify = verify;
-		return this;
-	}
-	
-	/**
-	 * @return Whether this event should be verified
-	 */
-	public boolean verify () {
-		return verify;
-	}
-	
-	/**
-	 * @param msg Message to display if the event was successfully
-	 */
-	public void setMsgSuccessfully (String msg) {
-		this.msgSuccessfully = msg;
-	}
-	
-	/**
-	 * @return The message to display if the event was successfully
-	 */
-	public String getMsgSuccessfully () {
-		return msgSuccessfully;
-	}
+    /**
+     * @see org.bukkit.event.Cancellable#setCancelled(boolean)
+     */
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+    
+    /**
+     * @param cause Cause to set, why this Event was cancelled
+     */
+    public void setCause (Throwable cause) {
+        this.cause    = cause;
+    }
+    
+    /**
+     * Sets whether the event should be verified,
+     * if set to false, the event will not be cancelled
+     * if i.e. permissions are missing, it will be executed 
+     * @param verify Whether the event should be verified
+     * @return itself
+     */
+    public ShowCaseEvent setVerify (boolean verify)  {
+        this.verify = verify;
+        return this;
+    }
+    
+    /**
+     * @return Whether this event should be verified
+     */
+    public boolean verify () {
+        return verify;
+    }
+    
+    /**
+     * @param msg Message to display if the event was successfully
+     */
+    public void setMsgSuccessfully (String msg) {
+        this.msgSuccessfully = msg;
+    }
+    
+    /**
+     * @return The message to display if the event was successfully
+     */
+    public String getMsgSuccessfully () {
+        return msgSuccessfully;
+    }
 
-	/**
-	 * Bukkit-EventSystem
-	 */
-	public static HandlerList getHandlerList() {
-		return handler;
-	}
+    /**
+     * Bukkit-EventSystem
+     */
+    public static HandlerList getHandlerList() {
+        return handler;
+    }
 
-	/**
-	 * @see org.bukkit.event.Event#getHandlers()
-	 */
-	@Override
-	public HandlerList getHandlers() {
-		return handler;
-	}
+    /**
+     * @see org.bukkit.event.Event#getHandlers()
+     */
+    @Override
+    public HandlerList getHandlers() {
+        return handler;
+    }
 
-	@Override
-	public String getEventName() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String getEventName() {
+        return getClass().getSimpleName();
+    }
 }

@@ -29,24 +29,24 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseInteractEvent extends ShowCaseShopEvent {
 
-	private boolean	rightClicked	= true;
-	
-	public ShowCaseInteractEvent (Player player, Shop shop, boolean rightClicked) {
-		super(player, shop);
-	}
-	
-	/**
-	 * @return Whether the event was caused by a right click
-	 */
-	public boolean hasRightClicked () {
-		return rightClicked;
-	}
-	
-	/**
-	 * @return Whether the given 
-	 */
-	public boolean hasLeftClicked () {
-		return !hasRightClicked();
-	}
-	
+    private boolean    rightClicked    = true;
+    
+    public ShowCaseInteractEvent (Player player, Shop shop, boolean rightClicked) {
+        super(player, shop);
+    }
+    
+    /**
+     * @return Whether the event was caused by a right click
+     */
+    public boolean hasRightClicked () {
+        return rightClicked;
+    }
+    
+    /**
+     * @return Whether the given 
+     */
+    public boolean hasLeftClicked () {
+        return !hasRightClicked();
+    }
+    
 }

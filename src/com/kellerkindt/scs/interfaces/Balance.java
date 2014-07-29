@@ -24,15 +24,15 @@ import org.bukkit.entity.Player;
 
 
 public interface Balance {
-	
-	//public Balance (ShowCaseStandalone scs) {}
-	public String  getClassName ();
-	public boolean hasEnough (Player p, double amount);
-	public boolean hasEnough (UUID  id, double amount);
-	public boolean isEnabled ();
-	public void add (Player p, double amount);
-	public void add (UUID  id, double amount);
-	public void sub (Player p, double amount);
-	public void sub (UUID  id, double amount);
+    
+    //public Balance (ShowCaseStandalone scs) {}
+    public String  getClassName ();
+    public boolean hasEnough (Player p, double amount);
+    public boolean hasEnough (UUID  id, double amount);
+    public boolean isEnabled ();
+    public void add (Player p, double amount);
+    public void add (UUID  id, double amount);
+    public void sub (Player p, double amount);
+    public void sub (UUID  id, double amount);
         public String format(double amount);
 }

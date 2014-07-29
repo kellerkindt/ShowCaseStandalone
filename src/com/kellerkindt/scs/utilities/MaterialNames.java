@@ -11,21 +11,21 @@ import org.bukkit.inventory.meta.ItemMeta;
  * updated by kellerkindt 2013-02-12
  */
 public class MaterialNames {
-	
-	
+    
+    
     public static String getItemName(ItemStack stack){
-    	int 	id		= stack.getTypeId();
-    	short	meta	= stack.getDurability();
-    	
+        int     id        = stack.getTypeId();
+        short    meta    = stack.getDurability();
+        
         switch(id) {
             default:
-            	ItemMeta itemMeta = stack.getItemMeta();
-            	
-            	if (itemMeta.getDisplayName() != null) {
-            		return itemMeta.getDisplayName();
-            	} else {
-            		return stack.getType().toString()+" ["+ id + ":" + meta+"]";
-            	}
+                ItemMeta itemMeta = stack.getItemMeta();
+                
+                if (itemMeta.getDisplayName() != null) {
+                    return itemMeta.getDisplayName();
+                } else {
+                    return stack.getType().toString()+" ["+ id + ":" + meta+"]";
+                }
             case 0: return "Air";
             case 1: return "Stone";
             case 2: return "Grass";

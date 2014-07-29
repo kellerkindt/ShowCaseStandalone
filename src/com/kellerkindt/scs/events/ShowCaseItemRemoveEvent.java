@@ -28,7 +28,7 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseItemRemoveEvent extends ShowCaseItemEvent {
 
-	public ShowCaseItemRemoveEvent (Player player, Shop shop, int amount, ItemStack stack) {
-		super(player, shop, amount, stack);
-	}
+    public ShowCaseItemRemoveEvent (Player player, Shop shop, int amount, ItemStack stack) {
+        super(player, shop, amount, stack);
+    }
 }

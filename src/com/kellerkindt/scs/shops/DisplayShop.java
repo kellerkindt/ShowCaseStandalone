@@ -26,40 +26,40 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
-import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.Properties;
 
 /**
  * @author Kellerkindt
  * This class represents the display showcase
  */
-@SerializableAs(ShowCaseStandalone.ALIAS_SHOP_DISPLAY)
+@SerializableAs(Properties.ALIAS_SHOP_DISPLAY)
 public class DisplayShop extends Shop {
-	
-	private DisplayShop () {
-		super();
-	}	
-	
-	public DisplayShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
-		super(uuid, owner, location, itemStack);
-	}
-	
-	/**
-	 * @see com.kellerkindt.scs.shops.Shop#isActive()
-	 */
-	@Override
-	public boolean isActive() {
-		return true;
-	}
-	
-	/**
-	 * @see ConfigurationSerializable
-	 */
-	public static DisplayShop deserialize (Map<String, Object> map) {
-		DisplayShop shop = new DisplayShop();
-		
-		// just deserialize the common values
-		shop.deserialize(map, Bukkit.getServer());
-		
-		return shop;
-	}
+    
+    private DisplayShop () {
+        super();
+    }    
+    
+    public DisplayShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
+        super(uuid, owner, location, itemStack);
+    }
+    
+    /**
+     * @see com.kellerkindt.scs.shops.Shop#isActive()
+     */
+    @Override
+    public boolean isActive() {
+        return true;
+    }
+    
+    /**
+     * @see ConfigurationSerializable
+     */
+    public static DisplayShop deserialize (Map<String, Object> map) {
+        DisplayShop shop = new DisplayShop();
+        
+        // just deserialize the common values
+        shop.deserialize(map, Bukkit.getServer());
+        
+        return shop;
+    }
 }

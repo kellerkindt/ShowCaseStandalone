@@ -32,32 +32,32 @@ import com.kellerkindt.scs.utilities.Utilities;
  * @author michael <michael at kellerkindt.com>
  */
 public class Buy extends Create {
-	
-	
+    
+    
 
-	public Buy (ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions);
-	}
+    public Buy (ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions);
+    }
 
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		// prepare
-		Player		player		= (Player)sender;
-		Shop		shop		= new BuyShop(
-				UUID.randomUUID(),
-				player.getUniqueId(), 
-				null,
-				null
-				);
-		
-		// parse the arguments
-		shop.setItemStack	(Utilities	.getItemStack	(player, 	args[0]));
-		setAmount			(shop, 									args[1]);
-		shop.setPrice		(Double		.parseDouble	(			args[2]));
-		
-		// register the shop, so its location will be set
-		registerShopToCreate(player, shop);
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        // prepare
+        Player        player        = (Player)sender;
+        Shop        shop        = new BuyShop(
+                UUID.randomUUID(),
+                player.getUniqueId(), 
+                null,
+                null
+                );
+        
+        // parse the arguments
+        shop.setItemStack    (Utilities    .getItemStack    (player,     args[0]));
+        setAmount            (shop,                                     args[1]);
+        shop.setPrice        (Double        .parseDouble    (            args[2]));
+        
+        // register the shop, so its location will be set
+        registerShopToCreate(player, shop);
+    }
 }

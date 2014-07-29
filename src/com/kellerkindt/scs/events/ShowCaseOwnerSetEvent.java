@@ -27,27 +27,27 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseOwnerSetEvent extends ShowCaseShopEvent {
 
-	private String 	newOwner;
-	
-	
-	public ShowCaseOwnerSetEvent (Player player, Shop shop, String newOwnerName) {
-		super(player, shop);
-		
-		this.newOwner	= newOwnerName;
-	}
-	
-	
-	/**
-	 * @return The name of the new owner to set
-	 */
-	public String getNewOwnerName () {
-		return newOwner;
-	}
-	
-	/**
-	 * @param owner The new owner to set
-	 */
-	public void setNewOwner (String name) {
-		this.newOwner	= name;
-	}
+    private String     newOwner;
+    
+    
+    public ShowCaseOwnerSetEvent (Player player, Shop shop, String newOwnerName) {
+        super(player, shop);
+        
+        this.newOwner    = newOwnerName;
+    }
+    
+    
+    /**
+     * @return The name of the new owner to set
+     */
+    public String getNewOwnerName () {
+        return newOwner;
+    }
+    
+    /**
+     * @param owner The new owner to set
+     */
+    public void setNewOwner (String name) {
+        this.newOwner    = name;
+    }
 }

@@ -18,7 +18,6 @@
 package com.kellerkindt.scs.commands;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 
@@ -29,23 +28,23 @@ import com.kellerkindt.scs.ShowCaseStandalone;
  * @author michael <michael at kellerkindt.com>
  */
 public class Last extends SimpleCommand {
-	
-	public Last (ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions);
-	}
+    
+    public Last (ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do (yet)
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do (yet)
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		// TODO show last transactions
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        // TODO show last transactions
 
-        scs.log(Level.INFO, "Somone performed '/scs undo' which isn't implemented yet", false);
+        scs.getLogger().info("Somone performed '/scs undo' which isn't implemented yet");
         scs.sendMessage(sender, "Not implemented yet");
-	}
+    }
 
 }

@@ -28,9 +28,9 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseInfoEvent extends ShowCaseShopEvent {
 
-	
-	public ShowCaseInfoEvent (Player player, Shop shop) {
-		super(player, shop);
-	}
-	
+    
+    public ShowCaseInfoEvent (Player player, Shop shop) {
+        super(player, shop);
+    }
+    
 }

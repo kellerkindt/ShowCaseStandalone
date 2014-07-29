@@ -18,7 +18,6 @@
 package com.kellerkindt.scs.commands;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 
@@ -29,21 +28,21 @@ import com.kellerkindt.scs.ShowCaseStandalone;
  * @author michael <michael at kellerkindt.com>
  */
 public class Clear extends SimpleCommand {
-	
-	public Clear (ShowCaseStandalone scs, String ...permissions) {
-		super(scs, permissions);
-	}
+    
+    public Clear (ShowCaseStandalone scs, String ...permissions) {
+        super(scs, permissions);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		scs.log(Level.INFO, "Cleared by " + sender.getName(), false);
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        scs.getLogger().info("Cleared by " + sender.getName());
         scs.getShopHandler().hideAll();
-	}
+    }
 
 }

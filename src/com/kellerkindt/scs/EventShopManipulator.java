@@ -28,51 +28,51 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class EventShopManipulator implements ShopManipulator {
 
-	private CommandSender		sender;
-	private ShowCaseEvent 		event;
-	private ShowCaseStandalone	scs;
-	private boolean				requiresValid;
+    private CommandSender        sender;
+    private ShowCaseEvent         event;
+    private ShowCaseStandalone    scs;
+    private boolean                requiresValid;
 
-	
-	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender) {
-		this(scs, sender, null);
-	}
-	
-	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, boolean reqValid) {
-		this(scs, sender, null, reqValid);
-	}
-	
-	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event) {
-		this(scs, sender, event, true);
-	}
-	
-	public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event, boolean reqValid) {
-		this.scs			= scs;
-		this.sender			= sender;
-		this.event			= event;
-		this.requiresValid	= reqValid;
-	}
-	
-	/**
-	 * @param shop	{@link Shop} to manipulate
-	 * @return The {@link ShowCaseEvent} to execute on a manipulate request
-	 */
-	public ShowCaseEvent getEvent (Shop shop) {
-		return event;
-	}
-	
-	@Override
-	public void manipulate(Shop shop) {
-		// get the event to call
-		ShowCaseEvent event = getEvent(shop);
-		
-		// call it
-		scs.callShowCaseEvent(event, sender);
-		
-	}
-	
-	@Override
-	public boolean requiresValidShop() {
-		return requiresValid;
-	}
+    
+    public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender) {
+        this(scs, sender, null);
+    }
+    
+    public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, boolean reqValid) {
+        this(scs, sender, null, reqValid);
+    }
+    
+    public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event) {
+        this(scs, sender, event, true);
+    }
+    
+    public EventShopManipulator (ShowCaseStandalone scs, CommandSender sender, ShowCaseEvent event, boolean reqValid) {
+        this.scs            = scs;
+        this.sender            = sender;
+        this.event            = event;
+        this.requiresValid    = reqValid;
+    }
+    
+    /**
+     * @param shop    {@link Shop} to manipulate
+     * @return The {@link ShowCaseEvent} to execute on a manipulate request
+     */
+    public ShowCaseEvent getEvent (Shop shop) {
+        return event;
+    }
+    
+    @Override
+    public void manipulate(Shop shop) {
+        // get the event to call
+        ShowCaseEvent event = getEvent(shop);
+        
+        // call it
+        scs.callShowCaseEvent(event, sender);
+        
+    }
+    
+    @Override
+    public boolean requiresValidShop() {
+        return requiresValid;
+    }
 }

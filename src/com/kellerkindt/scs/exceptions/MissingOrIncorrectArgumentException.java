@@ -22,17 +22,17 @@ import com.kellerkindt.scs.utilities.Term;
 
 
 public class MissingOrIncorrectArgumentException extends CommandException {
-	private final static long serialVersionUID = 1l;
+    private final static long serialVersionUID = 1l;
 
-	
-	public MissingOrIncorrectArgumentException () {
-		this(Term.ERROR_MISSING_OR_INCORRECT_ARGUMENT.get());
-	}
-	
-	/*
-	 * Setting the message of the Exception to the given message
-	 */
-	public MissingOrIncorrectArgumentException (String message) {
-		super(message);
-	}
+    
+    public MissingOrIncorrectArgumentException () {
+        this(Term.ERROR_MISSING_OR_INCORRECT_ARGUMENT.get());
+    }
+    
+    /*
+     * Setting the message of the Exception to the given message
+     */
+    public MissingOrIncorrectArgumentException (String message) {
+        super(message);
+    }
 }

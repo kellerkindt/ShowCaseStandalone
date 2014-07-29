@@ -33,52 +33,52 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Reload extends SimpleCommand {
 
-	public Reload(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, false);
-	}
+    public Reload(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, false);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		// disable first, then reload, then re-enable.
-        ShopHandler 				sh 		= scs.getShopHandler();
-        StorageHandler<ShopHandler>	storage	= scs.getShopStorageHandler();
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        // disable first, then reload, then re-enable.
+        ShopHandler                 sh         = scs.getShopHandler();
+        StorageHandler<ShopHandler>    storage    = scs.getShopStorageHandler();
         
         try {
-        	
-        	scs.sendMessage(sender, Term.MESSAGE_RELOADING.get("config"));
+            
+            scs.sendMessage(sender, Term.MESSAGE_RELOADING.get("config"));
             scs.reloadConfig();
             scs.loadSCSConfig(scs.getConfig());
             
             scs.sendMessage(sender, Term.MESSAGE_RELOADING.get("SCS"));
             
-            ShowCaseStandalone.slog(Level.INFO, "Reloading SCS (command from " + sender.getName()+")");
-            ShowCaseStandalone.slog(Level.INFO, "Stopping shop update task.");
+            scs.getLogger().info("Reloading SCS (command from " + sender.getName()+")");
+            scs.getLogger().info("Stopping shop update task");
             sh.stop();
             
-            ShowCaseStandalone.slog(Level.INFO, "Removing display items.");
-	    	sh.hideAll();
-	    	
-	    	ShowCaseStandalone.slog(Level.INFO, "Writing changes to disk");
-	    	storage.save(sh);
+            scs.getLogger().info("Removing display items");
+            sh.hideAll();
+            
+            scs.getLogger().info("Writing changes to disk");
+            storage.save(sh);
                 
-            ShowCaseStandalone.slog(Level.INFO, "Reloading shops from storage.");
+            scs.getLogger().info("Reloading shops from storage");
             storage.load(sh);
             
-            ShowCaseStandalone.slog(Level.INFO, "Starting shop update task.");
+            scs.getLogger().info("Starting shop update task");
             sh.start();
             
-            ShowCaseStandalone.slog(Level.INFO, "Showing display items in loaded chunks.");
+            scs.getLogger().info("Showing display items in loaded chunks");
             sh.showAll();
             
-    	} catch (Exception ioe) {
-    		ShowCaseStandalone.slog(Level.WARNING, "Exception on reload: " + ioe.getLocalizedMessage());
-    		scs.sendMessage(sender, Term.ERROR_GENERAL.get("reloading") +ioe.getLocalizedMessage());
-    	}
-	}
+        } catch (Exception ioe) {
+            scs.getLogger().log(Level.SEVERE, "Couldn'T perform reload successfully", ioe);
+            scs.sendMessage(sender, Term.ERROR_GENERAL.get("reloading") +ioe.getLocalizedMessage());
+        }
+    }
 }

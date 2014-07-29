@@ -28,8 +28,8 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseRemoveEvent extends ShowCaseShopEvent {
 
-	public ShowCaseRemoveEvent(Player player, Shop shop) {
-		super(player, shop);
-	}
+    public ShowCaseRemoveEvent(Player player, Shop shop) {
+        super(player, shop);
+    }
 
 }

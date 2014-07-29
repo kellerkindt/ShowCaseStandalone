@@ -35,43 +35,43 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Prune extends SimpleCommand {
 
-	public Prune (ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions);
-	}
+    public Prune (ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		ShopHandler 				sh 			= scs.getShopHandler();
-        StorageHandler<ShopHandler>	storage		= scs.getShopStorageHandler();
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        ShopHandler                 sh             = scs.getShopHandler();
+        StorageHandler<ShopHandler>    storage        = scs.getShopStorageHandler();
         
         try {
                 scs.sendMessage(sender, Term.PRUNE.get());
-                ShowCaseStandalone.slog(Level.INFO, "Backup.");
-                List<Shop>	shops	= new ArrayList<Shop>();
+                scs.getLogger().info("Backup");
+                List<Shop>    shops    = new ArrayList<Shop>();
                 for (Shop p : sh)
-                	shops.add(p);
+                    shops.add(p);
                 
-                scs.log(Level.INFO, "Remove all shops from storage.", false);
+                scs.getLogger().info("Remove all shops from storage.");
                 sh.removeAll();
                 
-                scs.log(Level.INFO, "Add backuped shops.", false);
+                scs.getLogger().info("Add backuped shops.");
                 sh.addAll(shops);
 
-                scs.log(Level.INFO, "Saving all currently loaded shops.", false);
+                scs.getLogger().info("Saving all currently loaded shops.");
                 storage.save(sh);
                 
-    	} catch (Exception ioe) {
-    		scs.log(Level.WARNING, "Exception on prune: " + ioe.getLocalizedMessage(), false);
-    		scs.sendMessage(sender, Term.ERROR_GENERAL.get("pruning") + ioe.getLocalizedMessage());
-    	}
-	}
-	
-	
+        } catch (Exception ioe) {
+            scs.getLogger().log(Level.SEVERE, "Couldn't perform prune successfully", ioe);
+            scs.sendMessage(sender, Term.ERROR_GENERAL.get("pruning") + ioe.getLocalizedMessage());
+        }
+    }
+    
+    
 }

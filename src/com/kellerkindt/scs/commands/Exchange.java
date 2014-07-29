@@ -31,35 +31,35 @@ import com.kellerkindt.scs.utilities.Utilities;
  * @author michael <michael at kellerkindt.com>
  */
 public class Exchange extends Create {
-	
-	public Exchange (ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, 4);
-	}
-	
-	@Override
-	protected boolean tabCompleteForArgumentSize(int size) {
-		return size <= 2;
-	}
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		// prepare
-		Player			player		= (Player)sender;
-		ExchangeShop	shop		= new ExchangeShop(
-				UUID.randomUUID(),
-				player.getUniqueId(), 
-				null,
-				null,
-				null
-				);
-		
-		// parse the arguments
-		shop.setItemStack			(Utilities	.getItemStack	(player, 	args[0]));
-		shop.setExchangeItemStack	(Utilities	.getItemStack	(player, 	args[1]));
-		setAmount					(shop, 									args[2]);
-		shop.setPrice				(Double		.parseDouble	(			args[3]));
-		
-		// register the shop, so its location will be set
-		registerShopToCreate(player, shop);
-	}
+    
+    public Exchange (ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, 4);
+    }
+    
+    @Override
+    protected boolean tabCompleteForArgumentSize(int size) {
+        return size <= 2;
+    }
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        // prepare
+        Player            player        = (Player)sender;
+        ExchangeShop    shop        = new ExchangeShop(
+                UUID.randomUUID(),
+                player.getUniqueId(), 
+                null,
+                null,
+                null
+                );
+        
+        // parse the arguments
+        shop.setItemStack            (Utilities    .getItemStack    (player,     args[0]));
+        shop.setExchangeItemStack    (Utilities    .getItemStack    (player,     args[1]));
+        setAmount                    (shop,                                     args[2]);
+        shop.setPrice                (Double        .parseDouble    (            args[3]));
+        
+        // register the shop, so its location will be set
+        registerShopToCreate(player, shop);
+    }
 
 }

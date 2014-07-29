@@ -26,38 +26,38 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
-import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.Properties;
 
-@SerializableAs(ShowCaseStandalone.ALIAS_SHOP_SELL)
+@SerializableAs(Properties.ALIAS_SHOP_SELL)
 public class SellShop extends Shop {
-	
-	private SellShop () {
-		super();
-	}
-	
-	public SellShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
-		super(uuid, owner, location, itemStack);
-	}
+    
+    private SellShop () {
+        super();
+    }
+    
+    public SellShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
+        super(uuid, owner, location, itemStack);
+    }
 
-	/**
-	 * @see com.kellerkindt.scs.shops.Shop#isActive()
-	 */
-	@Override
-	public boolean isActive() {
-		return isUnlimited() || getAmount() > 0;
-	}
-	
-	
-	/**
-	 * @see ConfigurationSerializable
-	 */
-	public static SellShop deserialize (Map<String, Object> map) {
-		SellShop shop = new SellShop();
-		
-		// just deserialize the common values
-		shop.deserialize(map, Bukkit.getServer());
-		
-		return shop;
-	}
+    /**
+     * @see com.kellerkindt.scs.shops.Shop#isActive()
+     */
+    @Override
+    public boolean isActive() {
+        return isUnlimited() || getAmount() > 0;
+    }
+    
+    
+    /**
+     * @see ConfigurationSerializable
+     */
+    public static SellShop deserialize (Map<String, Object> map) {
+        SellShop shop = new SellShop();
+        
+        // just deserialize the common values
+        shop.deserialize(map, Bukkit.getServer());
+        
+        return shop;
+    }
 
 }

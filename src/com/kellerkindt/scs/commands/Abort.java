@@ -30,23 +30,23 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Abort extends SimpleCommand {
 
-	public Abort(ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, true);
-	}
+    public Abort(ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, true);
+    }
 
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do at all
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do at all
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		// check whether the command sender is a player
-		scs.sendMessage(sender, Term.ABORT.get());
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        // check whether the command sender is a player
+        scs.sendMessage(sender, Term.ABORT.get());
+    }
 
-	
-	
+    
+    
 }

@@ -36,63 +36,63 @@ import com.kellerkindt.scs.utilities.Term;
  * @author michael <michael at kellerkindt.com>
  */
 public class Report extends SimpleCommand {
-	
-	public static final SimpleDateFormat	DATE_FORMATTER		= new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-	public static final String				DATE_SPLITTER		= ":";
-	public static final String				DATE_SPLITTER_FILE	= "-";
-	public static final String				SUFFIX				= "_report.txt";
+    
+    public static final SimpleDateFormat    DATE_FORMATTER        = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    public static final String                DATE_SPLITTER        = ":";
+    public static final String                DATE_SPLITTER_FILE    = "-";
+    public static final String                SUFFIX                = "_report.txt";
 
-	public Report(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, false);
-	}
+    public Report(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, false);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		try {
-			
-			String	date 		= DATE_FORMATTER.format(new Date());
-			String	dateFile	= date.replace(DATE_SPLITTER, DATE_SPLITTER_FILE);	
-			File	file 		= new File(scs.getDataFolder(), dateFile+SUFFIX);
-			
-			FileOutputStream	fos	= new FileOutputStream(file);
-			PrintStream			ps	= new PrintStream(fos);
-			
-			ps.println("---- SCS report, created at     " + date + " ----");
-			ps.println(" - Current SCS version:          "+scs.getDescription().getVersion());
-			ps.println(" - Current storage version:      "+Properties.VERSION_STORAGE);
-			ps.println(" - Current Bukkit version:       "+scs.getServer().getVersion());
-			ps.println(" - Startup:                      "+DATE_FORMATTER.format(ShowCaseStandalone.getStartup()));
-			ps.println(" - Total warnings since startup: "+ShowCaseStandalone.getTotalWarnings());
-			
-			for (Date d : ShowCaseStandalone.getWarnings().keySet())
-				ps.println("   "+DATE_FORMATTER.format(d) + ": "+ShowCaseStandalone.getWarnings().get(d));
-			
-			ps.println(" - Plugin list:");
-			
-			for (Plugin p : scs.getServer().getPluginManager().getPlugins())
-				ps.println("   "+p.getName() + " " + p.getDescription().getVersion());
-			
-			ps.println("---- SCS report, end ----");
-			
-			ps.flush();
-			fos.flush();
-			
-			ps.close();
-			fos.close();
-			
-			scs.sendMessage(sender, "Saved to: "+file.getAbsolutePath());
-		} catch (Exception e) {
-			scs.sendMessage(sender, Term.ERROR.get()+e.getMessage());
-			e.printStackTrace();
-		}
-		
-		
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        try {
+            
+            String    date         = DATE_FORMATTER.format(new Date());
+            String    dateFile    = date.replace(DATE_SPLITTER, DATE_SPLITTER_FILE);    
+            File    file         = new File(scs.getDataFolder(), dateFile+SUFFIX);
+            
+            FileOutputStream    fos    = new FileOutputStream(file);
+            PrintStream            ps    = new PrintStream(fos);
+            
+            ps.println("---- SCS report, created at     " + date + " ----");
+            ps.println(" - Current SCS version:          "+scs.getDescription().getVersion());
+            ps.println(" - Current storage version:      "+Properties.VERSION_STORAGE);
+            ps.println(" - Current Bukkit version:       "+scs.getServer().getVersion());
+            ps.println(" - Startup:                      "+DATE_FORMATTER.format(ShowCaseStandalone.getStartupTime()));
+            ps.println(" - Total warnings since startup: "+ShowCaseStandalone.getTotalWarnings());
+            
+            for (Date d : ShowCaseStandalone.getWarnings().keySet())
+                ps.println("   "+DATE_FORMATTER.format(d) + ": "+ShowCaseStandalone.getWarnings().get(d));
+            
+            ps.println(" - Plugin list:");
+            
+            for (Plugin p : scs.getServer().getPluginManager().getPlugins())
+                ps.println("   "+p.getName() + " " + p.getDescription().getVersion());
+            
+            ps.println("---- SCS report, end ----");
+            
+            ps.flush();
+            fos.flush();
+            
+            ps.close();
+            fos.close();
+            
+            scs.sendMessage(sender, "Saved to: "+file.getAbsolutePath());
+        } catch (Exception e) {
+            scs.sendMessage(sender, Term.ERROR.get()+e.getMessage());
+            e.printStackTrace();
+        }
+        
+        
+    }
 }

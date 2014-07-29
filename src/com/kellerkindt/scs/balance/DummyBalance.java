@@ -25,36 +25,37 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
 
 public class DummyBalance implements Balance {
-	public DummyBalance(ShowCaseStandalone scs) {
-		// super (scs);
-	}
-	@Override
-	public String getClassName() {
-		return this.getClass().getName();
-	}
+    
+    public DummyBalance(ShowCaseStandalone scs) {
+        
+    }
+    @Override
+    public String getClassName() {
+        return this.getClass().getName();
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
-	@Override
-	public String format(double amount) {
-		return String.valueOf(amount);
-	}
-	
-	@Override
-	public boolean hasEnough(Player p, double amount) {
-		return true;
-	}
-	
-	@Override
-	public boolean hasEnough(UUID id, double amount) {
-		return true;
-	}
-	@Override public void add(Player p, double amount) { }
-	@Override public void add(UUID id, 	double amount) { }
-	@Override public void sub(Player p, double amount) { }
-	@Override public void sub(UUID id, 	double amount) { }
+    @Override
+    public String format(double amount) {
+        return String.valueOf(amount);
+    }
+    
+    @Override
+    public boolean hasEnough(Player p, double amount) {
+        return true;
+    }
+    
+    @Override
+    public boolean hasEnough(UUID id, double amount) {
+        return true;
+    }
+    @Override public void add(Player p, double amount) { }
+    @Override public void add(UUID id,     double amount) { }
+    @Override public void sub(Player p, double amount) { }
+    @Override public void sub(UUID id,     double amount) { }
 
 }

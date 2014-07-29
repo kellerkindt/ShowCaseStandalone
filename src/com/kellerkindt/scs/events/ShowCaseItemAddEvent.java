@@ -28,9 +28,9 @@ import com.kellerkindt.scs.shops.Shop;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public class ShowCaseItemAddEvent extends ShowCaseItemEvent {
-	
-	public ShowCaseItemAddEvent (Player player, Shop shop, int amount, ItemStack stack) {
-		super (player, shop, amount, stack);
-	}
-	
+    
+    public ShowCaseItemAddEvent (Player player, Shop shop, int amount, ItemStack stack) {
+        super (player, shop, amount, stack);
+    }
+    
 }

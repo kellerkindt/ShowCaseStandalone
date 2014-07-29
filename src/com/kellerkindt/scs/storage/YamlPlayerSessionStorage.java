@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -36,60 +35,60 @@ import com.kellerkindt.scs.interfaces.StorageHandler;
  */
 public class YamlPlayerSessionStorage implements StorageHandler<PlayerSessionHandler> {
 
-	private String PATH_LIST	= "PlayerSessionVariables";
-	
-	private ShowCaseStandalone 	scs;
-	private File				file;
-	
-	public YamlPlayerSessionStorage (ShowCaseStandalone scs, File file) {
-		this.scs	= scs;
-		this.file	= file;
-	}
+    public static final String PATH_LIST    = "PlayerSessionVariables";
+    
+    private ShowCaseStandalone  scs;
+    private File                file;
+    
+    public YamlPlayerSessionStorage (ShowCaseStandalone scs, File file) {
+        this.scs    = scs;
+        this.file   = file;
+    }
 
-	@Override
-	public void load(PlayerSessionHandler handler) throws IOException {
+    @Override
+    public void load(PlayerSessionHandler handler) throws IOException {
 
-		// nothing to load if the file does not exist
-		if (!file.exists()) {
-			return;
-		}
-		
-		// load the file
-		YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
-		
-		
-		List<?> list = conf.getList(PATH_LIST);
-		
-		for (Object o : list) {
-			// well, just to be really sure :)
-			if (o instanceof PlayerSession) {
-				handler.addSession((PlayerSession)o);
-				
-			} else {
-				scs.log(Level.SEVERE, "Unknown value in the PlayerSession file: "+o, false);
-			}
-		}
-	}
+        // nothing to load if the file does not exist
+        if (!file.exists()) {
+            return;
+        }
+        
+        // load the file
+        YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
+        
+        
+        List<?> list = conf.getList(PATH_LIST);
+        
+        for (Object o : list) {
+            // well, just to be really sure :)
+            if (o instanceof PlayerSession) {
+                handler.addSession((PlayerSession)o);
+                
+            } else {
+                scs.getLogger().severe("Unknown value in the PlayerSession file: "+o);
+            }
+        }
+    }
 
-	@Override
-	public void save(PlayerSessionHandler handler) throws IOException {
-		YamlConfiguration 	conf 	= new YamlConfiguration();
-		List<PlayerSession>	list	= new ArrayList<PlayerSession>();
-		
-		// add it to the list
-		for (PlayerSession session : handler) {
-			list.add(session);
-		}
-		
-		// add it to the YAML file
-		conf.set(PATH_LIST, list);
-		
-		// save it to disk
-		conf.save(file);
-	}
+    @Override
+    public void save(PlayerSessionHandler handler) throws IOException {
+        YamlConfiguration     conf     = new YamlConfiguration();
+        List<PlayerSession>    list    = new ArrayList<PlayerSession>();
+        
+        // add it to the list
+        for (PlayerSession session : handler) {
+            list.add(session);
+        }
+        
+        // add it to the YAML file
+        conf.set(PATH_LIST, list);
+        
+        // save it to disk
+        conf.save(file);
+    }
 
-	@Override
-	public void flush() throws IOException {
-		// nothing to do
-	}
+    @Override
+    public void flush() throws IOException {
+        // nothing to do
+    }
 }

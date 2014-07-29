@@ -36,124 +36,124 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Purge extends SimpleCommand {
 
-	public static final String WILDCARD		= "*";
-	public static final String PREFIX_WORLD	= "w:";
-	public static final String PREFIX_UUID	= "u:";
-	
-	private Map<String, List<Shop>>	toDelete	= new HashMap<String, List<Shop>>();
+    public static final String WILDCARD        = "*";
+    public static final String PREFIX_WORLD    = "w:";
+    public static final String PREFIX_UUID    = "u:";
+    
+    private Map<String, List<Shop>>    toDelete    = new HashMap<String, List<Shop>>();
 
-	public Purge (ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, false, 1);
-	}
+    public Purge (ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, false, 1);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		
-		List<String> list = new ArrayList<String>();
-		
-		if (args.length == 0 || args[0].startsWith(PREFIX_WORLD)) {
-			for (World world : scs.getServer().getWorlds()) {
-				list.add(PREFIX_WORLD+world.getName());
-			}
-		}
-		
-		// add all the player
-		for (Player player : scs.getServer().getOnlinePlayers()) {
-			list.add(player.getName());
-		}
-		
-		return list;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        
+        List<String> list = new ArrayList<String>();
+        
+        if (args.length == 0 || args[0].startsWith(PREFIX_WORLD)) {
+            for (World world : scs.getServer().getWorlds()) {
+                list.add(PREFIX_WORLD+world.getName());
+            }
+        }
+        
+        // add all the player
+        for (Player player : scs.getServer().getOnlinePlayers()) {
+            list.add(player.getName());
+        }
+        
+        return list;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		String			name		= args[1];
-		String			world		= null;
-		boolean			ignoreWorld	= false;
-		boolean			isUUID		= false;
-		boolean			isPlayer	= true;
-		
-		// delete whole world?
-		if (name.startsWith(PREFIX_WORLD)) {
-			name 		= name.substring(PREFIX_WORLD.length());
-			isPlayer	= false;
-		}
-		
-		// by uuid?
-		else if (name.startsWith(PREFIX_UUID)) {
-			name		= name.substring(PREFIX_UUID.length());
-			isPlayer	= false;
-			isUUID		= true;
-		}
-		
-		// load if already searched for
-		List<Shop>		toRemove	= toDelete.get(name);
-		
-		// world was given
-		if (args.length > 2) {
-			world	= args[2];
-		}
-		
-//		// console and no world was given
-//		if (this.player == null && world == null && toRemove == null) {
-//			Messaging.send(cs, Term.ERROR_MISSING_ARGUMENT_WORLD.get());
-//			return true;
-//		}
-		
-		// player and no world was given -> current world
-		if (world == null && toRemove == null && sender instanceof Player) {
-			world = ((Player)sender).getWorld().getName();
-		}
-		
-		// wildcard?
-		if (world == null || WILDCARD.equals(world)) {
-			ignoreWorld = true;
-		}
-		
-		// first call: find the shops
-		if (toRemove == null) {
-			toRemove	= new ArrayList<Shop>();
-			
-			for (Shop p : scs.getShopHandler()) {
-				
-				// get the world name safely
-				String worldMatcher = !isUUID && p.getWorld() != null
-						? p.getWorld().getName()
-						: isUUID
-							? p.getWorldUUID().toString()
-							: null;
-			
-				if ( isPlayer && p.isOwner( scs.getPlayerUUID(name) ) && (ignoreWorld || world.equals(worldMatcher) )) {
-					toRemove.add(p);
-				
-				} else if ( !isPlayer && world.equals(worldMatcher) ) {
-					toRemove.add(p);
-				}
-				
-			}
-				
-			
-			if (toRemove.size() > 0)  {
-				scs.sendMessage(sender, Term.MESSAGE_PURGE_FOUND.get(""+toRemove.size()));
-				toDelete.put(name, toRemove);
-			
-			} else
-				scs.sendMessage(sender, Term.ERROR_PURGE_ZERO_SHOPS.get());
-			
-		// second call: remove the shops
-		} else {
-			
-			// delete them
-			for (Shop p : toRemove)
-				scs.getShopHandler().removeShop(p);
-			
-			// cleanup
-			toDelete.put(name, null);
-			
-			scs.sendMessage(sender, Term.MESSAGE_PURGE_DELETED.get(""+toRemove.size(), name));
-			
-		}
-		
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        String            name        = args[1];
+        String            world        = null;
+        boolean            ignoreWorld    = false;
+        boolean            isUUID        = false;
+        boolean            isPlayer    = true;
+        
+        // delete whole world?
+        if (name.startsWith(PREFIX_WORLD)) {
+            name         = name.substring(PREFIX_WORLD.length());
+            isPlayer    = false;
+        }
+        
+        // by uuid?
+        else if (name.startsWith(PREFIX_UUID)) {
+            name        = name.substring(PREFIX_UUID.length());
+            isPlayer    = false;
+            isUUID        = true;
+        }
+        
+        // load if already searched for
+        List<Shop>        toRemove    = toDelete.get(name);
+        
+        // world was given
+        if (args.length > 2) {
+            world    = args[2];
+        }
+        
+//        // console and no world was given
+//        if (this.player == null && world == null && toRemove == null) {
+//            Messaging.send(cs, Term.ERROR_MISSING_ARGUMENT_WORLD.get());
+//            return true;
+//        }
+        
+        // player and no world was given -> current world
+        if (world == null && toRemove == null && sender instanceof Player) {
+            world = ((Player)sender).getWorld().getName();
+        }
+        
+        // wildcard?
+        if (world == null || WILDCARD.equals(world)) {
+            ignoreWorld = true;
+        }
+        
+        // first call: find the shops
+        if (toRemove == null) {
+            toRemove    = new ArrayList<Shop>();
+            
+            for (Shop p : scs.getShopHandler()) {
+                
+                // get the world name safely
+                String worldMatcher = !isUUID && p.getWorld() != null
+                        ? p.getWorld().getName()
+                        : isUUID
+                            ? p.getWorldUUID().toString()
+                            : null;
+            
+                if ( isPlayer && p.isOwner( scs.getPlayerUUID(name) ) && (ignoreWorld || world.equals(worldMatcher) )) {
+                    toRemove.add(p);
+                
+                } else if ( !isPlayer && world.equals(worldMatcher) ) {
+                    toRemove.add(p);
+                }
+                
+            }
+                
+            
+            if (toRemove.size() > 0)  {
+                scs.sendMessage(sender, Term.MESSAGE_PURGE_FOUND.get(""+toRemove.size()));
+                toDelete.put(name, toRemove);
+            
+            } else
+                scs.sendMessage(sender, Term.ERROR_PURGE_ZERO_SHOPS.get());
+            
+        // second call: remove the shops
+        } else {
+            
+            // delete them
+            for (Shop p : toRemove)
+                scs.getShopHandler().removeShop(p);
+            
+            // cleanup
+            toDelete.put(name, null);
+            
+            scs.sendMessage(sender, Term.MESSAGE_PURGE_DELETED.get(""+toRemove.size(), name));
+            
+        }
+        
+    }
 }

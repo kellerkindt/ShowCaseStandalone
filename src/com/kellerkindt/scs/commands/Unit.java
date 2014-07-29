@@ -33,21 +33,21 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Unit extends SimpleCommand {
 
-	public Unit(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, true);
-	}
+    public Unit(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, true);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		Player			player	= (Player)sender;
-		PlayerSession 	session = scs.getPlayerSessionHandler().getSession(player);
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        Player            player    = (Player)sender;
+        PlayerSession     session = scs.getPlayerSessionHandler().getSession(player);
         
         if(args.length >= 1){
             int unit = 0;
@@ -64,10 +64,10 @@ public class Unit extends SimpleCommand {
             scs.sendMessage(player, Term.MESSAGE_SET_UNIT.get(""+unit));
             
         } else {
-        	scs.sendMessage(player, Term.MESSAGE_UNIT.get( ""+session.getUnitSize() ));
+            scs.sendMessage(player, Term.MESSAGE_UNIT.get( ""+session.getUnitSize() ));
         }
-		
-		
-	}
-	
+        
+        
+    }
+    
 }

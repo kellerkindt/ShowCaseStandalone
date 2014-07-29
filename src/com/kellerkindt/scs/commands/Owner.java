@@ -34,30 +34,30 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class Owner extends SimpleCommand {
 
-	public Owner (ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions, true, 1);
-	}
+    public Owner (ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions, true, 1);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// ignore
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // ignore
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		final Player player = (Player)sender;
-		final String owner	= args[0];
-		
-		registerShopManipulator(player, new EventShopManipulator(scs, sender) {
-			@Override
-			public ShowCaseEvent getEvent(Shop shop) {
-				return new ShowCaseOwnerSetEvent(player, shop, owner);
-			}
-		});
-	}
-	
-	
-	
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        final Player player = (Player)sender;
+        final String owner    = args[0];
+        
+        registerShopManipulator(player, new EventShopManipulator(scs, sender) {
+            @Override
+            public ShowCaseEvent getEvent(Shop shop) {
+                return new ShowCaseOwnerSetEvent(player, shop, owner);
+            }
+        });
+    }
+    
+    
+    
 }

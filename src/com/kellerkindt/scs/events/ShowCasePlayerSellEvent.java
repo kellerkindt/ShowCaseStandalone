@@ -29,37 +29,37 @@ import com.kellerkindt.scs.shops.BuyShop;
  */
 public class ShowCasePlayerSellEvent extends ShowCaseShopEvent {
 
-	private int			quantity;
-	
-	public ShowCasePlayerSellEvent (Player player, BuyShop buyShop, int quantity) {
-		super(player, buyShop);
-		
-		this.quantity	= quantity;
-	}
-	
-	/**
-	 * @return The ItemStack that the player wants to sell
-	 */
-	public ItemStack getItemStack () {
-		return getShop().getItemStack();
-	}
-	
-	/**
-	 * @return The amount of Items the player wants to sell
-	 */
-	public int getQuantity () {
-		return quantity;
-	}
-	
-	/**
-	 * @param quantity The new quantity
-	 */
-	public void setQuantity (int quantity) {
-		this.quantity	= quantity;
-	}
-	
-	@Override
-	public BuyShop getShop () {
-		return (BuyShop)super.getShop();
-	}
+    private int            quantity;
+    
+    public ShowCasePlayerSellEvent (Player player, BuyShop buyShop, int quantity) {
+        super(player, buyShop);
+        
+        this.quantity    = quantity;
+    }
+    
+    /**
+     * @return The ItemStack that the player wants to sell
+     */
+    public ItemStack getItemStack () {
+        return getShop().getItemStack();
+    }
+    
+    /**
+     * @return The amount of Items the player wants to sell
+     */
+    public int getQuantity () {
+        return quantity;
+    }
+    
+    /**
+     * @param quantity The new quantity
+     */
+    public void setQuantity (int quantity) {
+        this.quantity    = quantity;
+    }
+    
+    @Override
+    public BuyShop getShop () {
+        return (BuyShop)super.getShop();
+    }
 }

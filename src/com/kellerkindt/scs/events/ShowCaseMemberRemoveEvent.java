@@ -27,8 +27,8 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseMemberRemoveEvent extends ShowCaseMemberEvent {
 
-	public ShowCaseMemberRemoveEvent(Player player, Shop shop, String member) {
-		super(player, shop, member);
-	}
+    public ShowCaseMemberRemoveEvent(Player player, Shop shop, String member) {
+        super(player, shop, member);
+    }
 
 }

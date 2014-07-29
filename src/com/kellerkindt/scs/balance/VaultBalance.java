@@ -27,59 +27,59 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
 
 public class VaultBalance implements Balance {
-	
-	private ShowCaseStandalone	scs;
-	private Economy				economy;
-	
-	public VaultBalance (ShowCaseStandalone scs, Economy economy) {
-		this.scs		= scs;
-		this.economy 	= economy;
-	}
+    
+    private ShowCaseStandalone  scs;
+    private Economy             economy;
+    
+    public VaultBalance (ShowCaseStandalone scs, Economy economy) {
+        this.scs        = scs;
+        this.economy    = economy;
+    }
 
-	@Override
-	public String getClassName() {
-		return economy.getClass().getName();
-	}
-	
-	@Override
-	public boolean hasEnough(Player p, double amount) {
-		return hasEnough(p.getUniqueId(), amount);
-	}
-	
-	public boolean hasEnough(UUID id, double amount) {
-		return economy.has(scs.getServer().getOfflinePlayer(id), amount);
-	}
+    @Override
+    public String getClassName() {
+        return economy.getClass().getName();
+    }
+    
+    @Override
+    public boolean hasEnough(Player p, double amount) {
+        return hasEnough(p.getUniqueId(), amount);
+    }
+    
+    public boolean hasEnough(UUID id, double amount) {
+        return economy.has(scs.getServer().getOfflinePlayer(id), amount);
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return economy.isEnabled();
-	}
+    @Override
+    public boolean isEnabled() {
+        return economy.isEnabled();
+    }
 
-	@Override
-	public void add(Player p, double amount) {
-		add(p.getUniqueId(), amount);
-	}
-	
-	@Override
-	public void add(UUID id, double amount) {
-		economy.depositPlayer(scs.getServer().getOfflinePlayer(id), amount);
-	}
+    @Override
+    public void add(Player p, double amount) {
+        add(p.getUniqueId(), amount);
+    }
+    
+    @Override
+    public void add(UUID id, double amount) {
+        economy.depositPlayer(scs.getServer().getOfflinePlayer(id), amount);
+    }
 
-	@Override
-	public void sub(Player p, double amount) {
-		sub(p.getUniqueId(), amount);
-	}
-	
-	@Override
-	public void sub(UUID id, double amount) {
-		economy.withdrawPlayer(scs.getServer().getOfflinePlayer(id), amount);
-	}
+    @Override
+    public void sub(Player p, double amount) {
+        sub(p.getUniqueId(), amount);
+    }
+    
+    @Override
+    public void sub(UUID id, double amount) {
+        economy.withdrawPlayer(scs.getServer().getOfflinePlayer(id), amount);
+    }
 
-	@Override
-	public String format(double amount) {
-		return economy.format(amount);
-	}
+    @Override
+    public String format(double amount) {
+        return economy.format(amount);
+    }
 
-	
-	
+    
+    
 }

@@ -31,32 +31,32 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Disable extends SimpleCommand {
 
-	public Disable(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions);
-	}
+    public Disable(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		try {
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        try {
 
-        	scs.log(Level.INFO, "Calling onDisable", false);
-    		scs.onDisable();
-        	
-            scs.log(Level.INFO, sender.getName() + " disabled SCS.", false);
+            scs.getLogger().info("Calling onDisable");
+            scs.onDisable();
+            
+            scs.getLogger().info(sender.getName() + " disabled SCS");
             
             scs.sendMessage(sender, Term.DISABLE.get());                
                 
-    	} catch (Exception ioe) {
-    		ShowCaseStandalone.slog(Level.WARNING, "Exception on onDisable: " + ioe.getLocalizedMessage());
-    		scs.sendMessage(sender, Term.ERROR_GENERAL.get("disabling") + ioe.getLocalizedMessage());
-    	}
-	}
-	
-	
+        } catch (Exception ioe) {
+            scs.getLogger().log(Level.SEVERE, "Couldn't perform disable successfully", ioe);
+            scs.sendMessage(sender, Term.ERROR_GENERAL.get("disabling") + ioe.getLocalizedMessage());
+        }
+    }
+    
+    
 }

@@ -36,100 +36,100 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 
 
 public class BlockListener implements Listener{
-	private ShowCaseStandalone 	scs;
+    private ShowCaseStandalone     scs;
 
-	public BlockListener(ShowCaseStandalone scs) {
-		this.scs 		 = scs;
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockPlace (BlockPlaceEvent e) {
-		if ( scs.getShopHandler().isShopBlock(e.getBlock()) )
+    public BlockListener(ShowCaseStandalone scs) {
+        this.scs          = scs;
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
+    public void onBlockPlace (BlockPlaceEvent e) {
+        if ( scs.getShopHandler().isShopBlock(e.getBlock()) )
                     e.setCancelled(true);
-		else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
-		    //This is the block above.
+        else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
+            //This is the block above.
                     //CHeck for attchables for the block being placed.
                     if(!(Material.STEP.equals(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock().getType())))
                         e.setCancelled(true);
                 }
-		
-		
-		
-//		// Quick and Dirty...
-//		else if (e.getBlock().getState() instanceof CraftSign) {
-//			try {
-//				Block 	block	= Utilities.getBlockBehind((Sign)e.getBlock().getState());
-//				Shop	shop	= null;
-//				
-//				if (block != null)
-//					shop = scs.getShopHandler().getShopForBlock(block);
-//				
-//				scs.performShowCaseChangedEvent(shop, e.getPlayer());
-//					
-//			} catch (ShopNotFoundException snfe) { }
-//		}
-	}
-	
-	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockBreak (BlockBreakEvent e) {	
-		if ( scs.getShopHandler().isShopBlock(e.getBlock())) {
-			e.setCancelled(true);
-		}
-	}
-	
-
-	
-	@EventHandler (priority = EventPriority.NORMAL)
-	public void onHangingPlaced (HangingPlaceEvent event) {
-		
-		// BlockState
-		Hanging	hanging = event.getEntity();
-		
-		// ItemFrame?
-		if (hanging instanceof ItemFrame) {
-			scs.getShopHandler().addItemFrame((ItemFrame)hanging);
-		}
-	}
-	
-	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityDamage (EntityDamageEvent event) {
-		if (event.getEntity() instanceof ItemFrame) {
-			ItemFrame frame = (ItemFrame)event.getEntity();
-			
-			// is the block below a shop block?
-			if (scs.getShopHandler().isKnownItemFrame(frame)) {
-				frame.setItem(null);
-			}
-		}
-	}
-	
-	@EventHandler (priority = EventPriority.NORMAL)
-	public void onHangingBreak (HangingBreakEvent event) {
-		
-		// BlockState
-		Hanging	hanging = event.getEntity();
-		
-		// ItemFrame?
-		if (hanging instanceof ItemFrame) {
-			scs.getShopHandler().removeItemFrame((ItemFrame)hanging);
-		}
-	}
         
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockPistonExtend (BlockPistonExtendEvent e) {
-		for (Block b : e.getBlocks()) {
-			if ( scs.getShopHandler().isShopBlock(b) ) {
-				e.setCancelled(true);
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockPistonRetract(BlockPistonRetractEvent e) {
-		if ( scs.getShopHandler().isShopBlock(e.getRetractLocation().getBlock()) ) {
-			e.setCancelled(true);
-		}
-	}
+        
+        
+//        // Quick and Dirty...
+//        else if (e.getBlock().getState() instanceof CraftSign) {
+//            try {
+//                Block     block    = Utilities.getBlockBehind((Sign)e.getBlock().getState());
+//                Shop    shop    = null;
+//                
+//                if (block != null)
+//                    shop = scs.getShopHandler().getShopForBlock(block);
+//                
+//                scs.performShowCaseChangedEvent(shop, e.getPlayer());
+//                    
+//            } catch (ShopNotFoundException snfe) { }
+//        }
+    }
+    
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
+    public void onBlockBreak (BlockBreakEvent e) {    
+        if ( scs.getShopHandler().isShopBlock(e.getBlock())) {
+            e.setCancelled(true);
+        }
+    }
+    
+
+    
+    @EventHandler (priority = EventPriority.NORMAL)
+    public void onHangingPlaced (HangingPlaceEvent event) {
+        
+        // BlockState
+        Hanging    hanging = event.getEntity();
+        
+        // ItemFrame?
+        if (hanging instanceof ItemFrame) {
+            scs.getShopHandler().addItemFrame((ItemFrame)hanging);
+        }
+    }
+    
+    @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityDamage (EntityDamageEvent event) {
+        if (event.getEntity() instanceof ItemFrame) {
+            ItemFrame frame = (ItemFrame)event.getEntity();
+            
+            // is the block below a shop block?
+            if (scs.getShopHandler().isKnownItemFrame(frame)) {
+                frame.setItem(null);
+            }
+        }
+    }
+    
+    @EventHandler (priority = EventPriority.NORMAL)
+    public void onHangingBreak (HangingBreakEvent event) {
+        
+        // BlockState
+        Hanging    hanging = event.getEntity();
+        
+        // ItemFrame?
+        if (hanging instanceof ItemFrame) {
+            scs.getShopHandler().removeItemFrame((ItemFrame)hanging);
+        }
+    }
+        
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
+    public void onBlockPistonExtend (BlockPistonExtendEvent e) {
+        for (Block b : e.getBlocks()) {
+            if ( scs.getShopHandler().isShopBlock(b) ) {
+                e.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
+    public void onBlockPistonRetract(BlockPistonRetractEvent e) {
+        if ( scs.getShopHandler().isShopBlock(e.getRetractLocation().getBlock()) ) {
+            e.setCancelled(true);
+        }
+    }
 
 }

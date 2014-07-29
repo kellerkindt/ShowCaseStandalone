@@ -24,17 +24,17 @@ import com.kellerkindt.scs.interfaces.ShopHandler;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public class ShowCaseShopHandlerChangedEvent extends ShowCaseEvent {
-	
-	private ShopHandler shopHandler;
+    
+    private ShopHandler shopHandler;
 
-	public ShowCaseShopHandlerChangedEvent (ShopHandler handler) {
-		shopHandler = handler;
-	}
-	
-	/**
-	 * @return The ShopHandler that has changed
-	 */
-	public ShopHandler getShopHandler() {
-		return shopHandler;
-	}
+    public ShowCaseShopHandlerChangedEvent (ShopHandler handler) {
+        shopHandler = handler;
+    }
+    
+    /**
+     * @return The ShopHandler that has changed
+     */
+    public ShopHandler getShopHandler() {
+        return shopHandler;
+    }
 }

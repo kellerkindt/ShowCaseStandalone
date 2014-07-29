@@ -32,33 +32,33 @@ import com.kellerkindt.scs.shops.Shop;
  * @author michael <michael at kellerkindt.com>
  */
 public class Add extends SimpleCommand {
-	
-	public Add (ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, true);
-	}
+    
+    public Add (ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, true);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		// set the requested amount
-		final Player	player	= (Player)sender;
-		final int 		amount 	= args.length > 0 ? Integer.parseInt(args[0]) : Integer.MAX_VALUE;
-		
-		
-		registerShopManipulator(
-				player,
-				new EventShopManipulator(scs, sender) {
-						public ShowCaseItemAddEvent getEvent(Shop shop) {
-							return new ShowCaseItemAddEvent(player, shop, amount, shop.getItemStack());
-						}
-					}
-				);
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        // set the requested amount
+        final Player    player    = (Player)sender;
+        final int         amount     = args.length > 0 ? Integer.parseInt(args[0]) : Integer.MAX_VALUE;
+        
+        
+        registerShopManipulator(
+                player,
+                new EventShopManipulator(scs, sender) {
+                        public ShowCaseItemAddEvent getEvent(Shop shop) {
+                            return new ShowCaseItemAddEvent(player, shop, amount, shop.getItemStack());
+                        }
+                    }
+                );
+    }
 
 }

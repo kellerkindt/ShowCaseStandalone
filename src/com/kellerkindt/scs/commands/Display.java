@@ -32,37 +32,37 @@ import com.kellerkindt.scs.utilities.Utilities;
  * @author michael <michael at kellerkindt.com>
  */
 public class Display extends Create {
-	
-	public Display(ShowCaseStandalone scs, String ... permissions) {
-		super(scs, permissions, 1);
-	}
+    
+    public Display(ShowCaseStandalone scs, String ... permissions) {
+        super(scs, permissions, 1);
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		
-		// prepare
-		Player		player		= (Player)sender;
-		Shop		shop		= new DisplayShop(
-				UUID.randomUUID(),
-				player.getUniqueId(), 
-				null,
-				null
-				);
-		
-		// parse the arguments
-		shop.setItemStack	(Utilities	.getItemStack	(player, 	args[0]));
-		shop.setAmount		(0);
-		shop.setPrice		(0);
-		
-		// unlimited?
-		if (args.length > 1 && ARGUMENT_UNLIMITED.equals(args[1])) {
-			shop.setUnlimited(true);
-		}
-		
-		
-		// register the shop, so its location will be set
-		registerShopToCreate(player, shop);
-		
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        
+        // prepare
+        Player        player        = (Player)sender;
+        Shop        shop        = new DisplayShop(
+                UUID.randomUUID(),
+                player.getUniqueId(), 
+                null,
+                null
+                );
+        
+        // parse the arguments
+        shop.setItemStack    (Utilities    .getItemStack    (player,     args[0]));
+        shop.setAmount        (0);
+        shop.setPrice        (0);
+        
+        // unlimited?
+        if (args.length > 1 && ARGUMENT_UNLIMITED.equals(args[1])) {
+            shop.setUnlimited(true);
+        }
+        
+        
+        // register the shop, so its location will be set
+        registerShopToCreate(player, shop);
+        
+    }
 
 }

@@ -26,20 +26,20 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import com.kellerkindt.scs.ShowCaseStandalone;
 
 public class WorldListener implements Listener {
-	private ShowCaseStandalone scs;
-	
-	public WorldListener (ShowCaseStandalone scs) {
-		this.scs	= scs;
-	}
-	
-	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
-	public void onChunkLoad(ChunkLoadEvent event) {
-		scs.getShopHandler().loadChunk(event.getChunk());
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
-	public void onChunkUnload(ChunkUnloadEvent event) {
-		scs.getShopHandler().unloadChunk(event.getChunk());
-	}
+    private ShowCaseStandalone scs;
+    
+    public WorldListener (ShowCaseStandalone scs) {
+        this.scs    = scs;
+    }
+    
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        scs.getShopHandler().loadChunk(event.getChunk());
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        scs.getShopHandler().unloadChunk(event.getChunk());
+    }
 }

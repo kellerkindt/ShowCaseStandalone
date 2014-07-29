@@ -27,8 +27,8 @@ import com.kellerkindt.scs.shops.Shop;
  * @author kellerkindt <michael at kellerkindt.com>
  */
 public class ShowCaseCreateEvent extends ShowCaseShopEvent {
-	
-	public ShowCaseCreateEvent (Player player, Shop shop) {
-		super(player, shop);
-	}
+    
+    public ShowCaseCreateEvent (Player player, Shop shop) {
+        super(player, shop);
+    }
 }

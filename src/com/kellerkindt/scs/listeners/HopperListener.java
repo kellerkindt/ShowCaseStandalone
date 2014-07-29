@@ -30,18 +30,18 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 * @author michael <michael at kellerkindt.com>
 */
 public class HopperListener implements Listener {
-	
-	private ShowCaseStandalone scs;
-	
-	public HopperListener(ShowCaseStandalone scs) {
-		this.scs = scs;
-	}
-	
-	@EventHandler(ignoreCancelled=true)
-	public void onInventoryPickupEvent (InventoryPickupItemEvent event) {
-		// cancel it, if it is an SCS item and the holder is a hopper
-		if (scs.getShopHandler().isShopItem(event.getItem()) && event.getInventory().getHolder() instanceof Hopper) {
-			event.setCancelled(true);
-		}
-	}
+    
+    private ShowCaseStandalone scs;
+    
+    public HopperListener(ShowCaseStandalone scs) {
+        this.scs = scs;
+    }
+    
+    @EventHandler(ignoreCancelled=true)
+    public void onInventoryPickupEvent (InventoryPickupItemEvent event) {
+        // cancel it, if it is an SCS item and the holder is a hopper
+        if (scs.getShopHandler().isShopItem(event.getItem()) && event.getInventory().getHolder() instanceof Hopper) {
+            event.setCancelled(true);
+        }
+    }
 }

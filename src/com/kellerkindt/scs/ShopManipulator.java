@@ -25,13 +25,13 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public interface ShopManipulator {
 
-	/**
-	 * @param shop {@link Shop} to manipulate
-	 */
-	public void manipulate (Shop shop);
-	
-	/**
-	 * @return Whether the value in {@link #manipulate(Shop)} has to be valid (not null)
-	 */
-	public boolean requiresValidShop ();
+    /**
+     * @param shop {@link Shop} to manipulate
+     */
+    public void manipulate (Shop shop);
+    
+    /**
+     * @return Whether the value in {@link #manipulate(Shop)} has to be valid (not null)
+     */
+    public boolean requiresValidShop ();
 }

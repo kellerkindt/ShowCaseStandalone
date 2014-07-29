@@ -27,18 +27,18 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public abstract class ShowCaseMemberEvent extends ShowCaseShopEvent {
 
-	private String member;
-	
-	public ShowCaseMemberEvent (Player player, Shop shop, String member) {
-		super(player, shop);
-		
-		this.member	= member;
-	}
-	
-	/**
-	 * @return The member to add
-	 */
-	public String getMember () {
-		return member;
-	}
+    private String member;
+    
+    public ShowCaseMemberEvent (Player player, Shop shop, String member) {
+        super(player, shop);
+        
+        this.member    = member;
+    }
+    
+    /**
+     * @return The member to add
+     */
+    public String getMember () {
+        return member;
+    }
 }

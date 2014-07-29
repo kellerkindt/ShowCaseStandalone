@@ -31,25 +31,25 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Version extends SimpleCommand {
 
-	public Version(ShowCaseStandalone scs, String...permissions) {
-		super(scs, permissions);
-	}
+    public Version(ShowCaseStandalone scs, String...permissions) {
+        super(scs, permissions);
+    }
 
-	@Override
-	public List<String> getTabCompletions(CommandSender sender, String[] args) {
-		// nothing to do
-		return null;
-	}
+    @Override
+    public List<String> getTabCompletions(CommandSender sender, String[] args) {
+        // nothing to do
+        return null;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) throws CommandException {
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_1.get());
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_2.get(scs.getDescription().getVersion()));
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_4.get(Properties.BUILD_AUTHOR));
-		scs.sendMessage(sender, Term.MESSAGE_VERSION_5.get(Properties.BUILD_CONTRIBUTOR));
-		
-		if (scs.isAdmin(sender) && Properties.BUILD_ISDEV) {
-			scs.sendMessage(sender, Term.WARNING_DEV_VERSION.get());
-		}
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        scs.sendMessage(sender, Term.MESSAGE_VERSION_1.get());
+        scs.sendMessage(sender, Term.MESSAGE_VERSION_2.get(scs.getDescription().getVersion()));
+        scs.sendMessage(sender, Term.MESSAGE_VERSION_4.get(Properties.BUILD_AUTHOR));
+        scs.sendMessage(sender, Term.MESSAGE_VERSION_5.get(Properties.BUILD_CONTRIBUTOR));
+        
+        if (scs.isAdmin(sender) && Properties.BUILD_ISDEV) {
+            scs.sendMessage(sender, Term.WARNING_DEV_VERSION.get());
+        }
+    }
 }

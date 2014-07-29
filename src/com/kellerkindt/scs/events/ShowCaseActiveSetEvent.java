@@ -27,16 +27,16 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseActiveSetEvent extends ShowCaseShopEvent {
 
-	private boolean active;
-	
-	public ShowCaseActiveSetEvent (Player player, Shop shop, boolean active) {
-		super(player, shop);
-	}
-	
-	/**
-	 * @return Whether the shop should be set to active or inactive
-	 */
-	public boolean getActive () {
-		return active;
-	}
+    private boolean active;
+    
+    public ShowCaseActiveSetEvent (Player player, Shop shop, boolean active) {
+        super(player, shop);
+    }
+    
+    /**
+     * @return Whether the shop should be set to active or inactive
+     */
+    public boolean getActive () {
+        return active;
+    }
 }

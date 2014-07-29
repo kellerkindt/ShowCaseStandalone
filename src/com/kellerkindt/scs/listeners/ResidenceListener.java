@@ -33,32 +33,32 @@ import com.kellerkindt.scs.events.ShowCaseCreateEvent;
  * @author michael <michael at kellerkindt.com>
  */
 public class ResidenceListener implements Listener {
-	
-	private SCSConfiguration config;
-	
-	public ResidenceListener (SCSConfiguration config) {
-		this.config = config;
-	}
+    
+    private SCSConfiguration config;
+    
+    public ResidenceListener (SCSConfiguration config) {
+        this.config = config;
+    }
 
-	@EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
-	public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
-		
-		Location			location	= event.getShop().getLocation();
-		Player				player		= event.getPlayer();
-		
-		// try to get the residence
-		ClaimedResidence residence = Residence.getResidenceManager().getByLoc(location);
-		
-		if (residence != null) {
-			
-			boolean hasFlag = residence.getPermissions().playerHas(player.getName(), config.getResidenceFlag(), false);
-			boolean isOwner = player.getName().equals(residence.getOwner());
-			
-			if (!hasFlag && !(config.getResidenceAllowOwner() && isOwner)) {
-				// no permissions
-				event.setCancelled(true);
-			}
-		}
-	}
-	
+    @EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
+    public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
+        
+        Location            location    = event.getShop().getLocation();
+        Player                player        = event.getPlayer();
+        
+        // try to get the residence
+        ClaimedResidence residence = Residence.getResidenceManager().getByLoc(location);
+        
+        if (residence != null) {
+            
+            boolean hasFlag = residence.getPermissions().playerHas(player.getName(), config.getResidenceFlag(), false);
+            boolean isOwner = player.getName().equals(residence.getOwner());
+            
+            if (!hasFlag && !(config.getResidenceAllowOwner() && isOwner)) {
+                // no permissions
+                event.setCancelled(true);
+            }
+        }
+    }
+    
 }

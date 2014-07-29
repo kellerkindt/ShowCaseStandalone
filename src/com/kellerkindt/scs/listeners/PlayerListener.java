@@ -34,69 +34,69 @@ import com.kellerkindt.scs.events.ShowCaseInteractEvent;
 import com.kellerkindt.scs.shops.Shop;
 
 public class PlayerListener implements Listener {
-	
-	private ShowCaseStandalone scs;
+    
+    private ShowCaseStandalone scs;
 
-	public PlayerListener(ShowCaseStandalone instance) {
-		scs = instance;
-	}
-	
+    public PlayerListener(ShowCaseStandalone instance) {
+        scs = instance;
+    }
+    
         /*
-	 * Cancel pickup of a Item if the item is a shop Item
-	 */
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerPickupItem (PlayerPickupItemEvent pe) {
-		if ( scs.getShopHandler().isShopItem(pe.getItem()) ) {
-			pe.setCancelled(true);				
-		}
-	}
-	
-	/*
-	 * Let the player Interact with the shop
+     * Cancel pickup of a Item if the item is a shop Item
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerPickupItem (PlayerPickupItemEvent pe) {
+        if ( scs.getShopHandler().isShopItem(pe.getItem()) ) {
+            pe.setCancelled(true);                
+        }
+    }
+    
+    /*
+     * Let the player Interact with the shop
      * Lets keep the priority low, so we don't get cancelled when we're not doing anything.
-	 */
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
-	public void onPlayerInteract (PlayerInteractEvent pie) {
-		
-		// Abort if action does not fit - saves power :)
-		if (!pie.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !pie.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-			return;
-		}
-		
-		Action				action		= pie.getAction();
-		Player				player		= pie.getPlayer();
-		Block				block 		= pie.getClickedBlock();
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
+    public void onPlayerInteract (PlayerInteractEvent pie) {
+        
+        // Abort if action does not fit - saves power :)
+        if (!pie.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !pie.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            return;
+        }
+        
+        Action                action        = pie.getAction();
+        Player                player        = pie.getPlayer();
+        Block                block         = pie.getClickedBlock();
 
-		LocationSelector	locSelector	= scs.removeLocationSelector(player);
-		Shop 				shop		= scs.getShopHandler().getShop(block);
-		ShowCaseEvent		event		= null;
-		
-		if (locSelector != null && action == Action.RIGHT_CLICK_BLOCK) {
-			// a location has been selected
-			locSelector.onLocationSelected(block.getLocation());
-			
-		} else if (shop != null && action == Action.RIGHT_CLICK_BLOCK) {
-			// interact with the shop
-			event = new ShowCaseInteractEvent(player, shop, true);
-			
-		} else if (shop != null && action == Action.LEFT_CLICK_BLOCK) {
-			// info event
-			event = new ShowCaseInfoEvent(player, shop);
-			
-			
-		}
-		
-		if (event != null) {			
-			// dispatch event
-			scs.callShowCaseEvent(event, player);
-			
-			/*
-			 *  cancel the current event so nothing else does work with the interaction,
-			 *  if the ShowCaseEvent was not cancelled
-			 */
-			if (!event.isCancelled()) {
-				pie.setCancelled(true);
-			}
-		}
-	}
+        LocationSelector    locSelector    = scs.removeLocationSelector(player);
+        Shop                 shop        = scs.getShopHandler().getShop(block);
+        ShowCaseEvent        event        = null;
+        
+        if (locSelector != null && action == Action.RIGHT_CLICK_BLOCK) {
+            // a location has been selected
+            locSelector.onLocationSelected(block.getLocation());
+            
+        } else if (shop != null && action == Action.RIGHT_CLICK_BLOCK) {
+            // interact with the shop
+            event = new ShowCaseInteractEvent(player, shop, true);
+            
+        } else if (shop != null && action == Action.LEFT_CLICK_BLOCK) {
+            // info event
+            event = new ShowCaseInfoEvent(player, shop);
+            
+            
+        }
+        
+        if (event != null) {            
+            // dispatch event
+            scs.callShowCaseEvent(event, player);
+            
+            /*
+             *  cancel the current event so nothing else does work with the interaction,
+             *  if the ShowCaseEvent was not cancelled
+             */
+            if (!event.isCancelled()) {
+                pie.setCancelled(true);
+            }
+        }
+    }
 }

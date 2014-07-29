@@ -26,10 +26,10 @@ import com.kellerkindt.scs.shops.Shop;
 * @author kellerkindt <michael at kellerkindt.com>
 */
 public class ShowCaseDeleteEvent extends ShowCaseShopEvent {
-	
-	
-	public ShowCaseDeleteEvent (Player player, Shop shop) {
-		super(player, shop);
-	}
-	
+    
+    
+    public ShowCaseDeleteEvent (Player player, Shop shop) {
+        super(player, shop);
+    }
+    
 }
