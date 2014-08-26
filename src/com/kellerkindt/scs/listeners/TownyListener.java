@@ -45,7 +45,7 @@ public class TownyListener implements Listener {
         Player                player        = event.getPlayer();
         
         // http://code.google.com/a/eclipselabs.org/p/towny/issues/detail?id=1400
-        if (!TownyUniverse.getTownBlock(location).hasTown()) {
+        if (TownyUniverse.getTownBlock(location) != null && !TownyUniverse.getTownBlock(location).hasTown()) {
             return;
         }
 
