@@ -428,16 +428,12 @@ public class SimpleShopHandler implements ShopHandler {
                     continue;
                 }
 
-                double    kx = k.getX();
-                double     kz = k.getZ();
-                World     kw = k.getWorld();
+                World   kw = k.getWorld();
 
-                Chunk     ck = p.getLocation().getChunk();
-                double     px = ck.getX();
-                double     pz = ck.getZ();
-                World    pw = ck.getWorld();
+                boolean loaded  = isChunkLoaded(p.getLocation());
+                World   pw      = p.getWorld();
 
-                if (kx == px && kz == pz && kw.getName().equals(pw.getName())) {
+                if (!loaded && kw.getName().equals(pw.getName())) {
 
                     if (scs.getConfiguration().isDebuggingChunks()) {
                         scs.getLogger().info("Found scs to unload: " + p.getUUID());
