@@ -234,8 +234,8 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // check black list item
-            else if ((shop instanceof SellShop     && (config.isSellItemListBlacklist()    == config.getSellItemListItemList()    .contains(shop.getItemStack().getType().toString())))
-                  || (shop instanceof BuyShop    && (config.isBuyItemListBlackList()        == config.getBuyItemListItemList()    .contains(shop.getItemStack().getType().toString())))) {
+            else if ((shop instanceof SellShop   && (config.isSellItemListBlacklist()   == config.getSellItemListItemList() .contains(shop.getItemStack().getType().toString())))
+                  || (shop instanceof BuyShop    && (config.isBuyItemListBlackList()    == config.getBuyItemListItemList () .contains(shop.getItemStack().getType().toString())))) {
                 scce.setCancelled(true);
                 scce.setCause(new InsufficientPermissionException(Term.BLACKLIST_ITEM.get()));
             }
@@ -252,25 +252,27 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
                 scce.setCause(new InsufficientPermissionException(Term.BLACKLIST_WORLD.get()));
             }
             
-            // check the inventory
-            else if (itemRemove > 0) {
-                int canRemove = ItemStackUtilities.countCompatibleItemStacks(player.getInventory(), shop.getItemStack(), scs.compareItemMeta(shop.getItemStack()));
-                
-                if (canRemove < itemRemove) {
-                    // cancel the event
-                    scce.setCancelled(true);
-                    scce.setCause(new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_ITEMS_CREATE.get()));
-                    
-                } else {
-                    // remove the items
-                    ItemStackUtilities.removeFromInventory(player.getInventory(), shop.getItemStack(), itemRemove, scs.compareItemMeta(shop.getItemStack()));
-                }
-            }
-            
             else {
                 // check the price
                 handlePriceRangeEventCheck(scce, shop.getPrice());
             }
+            
+            // check the inventory
+            if (!scce.isCancelled() && itemRemove > 0) {
+                
+                int removed = ItemStackUtilities.removeFromInventory(player.getInventory(), shop.getItemStack(), itemRemove, scs.compareItemMeta(shop.getItemStack()));
+                
+                if (removed > 0) {
+                    // just to be sure, there is not item glitch here
+                    shop.setAmount(removed);
+                    
+                } else {
+                    // cancel the event
+                    scce.setCancelled(true);
+                    scce.setCause(new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_ITEMS_CREATE.get()));
+                }
+            }
+            
         }
     }
 

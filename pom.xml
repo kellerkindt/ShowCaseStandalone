@@ -180,7 +180,7 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <scope>provided</scope>
-          <version>1.7.9-R0.3-SNAPSHOT</version>
+          <version>1.7.10-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
@@ -188,7 +188,7 @@
           <groupId>org.mcstats</groupId>
           <artifactId>metrics</artifactId>
           <version>R6</version>
-          <scope>compile</scope>
+          <!-- <scope>compile</scope> -->
       </dependency>
       
       <!-- essentials -->

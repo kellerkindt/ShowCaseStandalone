@@ -27,12 +27,12 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public abstract class ShowCaseShopEvent extends ShowCaseEvent {
     
-    private Player        player        = null;
-    private Shop        shop        = null;
+    private Player  player  = null;
+    private Shop    shop    = null;
     
     public ShowCaseShopEvent (Player player, Shop shop) {
-        this.player    = player;
-        this.shop    = shop;
+        this.player = player;
+        this.shop   = shop;
     }
     
     /**

@@ -41,8 +41,8 @@ public class Sell extends Create {
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
         // prepare
-        Player        player        = (Player)sender;
-        Shop        shop        = new SellShop(
+        Player  player  = (Player)sender;
+        Shop    shop    = new SellShop(
                 UUID.randomUUID(),
                 player.getUniqueId(), 
                 null,
@@ -50,9 +50,9 @@ public class Sell extends Create {
                 );
         
         // parse the arguments
-        shop.setItemStack    (Utilities    .getItemStack    (player,     args[0]));
-        setAmount            (shop,                                     args[1]);
-        shop.setPrice        (Double        .parseDouble    (            args[2]));
+        shop.setItemStack   (Utilities    .getItemStack(player,    args[0]));
+        setAmount           (shop,                                 args[1] );
+        shop.setPrice       (Double       .parseDouble (           args[2]));
         
         // register the shop, so its location will be set
         registerShopToCreate(player, shop);

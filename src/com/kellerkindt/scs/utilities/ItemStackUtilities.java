@@ -18,6 +18,7 @@
 package com.kellerkindt.scs.utilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -139,58 +140,61 @@ public abstract class ItemStackUtilities {
      * @return The amount of items that were actually removed 
      */
     public static int removeFromInventory (Inventory inventory, List<ItemStack> allowedItems, int amount, boolean checkNBT) {
-        List<ItemStack>    remove        = new ArrayList<ItemStack>();
-        int                removed        = 0;
-        boolean            canRemove    = false;
-        boolean            unlimited    = amount < 0;
         
+        int     removed     = 0;
+        boolean unlimited   = amount < 0;
+        Player  player      = inventory.getHolder() instanceof Player ? ((Player)inventory.getHolder()) : null;
+                
         
-        for (ItemStack is1 : inventory) {
-            if (is1 == null)
+        for (int i = 0; i < inventory.getSize(); ++i) {
+            ItemStack is1 = inventory.getItem(i);
+            
+            if (is1 == null) {
                 continue;
-            
-            if (amount == 0 && !unlimited)
-                break;
-            
+            }
             
             // checks if is1 can be removed
-            canRemove    = false;
-            for (ItemStack is2 : allowedItems)
+            for (ItemStack is2 : allowedItems) {
                 if (itemsEqual(is1, is2, checkNBT)) {
-                    canRemove = true;
+                    
+                    if (unlimited) {
+                        removed += is1.getAmount();
+                        inventory.clear(i);
+                    }
+                    
+                    else {
+                        
+                        if (is1.getAmount() <= amount) {
+                            inventory.clear(i);
+                            
+                            amount -= is1.getAmount();
+                            removed+= is1.getAmount();
+                            is1.setAmount(0);
+                        }
+                        
+                        else {
+                            is1.setAmount( is1.getAmount()-amount );
+                            removed += amount;
+                            amount   = 0;
+                        }
+                        
+                        // found all
+                        if (amount == 0) {
+                            break;
+                        }
+                    }
+                    
+                    
+                    
                     break;
                 }
-            
-            
-            if (!canRemove)
-                continue;
-            
-            
-            if (is1.getAmount() <= amount) {
-                remove.add(is1);
-                amount -= is1.getAmount();
-                removed+= is1.getAmount();
-            } else if (!unlimited) {
-                is1.setAmount(is1.getAmount()-amount);
-                removed += amount;
-                amount      = 0;
-                
-            } else if (unlimited) {
-                removed += is1.getAmount();
-                remove.add(is1);
             }
         }
         
-        
-        // remove items
-        for (ItemStack is : remove) {
-            inventory.removeItem(is);
-        }
-        
         if (removed > 0 && inventory.getHolder() instanceof Player) {
+            // needed...
             ((Player)inventory.getHolder()).updateInventory();
         }
-        
         
         return removed;
     }
@@ -205,9 +209,7 @@ public abstract class ItemStackUtilities {
      * @return The amount of items that were actually removed 
      */
     public static int removeFromInventory (Inventory inventory, ItemStack itemStack, int amount, boolean checkNBT) {
-        List<ItemStack>    list    = new ArrayList<ItemStack>();
-                        list.add(itemStack);
-        return removeFromInventory(inventory, list, amount, checkNBT);
+        return removeFromInventory(inventory, Arrays.asList(itemStack), amount, checkNBT);
     }
     
     /**
@@ -217,11 +219,13 @@ public abstract class ItemStackUtilities {
      * @param is2
      */
     public static boolean itemsEqual(ItemStack is1, ItemStack is2, boolean checkNBT) {
-        if (is1 == null || is2 == null)
+        if (is1 == null || is2 == null) {
             return is1 == is2;
+        }
         
         if (checkNBT) {
             return is1.isSimilar(is2);
+            
         } else {
             // unequal Enchantments?
             if (is1.getEnchantments().size() != is2.getEnchantments().size()) {

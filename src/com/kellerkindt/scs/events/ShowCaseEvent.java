@@ -31,10 +31,10 @@ public abstract class ShowCaseEvent extends Event implements Cancellable {
     private static final HandlerList    handler    = new HandlerList();
 
     // cancelled or not
-    private boolean     cancelled         = false;
-    private boolean        verify            = true;
-    private Throwable    cause            = null;
-    private String        msgSuccessfully    = null;
+    private boolean     cancelled       = false;
+    private boolean     verify          = true;
+    private Throwable   cause           = null;
+    private String      msgSuccessfully = null;
     
 
     /**
