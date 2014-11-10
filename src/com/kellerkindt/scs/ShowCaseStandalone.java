@@ -258,7 +258,6 @@ public class ShowCaseStandalone extends JavaPlugin {
         registerEvents(new PlayerListener   (this));
         registerEvents(new BlockListener    (this));
         registerEvents(new WorldListener    (this));
-        registerEvents(new InventoryListener(this));
         registerEvents(new EntityListener   (this));
         registerEvents(new HopperListener   (this));
         
@@ -271,6 +270,10 @@ public class ShowCaseStandalone extends JavaPlugin {
         // depending on the configuration...
         if (getConfiguration().isDisplayShopUsingSigns()) {
             registerEvents(new SignListener(this));
+        }
+        
+        if (getConfiguration().hasAccessThroughInventory()) {
+            registerEvents(new InventoryListener(this));
         }
         
         

@@ -39,6 +39,7 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_HIDEINACTIVESHOPS        = "HideInactiveShops";
     public static final String KEY_MAXAMOUNTONCREATIVE      = "MaxAmountOnCreative";
     public static final String KEY_REQUIREOBJECTTODISPLAY   = "RequireObjectToDisplay";
+    public static final String KEY_ACCESSTHROUGHINVENTORY   = "AccessThroughInventory";
     
     public static final String KEY_CREATEPRICE_BUYSHOP      = "CreatePrice.BuyShop";
     public static final String KEY_CREATEPRICE_SELLSHOP     = "CreatePrice.SellShop";
@@ -234,6 +235,10 @@ public class SCSConfiguration extends Configuration {
     
     public boolean isSellItemListBlacklist () {
         return getForced(KEY_SELLITEMLIST_BLACKLIST, true);
+    }
+    
+    public boolean hasAccessThroughInventory() {
+        return getForced(KEY_ACCESSTHROUGHINVENTORY, true);
     }
     
     public List<String> getSellItemListItemList () {
