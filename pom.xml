@@ -92,7 +92,7 @@
                   
                   <replacement>
                       <token>builder: unknown</token>
-                      <value>builder: ${builder}</value>
+                      <value>builder: ${build.builder}</value>
                   </replacement>
               </replacements>
               
