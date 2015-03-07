@@ -146,7 +146,7 @@ HELP_8:                                      "`g/scs display {item/this} `G- cre
 HELP_9:                                      "`g/scs add {amount} `G- add items to a showcase."
 HELP_10:                                     "`g/scs get {amount} `G- remove items from a showcase."
 HELP_11:                                     "`g/scs price {amount} `G- show/set the price of a showcase."
-HELP_12:                                     "`g/scs owner {owner} `G- show/set the owner of a showcase."
+HELP_12:                                     "`g/scs owner <owner> `G- Set the new owner of a showcase or bank account on no owner."
 HELP_13:                                     "`g/scs amount {amount} `G- show/set the maximum a showcase will buy."
 HELP_14:                                     "`g/scs remove `G- remove a showcase."
 HELP_15:                                     "`g/scs abort  `G- abort current operation."

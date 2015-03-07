@@ -146,7 +146,7 @@ HELP_8:                                      "`g/scs display {Item/this} `G- ers
 HELP_9:                                      "`g/scs add {Anzahl} `G- fuegt Items hinzu."
 HELP_10:                                     "`g/scs get {Anzahl} `G- entfernt Items."
 HELP_11:                                     "`g/scs price {Anzahl} `G- zeigt/setzt den Preis."
-HELP_12:                                     "`g/scs owner {Besitzer} `G- zeigt/setzt den Besitzer."
+HELP_12:                                     "`g/scs owner <Besitzer> `G- Setzt neuen Besitzer oder Bankkonto bei keinem Besitzer."
 HELP_13:                                     "`g/scs amount {Anzahl} `G- zeigt/setzt das Kauflimit."
 HELP_14:                                     "`g/scs remove `G- entfernt ein ShowCase."
 HELP_15:                                     "`g/scs abort  `G- bricht die Operation ab."
