@@ -355,7 +355,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
     public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent scose) {
-        scose.getShop().setOwner( scs.getPlayerUUID(scose.getNewOwnerName()) );
+        scose.getShop().setOwner( scose.getNewOwnerName() != null ? scs.getPlayerUUID(scose.getNewOwnerName()) : null );
         scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getNewOwnerName()));
     }
     

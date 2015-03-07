@@ -444,7 +444,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             scose.setCancelled(true);
             scose.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_SET_OWNER.get()));
             
-        } else if (scose.verify() && scs.getPlayerUUID(scose.getNewOwnerName()) == null) {
+        } else if (scose.verify() && (scose.getNewOwnerName() != null && scs.getPlayerUUID(scose.getNewOwnerName()) == null)) {
             scose.setCancelled(true);
             scose.setCause(new Throwable(Term.ERROR_SET_OWNER_OFFLINE.get()));
         }

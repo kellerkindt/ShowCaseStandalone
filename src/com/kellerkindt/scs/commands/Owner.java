@@ -35,7 +35,7 @@ import com.kellerkindt.scs.shops.Shop;
 public class Owner extends SimpleCommand {
 
     public Owner (ShowCaseStandalone scs, String...permissions) {
-        super(scs, permissions, true, 1);
+        super(scs, permissions, true, 0);
     }
 
     @Override
@@ -46,9 +46,10 @@ public class Owner extends SimpleCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
+
         
         final Player player = (Player)sender;
-        final String owner    = args[0];
+        final String owner    = (args != null && args.length > 0) ? args[0] : null;
         
         registerShopManipulator(player, new EventShopManipulator(scs, sender) {
             @Override
