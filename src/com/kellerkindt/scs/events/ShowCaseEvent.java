@@ -35,7 +35,36 @@ public abstract class ShowCaseEvent extends Event implements Cancellable {
     private boolean     verify          = true;
     private Throwable   cause           = null;
     private String      msgSuccessfully = null;
-    
+
+    private Object consumer;
+
+    /**
+     * @param consumer The {@link Object} that wants to select this {@link ShowCaseEvent} as consumed
+     * @return Whether this is the first {@link #consume(Object)} call and therefore whether the consumer has been set
+     */
+    public boolean consume(Object consumer) {
+        if (isConsumed()) {
+            return false;
+        } else {
+            this.consumer = consumer;
+            return true;
+        }
+    }
+
+    /**
+     * @return Whether this {@link ShowCaseEvent} has been consumed
+     */
+    public boolean isConsumed() {
+        return consumer != null;
+    }
+
+    /**
+     * @return The consumer of this {@link ShowCaseEvent} or null
+     */
+    public Object getConsumer() {
+        return consumer;
+    }
+
 
     /**
      * @see org.bukkit.event.Cancellable#isCancelled()

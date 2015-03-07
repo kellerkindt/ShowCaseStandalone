@@ -46,9 +46,9 @@ public class InventoryListener implements Listener {
     
     public static final int MAX_INVENTORY_SIZE    = 6*9;
     
-    private ShowCaseStandalone        scs;
-    private Map<Shop, Inventory>    inventories        = new HashMap<Shop, Inventory>();
-    private Map<Shop, int[]>        amountOpened    = new HashMap<Shop, int[]>();
+    private ShowCaseStandalone   scs;
+    private Map<Shop, Inventory> inventories    = new HashMap<Shop, Inventory>();
+    private Map<Shop, int[]>     amountOpened   = new HashMap<Shop, int[]>();
     
     public InventoryListener (ShowCaseStandalone scs) {
         this.scs    = scs;
@@ -76,28 +76,28 @@ public class InventoryListener implements Listener {
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGH)
     public void onShopDeleteEvent (ShowCaseDeleteEvent scde) {
-        Shop        shop        = scde.getShop();
-        Inventory     inventory     = inventories.get(shop);
+        Shop      shop      = scde.getShop();
+        Inventory inventory = inventories.get(shop);
         
         if (inventory != null) {
             closeInventoryForShop(shop);
             updateShop(inventory, scde.getPlayer(), shop);
             
-            inventories    .remove(shop);
+            inventories .remove(shop);
             amountOpened.remove(shop);
         }
     }
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGH)
     public void onShopRemoveEvent (ShowCaseRemoveEvent scre) {
-        Shop        shop        = scre.getShop();
-        Inventory     inventory     = inventories.get(shop);
+        Shop      shop      = scre.getShop();
+        Inventory inventory = inventories.get(shop);
         
         if (inventory != null) {
             closeInventoryForShop(shop);
             updateShop(inventory, scre.getPlayer(), shop);
             
-            inventories    .remove(shop);
+            inventories .remove(shop);
             amountOpened.remove(shop);
         }
     }
@@ -123,13 +123,7 @@ public class InventoryListener implements Listener {
             
             // open the inventory
             scie.getPlayer().openInventory(inventory);
-
-            // opened the inventory, cancel any other action
-            scie.setCancelled(true);
-            
-        } else if (hasShopInventoryViewers(shop)) {
-            // inventory is opened, no interaction allowed
-            scie.setCancelled(true);
+            scie.consume(this);
         }
     }
     

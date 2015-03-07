@@ -174,6 +174,9 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
     public void onShowCaseInteractEvent (ShowCaseInteractEvent scie) {
+        if (scie.isConsumed()) {
+            return; // nothing to do
+        }
         
         Player    player    = scie.getPlayer();
         Shop    shop    = scie.getShop();
