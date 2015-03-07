@@ -19,11 +19,7 @@ package com.kellerkindt.scs.shops;
 
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -311,14 +307,14 @@ public abstract class Shop implements ConfigurationSerializable, Changeable {
      * @return Whether the given player is the owner of this shop, if no one is set, it always return true
      */
     public boolean isOwner (UUID player) {
-        return getOwner() != null ? getOwner().equals(player) : true;
+        return Objects.equals(player, getOwner());
     }
 
 
     /**
      * Checks if the player can manage this shop
      * That means he has to be the owner or a member
-     * @param sender
+     * @param player
      * @return
      */
     public boolean isOwnerOrMember (UUID player) {
@@ -349,8 +345,10 @@ public abstract class Shop implements ConfigurationSerializable, Changeable {
         }
         map.put(KEY_MEMBERS,     members);
 
-        map.put(KEY_OWNER,         getOwner()            .toString());
-        map.put(KEY_WORLD,        getWorld().getUID()    .toString());
+        if (getOwner() != null) {
+            map.put(KEY_OWNER, getOwner());
+        }
+        map.put(KEY_WORLD,     getWorld().getUID().toString());
         
         // fix for fail import
         map.put(KEY_LOCATION,    new Double[]{
@@ -381,9 +379,20 @@ public abstract class Shop implements ConfigurationSerializable, Changeable {
                 
                 // set the worlds UUID (first entry in the list) as the world itself
                 map.put(KEY_WORLD, ((List<String>)map.get(KEY_WORLD)).get(0));
-                
-                // convert the owners name to its UUID
-                map.put(KEY_OWNER, ""+ShowCaseStandalone.getPlayerUUID((String)map.get(KEY_WORLD), server));
+
+                {
+                    // convert the owners name to its UUID
+                    // null owner means no owner, which means bank shop, do not try to convert that
+                    String owner = (String)map.get(KEY_OWNER);
+
+                    if (owner == null) {
+                        // fine, bank shop
+
+                    } else {
+                        // load the UUID
+                        map.put(KEY_OWNER, ""+ShowCaseStandalone.getPlayerUUID(owner, server));
+                    }
+                }
                 
                 
                 // convert the members from names to UUIDs
@@ -414,7 +423,11 @@ public abstract class Shop implements ConfigurationSerializable, Changeable {
         }
 
         // load the world
-        setOwner(UUID.fromString( (String)map.get(KEY_OWNER) ));
+        if (map.get(KEY_OWNER) != null) {
+            setOwner(UUID.fromString((String) map.get(KEY_OWNER)));
+        } else {
+            setOwner(null);
+        }
         
         
         

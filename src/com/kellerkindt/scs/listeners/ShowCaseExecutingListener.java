@@ -382,7 +382,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
         int     added = ItemStackUtilities.addToInventory(scpbe.getPlayer().getInventory(), shop.getItemStack(), scpbe.getQuantity());
         double    price = added * shop.getPrice();
         
-        if (!shop.isUnlimited()) {
+        if (!shop.isUnlimited() && shop.getOwner() != null) {
             // the owner only gets the money if the shop is not unlimited
             scs.getBalanceHandler().add(shop.getOwner(),   price);
         }
@@ -416,7 +416,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
         double    price    = removed * shop.getPrice();
         
         
-        if (!shop.isUnlimited()) {
+        if (!shop.isUnlimited() && shop.getOwner() != null) {
             // the owner only looses its money if it isn't a unlimited shop
             scs.getBalanceHandler().sub(shop.getOwner(),    price);
         }

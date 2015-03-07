@@ -429,11 +429,15 @@ public class ShowCaseStandalone extends JavaPlugin {
     }
     
     /**
-     * @param uuid        {@link UUID} of the {@link Player}
+     * @param uuid        {@link UUID} of the {@link Player}, if null, null will be returned
      * @param server    {@link Server} to search for the {@link Player}
      * @return The name of the player of the given {@link UUID} on the given {@link Server} or the given {@link UUID}
      */
     public static String getPlayerName (UUID uuid, Server server) {
+        if (uuid == null) {
+            return null;
+        }
+
         // try to get the online player with the given UUID
         Player          playerOnline     = server.getPlayer(uuid);
         OfflinePlayer   playerOffline    = null;
@@ -887,7 +891,9 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param msg    Message to send
      */
     public void sendMessageToOwner (Shop shop, String msg) {
-        sendMessage(getServer().getPlayer(shop.getOwner()), msg);
+        if (shop.getOwner() != null) {
+            sendMessage(getServer().getPlayer(shop.getOwner()), msg);
+        }
     }
     
     /**
@@ -897,6 +903,10 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param message    Message to send
      */
     public void sendTransactionMessageToOwner (Shop shop, String message) {
+        if (shop.getOwner() == null) {
+            return; // bank account
+        }
+
         // get the player
         Player player = getServer().getPlayer(shop.getOwner());
         

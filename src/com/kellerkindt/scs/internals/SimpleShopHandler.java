@@ -17,12 +17,7 @@
 */
 package com.kellerkindt.scs.internals;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 import org.bukkit.Chunk;
@@ -566,7 +561,7 @@ public class SimpleShopHandler implements ShopHandler {
         
         @EventHandler(ignoreCancelled=true, priority=EventPriority.MONITOR)
         public void onShowCaseChange(ShowCaseOwnerSetEvent event) {
-            if (!event.getNewOwnerName().equals( scs.getPlayerName( event.getShop().getOwner() ))) {
+            if (!Objects.equals(event.getNewOwnerName(), scs.getPlayerName( event.getShop().getOwner() ))) {
 
                 // the old owner has now one shop less
                 decrementShopAmount( event.getShop().getOwner() );
