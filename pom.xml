@@ -70,15 +70,18 @@
       <!-- replacer that updates the version number in the plugin.yml -->
       <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
-          <artifactId>maven-replacer-plugin</artifactId>
+          <artifactId>replacer</artifactId>
+          <version>1.5.3</version>
           <executions>
               <execution>
-                  <phase>process-resources</phase>
+                  <phase>prepare-package</phase>
+                  <goals>
+                      <goal>replace</goal>
+                  </goals>
               </execution>
           </executions>
           <configuration>
-              <basedir>target/classes</basedir>
-              <file>plugin.yml</file>
+              <file>${project.basedir}/target/classes/plugin.yml</file>
               <replacements>
                   <replacement>
                       <token>version: [\d.]*</token>
