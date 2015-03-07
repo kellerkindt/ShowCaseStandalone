@@ -149,15 +149,16 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         
-        
         try {
             com.kellerkindt.scs.commands.Command cmd = null;
             
             // try to find the command
-            for (com.kellerkindt.scs.commands.Command c : commands) {
-                if (c.getName().equals(args[0])) {
-                    cmd = c;
-                    break;
+            if (args != null && args.length > 0) {
+                for (com.kellerkindt.scs.commands.Command c : commands) {
+                    if (c.getName().equals(args[0])) {
+                        cmd = c;
+                        break;
+                    }
                 }
             }
             
