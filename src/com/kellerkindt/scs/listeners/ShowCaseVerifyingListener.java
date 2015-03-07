@@ -534,7 +534,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // insufficient money
-            else if (!scs.getBalanceHandler().hasEnough(shop.getOwner(), amount*price)) {
+            else if (shop.getOwner() != null && !scs.getBalanceHandler().hasEnough(shop.getOwner(), amount*price)) {
                 cause = new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_MONEY_COSTUMER.get());
             }
     
