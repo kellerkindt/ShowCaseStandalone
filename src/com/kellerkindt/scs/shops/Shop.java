@@ -346,7 +346,7 @@ public abstract class Shop implements ConfigurationSerializable, Changeable {
         map.put(KEY_MEMBERS,     members);
 
         if (getOwner() != null) {
-            map.put(KEY_OWNER, getOwner());
+            map.put(KEY_OWNER, getOwner().toString());
         }
         map.put(KEY_WORLD,     getWorld().getUID().toString());
         
