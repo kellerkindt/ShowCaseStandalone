@@ -50,6 +50,9 @@ public class SCSConfiguration extends Configuration {
     
     public static final String KEY_DISPLAY_USESIGNS         = "Display.UseSigns";
     public static final String KEY_DISPLAY_USESTORAGE       = "Display.UseStorage";
+
+    public static final String KEY_SPAWNING_COUNT           = "Spawning.Count";
+    public static final String KEY_SPAWNING_TO_MAX          = "Spawning.ToMax";
     
     public static final String KEY_TOWNY_NEEDSRESIDENT      = "Towny.needsResident";
     public static final String KEY_TOWNY_NEEDSTOBEOWNER     = "Towny.needsToBeOwner";
@@ -196,7 +199,15 @@ public class SCSConfiguration extends Configuration {
     public boolean isDisplayShopUsingStorage () {
         return getForced(KEY_DISPLAY_USESTORAGE, true);
     }
-    
+
+    public boolean isSpawningToMax() {
+        return getForced(KEY_SPAWNING_TO_MAX, false);
+    }
+
+    public int getSpawnCount() {
+        return getForced(KEY_SPAWNING_COUNT, 0);// 0 makes it not pickupable!! o.O
+    }
+
     public boolean isTownyAllowingInWilderness () {
         return getForced(KEY_TOWNY_ALLOWINWILDERNESS, false);
     }

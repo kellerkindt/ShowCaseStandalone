@@ -17,9 +17,13 @@
 */
 package com.kellerkindt.scs.internals;
 
-import java.util.*;
-import java.util.logging.Level;
-
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
+import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
+import com.kellerkindt.scs.interfaces.ShopHandler;
+import com.kellerkindt.scs.shops.Shop;
+import com.kellerkindt.scs.utilities.ItemStackUtilities;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -34,13 +38,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import com.kellerkindt.scs.Properties;
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
-import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
-import com.kellerkindt.scs.interfaces.ShopHandler;
-import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import java.util.*;
+import java.util.logging.Level;
 
 
 public class SimpleShopHandler implements ShopHandler {
@@ -291,9 +290,6 @@ public class SimpleShopHandler implements ShopHandler {
         fireChangeEvent();
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#removeShop(com.miykeal.showCaseStandalone.shops.Shop)
-     */
     @Override
     public void removeShop(Shop shop) {
         // remove the main part
@@ -664,15 +660,16 @@ public class SimpleShopHandler implements ShopHandler {
             Location     spawnLocation    = shop.getSpawnLocation();
             ItemStack    itemStack        = shop.getItemStack().clone();
             
-            if (Properties.DEFAULT_STACK_TO_MAX) {
+            if (scs.getConfiguration().isSpawningToMax()) {
                 itemStack.setAmount(itemStack.getMaxStackSize());
+
             } else {
                 /*
                  *  barrier 1, an amount of 0 does not cause any pickup event (seems to be so)
                  *  !! Mobs can pick the Item up, but do not drop it, since it has an amount of 0,
                  *     although they can use it ^^
                  */
-                itemStack.setAmount(Properties.DEFAULT_STACK_AMOUNT);
+                itemStack.setAmount(scs.getConfiguration().getSpawnCount());
             }
             
             
@@ -780,9 +777,6 @@ public class SimpleShopHandler implements ShopHandler {
         }
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#onItemFramePlaced(org.bukkit.entity.ItemFrame)
-     */
     @Override
     public void addItemFrame(final ItemFrame frame) {
         
@@ -845,9 +839,6 @@ public class SimpleShopHandler implements ShopHandler {
         return frameShops.containsKey(frame);
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#onItemFrameDestroyed(org.bukkit.entity.ItemFrame)
-     */
     @Override
     public void removeItemFrame(ItemFrame frame) {
         

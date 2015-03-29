@@ -64,8 +64,6 @@ public class Properties {
       
     
     // default values
-    public static final boolean DEFAULT_STACK_TO_MAX    = false;
-    public static final int     DEFAULT_STACK_AMOUNT    = 0;                    // 0 makes it not pickupable!! o.O
     public static final int     DEFAULT_PICKUP_DELAY    = Integer.MAX_VALUE;    // less pickup events
     public static final String[]DEFAULT_LOCALES         = {"locale_EN.yml", "locale_DE.yml"};
     
