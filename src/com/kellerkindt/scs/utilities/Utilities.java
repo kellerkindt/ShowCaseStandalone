@@ -29,6 +29,8 @@ import java.util.Random;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
+import com.kellerkindt.scs.SCSConfiguration;
+import com.kellerkindt.scs.ShowCaseStandalone;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -116,15 +118,19 @@ public class Utilities {
         
         try {
             Material m        = Material.getMaterial(args[0].toUpperCase());
+            SCSConfiguration cfg = ShowCaseStandalone.get().getConfiguration(); // singleton, bad...
+
             if (m == null)
                 m               = Material.getMaterial(Integer.parseInt(args[0]));
             int     data     = Integer.parseInt(args[1]);
             int        amount    = 0;
+
+
             
-            if (Properties.DEFAULT_STACK_TO_MAX) {
+            if (cfg.isSpawningToMax()) {
                 amount = m.getMaxStackSize();
             } else {
-                amount = Properties.DEFAULT_STACK_AMOUNT;
+                amount = cfg.getSpawnCount();
             }
             
             // for the books (getHandle().tag...)
