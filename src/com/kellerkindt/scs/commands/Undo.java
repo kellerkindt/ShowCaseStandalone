@@ -42,7 +42,7 @@ public class Undo extends SimpleCommand {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         // TODO Auto-generated method stub
-        scs.getLogger().info("Somone performed '/scs undo' which isn't implemented yet");
+        scs.getLogger().info("Someone performed '/scs undo' which isn't implemented yet");
         scs.sendMessage(sender, "Not implemented yet");
         
     }
