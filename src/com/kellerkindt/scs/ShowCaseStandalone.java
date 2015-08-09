@@ -642,18 +642,29 @@ public class ShowCaseStandalone extends JavaPlugin {
     }
     
     /**
-     * Checks whether the given player can manage
-     * the given shop
+     * Checks whether the given player can manage the given shop
+     *
+     * <ul>True if:
+     *  <li>player is admin ('{@value Properties#PERMISSION_ADMIN}')</li>
+     *  <li>checkOwner is set     and the player is   owner  and has the permission '{@value Properties#PERMISSION_MANAGE}'</li>
+     *  <li>checkOwner is not set and the player is a member and has the permission '{@value Properties#PERMISSION_MANAGE}'</li>
+     * </ul>
+     *
+     * Alternatively, another permission-nodes can be passed (altPerms) which will be checked
+     * if the player doesn't have '{@value Properties#PERMISSION_MANAGE}'
+     *
      * @param player        Player to check
      * @param shop            Shop to manage
      * @param checkOwner    Whether the given player has to be the owner, if false, it can also be a member
+     * @param altPerms       Alternative permission-nodes that are required, if {@link Properties#PERMISSION_MANAGE} is not given
      * @return whether the given player can manage the given shop
      */
-    public boolean canManage (Player player, Shop shop, boolean checkOwner) {
+    public boolean canManage (Player player, Shop shop, boolean checkOwner, String ...altPerms) {
         return hasPermission(player, Properties.PERMISSION_ADMIN)
                 || ((!checkOwner || shop.isOwner(player.getUniqueId()))
-                &&   (checkOwner || shop.isOwnerOrMember(player.getUniqueId()))
-                && hasPermission(player, Properties.PERMISSION_MANAGE));
+                    &&   (checkOwner || shop.isOwnerOrMember(player.getUniqueId()))
+                    && (hasPermission(player, Properties.PERMISSION_MANAGE) || hasAllPermissions(player, altPerms))
+        );
     }
     
     /**

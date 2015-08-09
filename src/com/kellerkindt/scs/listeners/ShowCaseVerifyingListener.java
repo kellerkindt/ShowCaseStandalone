@@ -366,7 +366,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             
             Throwable    cause        = null;
             
-            if (!scs.canManage(player, shop, true)) {
+            if (!scs.canManage(player, shop, true, Properties.PERMISSION_REMOVE)) {
                 // not enough permissions
                 cause = new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_REM_SHOWCASE.get());
                 
