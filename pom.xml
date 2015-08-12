@@ -340,8 +340,8 @@
   
   <distributionManagement>
           <repository>
-             <id>tallbyte-repository</id>
-             <url>${repository.url}</url>
+             <id>upstream</id>
+             <url>${env.Jenkins.Repository}</url>
              <releases>
                  <enabled>true</enabled>
              </releases>
