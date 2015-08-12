@@ -341,7 +341,7 @@
   <distributionManagement>
           <repository>
              <id>upstream</id>
-             <url>${env.Jenkins.Repository}</url>
+             <url>http://localhost:65100/plugin/repository/project/ShowCaseStandalone/</url>
              <releases>
                  <enabled>true</enabled>
              </releases>
