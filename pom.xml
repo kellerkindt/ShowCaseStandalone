@@ -339,7 +339,6 @@
   
   
   <distributionManagement>
-	<repositories>
           <repository>
              <id>tallbyte-repository</id>
              <url>${repository.url}</url>
@@ -350,17 +349,6 @@
                 <enabled>true</enabled>
              </snapshots>
           </repository>
-	  <repository>
-             <id>upstream</id>
-             <url>${env.Jenkins.Repository}</url>
-             <releases>
-                 <enabled>true</enabled>
-             </releases>
-             <snapshots>
-                <enabled>true</enabled>
-             </snapshots>
-          </repository>
-	</repositories>
   </distributionManagement>
 
 </project>
