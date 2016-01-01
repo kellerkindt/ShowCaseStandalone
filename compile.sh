@@ -25,4 +25,4 @@ fi
 
 #(cd $_DIR_THIS; mvn install -Dmaven.javadoc.skip=true && (cd $_DIR_TARGET; java -jar jWebsite-0.0.1-SNAPSHOT.jar));
 #(cd $_DIR_THIS; mvn compile -Dmaven.javadoc.skip=true && (cd $_DIR_TARGET/classes; java -cp . com.kellerkindt.website.core.Main));
-(cd $_DIR_THIS; mvn install dependency:resolve dependency:javadoc dependency:sources -Dmaven.test.skip=true -Dmaven.javadoc.skip=true);
+(cd $_DIR_THIS; mvn install dependency:resolve dependency:sources -Dmaven.test.skip=true -Dmaven.javadoc.skip=true);
