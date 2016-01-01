@@ -67,12 +67,13 @@ public class Purge extends SimpleCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
+
         
-        String            name        = args[1];
-        String            world        = null;
-        boolean            ignoreWorld    = false;
-        boolean            isUUID        = false;
-        boolean            isPlayer    = true;
+        String  name        = args[1];
+        String  world       = null;
+        boolean ignoreWorld = false;
+        boolean isUUID      = false;
+        boolean isPlayer    = true;
         
         // delete whole world?
         if (name.startsWith(PREFIX_WORLD)) {
