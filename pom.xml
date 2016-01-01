@@ -151,6 +151,11 @@
           <id>bukkit-repo</id>
           <url>http://repo.bukkit.org/content/groups/public/</url>
       </repository>
+
+      <repository>
+          <id>spigot-repo</id>
+          <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+      </repository>
       
       <repository>
           <id>Plugin Metrics</id>
@@ -183,7 +188,7 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <scope>provided</scope>
-          <version>1.8.3-R0.1-SNAPSHOT</version>
+          <version>1.8.8-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
