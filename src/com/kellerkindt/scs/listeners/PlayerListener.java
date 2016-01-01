@@ -70,10 +70,12 @@ public class PlayerListener implements Listener {
         LocationSelector    locSelector    = scs.removeLocationSelector(player);
         Shop                 shop        = scs.getShopHandler().getShop(block);
         ShowCaseEvent        event        = null;
+        boolean             cancel      = false;
         
         if (locSelector != null && action == Action.RIGHT_CLICK_BLOCK) {
             // a location has been selected
             locSelector.onLocationSelected(block.getLocation());
+            cancel = true;
             
         } else if (shop != null && action == Action.RIGHT_CLICK_BLOCK) {
             // interact with the shop
@@ -89,14 +91,13 @@ public class PlayerListener implements Listener {
         if (event != null) {            
             // dispatch event
             scs.callShowCaseEvent(event, player);
-            
-            /*
-             *  cancel the current event so nothing else does work with the interaction,
-             *  if the ShowCaseEvent was not cancelled
-             */
-            if (!event.isCancelled()) {
-                pie.setCancelled(true);
-            }
+            cancel = !event.isCancelled();
         }
+
+        /*
+         *  cancel the current event so nothing else does work with the interaction,
+         *  if the ShowCaseEvent was not cancelled
+         */
+        pie.setCancelled(cancel);
     }
 }
