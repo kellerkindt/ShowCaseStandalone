@@ -20,12 +20,7 @@ package com.kellerkindt.scs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -551,7 +546,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     @SuppressWarnings("deprecation") // at the moment there is no other way?
     public boolean registerShopManipulator (final Player player, final ShopManipulator manipulator) {
         // update as soon as possible
-        Block block = player.getTargetBlock(null, 50);
+        Block block = player.getTargetBlock((Set<Material>)null, 50);
         Shop  shop  = getShopHandler().getShop(block);
         
         if (shop != null) {
