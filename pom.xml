@@ -15,8 +15,8 @@
       <build.builder>UNKNOWN</build.builder>
       
       
-      <repository.url.host>https://maven.tallbyte.com/</repository.url.host>
-      <repository.url.path>content/repositories/snapshots/</repository.url.path>
+      <repository.url.host>https://dl.tallbyte.com/</repository.url.host>
+      <repository.url.path>pub/mvn/</repository.url.path>
       <repository.url>${repository.url.host}${repository.url.path}</repository.url>
   </properties>
   
@@ -183,7 +183,7 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <scope>provided</scope>
-          <version>1.7.10-R0.1-SNAPSHOT</version>
+          <version>1.8.3-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
