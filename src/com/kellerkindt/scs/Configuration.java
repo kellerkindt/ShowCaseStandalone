@@ -60,12 +60,12 @@ public abstract class Configuration {
     protected <T> T getForced (String key, T alt) {
         return getForced(key, alt, (Class<T>)alt.getClass());
     }
-    
+
     @SuppressWarnings("unchecked") // try + catch --> it is save
     private <T> T getForced (String key, T alt, Class<T> clazz) {
         // get the current value
         Object value = getRaw(key);
-        
+
         // is the value valid?
         if (value != null && clazz.isInstance(value)) {
             try {
@@ -73,7 +73,7 @@ public abstract class Configuration {
                 return (T)value;
             } catch (ClassCastException cce) {}
         }
-        
+
         // null or invalid data type -> overwrite
         update(key, alt, true);
         return alt;
@@ -85,8 +85,10 @@ public abstract class Configuration {
      */
     public void rename (String oldName, String newName) {
         Object value = config.get(oldName);
-        config.set(oldName, null);
-        config.set(newName, value);
+        if (value != null) {
+            config.set(oldName, null);
+            config.set(newName, value);
+        }
     }
     
     /**
