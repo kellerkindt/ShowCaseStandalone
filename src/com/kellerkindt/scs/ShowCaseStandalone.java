@@ -490,7 +490,7 @@ public class ShowCaseStandalone extends JavaPlugin {
      * successfully
      * 
      * @param event Event to call
-     * @param The sender that caused this event
+     * @param sender The sender that caused this event
      * @return Whether the event was cancelled
      */
     public boolean callShowCaseEvent (ShowCaseEvent event, CommandSender sender) {
@@ -943,7 +943,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     /**
      * Sends the given {@link CommandSender} the given message,
      * parses color
-     * @param player    {@link CommandSender} to send the message to
+     * @param sender    {@link CommandSender} to send the message to
      * @param msg        Message to send
      */
     public void sendMessage (CommandSender sender, String msg) {
