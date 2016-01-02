@@ -171,8 +171,11 @@ public interface ShopHandler extends Iterable<Shop> {
      * @return Whether the given {@link ItemFrame} is known and used by ths {@link ShopHandler}
      */
     public boolean isKnownItemFrame (ItemFrame frame);
-    
-    
+
+    /**
+     * @param shop {@link Shop} to check whether to change its show state
+     */
+    void recheckShopShowState(Shop shop);
     
     /**
      * Starts the internal task to re-spawn the display items

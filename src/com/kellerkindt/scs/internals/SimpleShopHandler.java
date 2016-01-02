@@ -26,6 +26,7 @@ import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -53,7 +54,9 @@ public class SimpleShopHandler implements ShopHandler {
     private HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
     private HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
     private ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
-    
+
+    protected List<Shop>                 visibleShops   = new LinkedList<Shop>();
+
     private ShowCaseStandalone    scs           = null;
     private boolean               fireEvents    = true;
 
@@ -62,16 +65,92 @@ public class SimpleShopHandler implements ShopHandler {
     public SimpleShopHandler(ShowCaseStandalone scs) {
         this.scs            = scs;
         this.changeListener = new InternalShopChangeListener();
-        
+
         scs.getServer().getPluginManager().registerEvents( this.changeListener, scs );
     }
-    
+
+    @Override
+    public void recheckShopShowState(Shop shop) {
+        recheckShopShowState(Collections.singletonList(shop));
+    }
+
+    /**
+     * @param shops {@link Iterable} of {@link Shop}s to check the show state for
+     */
+    protected void recheckShopShowState(Iterable<Shop> shops) {
+        List<Shop> toShow = new LinkedList<Shop>();
+        List<Shop> toHide = new LinkedList<Shop>();
+
+        for (Shop shop : shops) {
+            recheckShopShowState(shop, toShow, toHide);
+        }
+
+        // System.out.println("recheckShopShowState, toShow.size="+toShow.size()+", toHide.size="+toHide.size());
+
+        for (Shop p : toHide) {
+            hide(p);
+        }
+
+        for (Shop p : toShow) {
+            show(p);
+        }
+    }
+
+    /**
+     * @param shop {@link Shop} to check whether to change the show state for
+     * @param toShow {@link List} to add the shop to for a show request
+     * @param toHide {@link List} to add the shop to for a hide request
+     */
+    protected void recheckShopShowState(Shop shop, List<Shop> toShow, List<Shop> toHide) {
+        try {
+            // regular getChunk().isLoaded() causes bukkit to load the chunk... (on getChunk())
+            if (!isChunkLoaded(shop.getSpawnLocation())) {
+                toHide.add(shop);
+                return;
+            }
+
+            // shop Item
+            Item item = shopItems.get(shop);
+
+            // inactive? hide if configuration allows that
+            if (scs.getConfiguration().isHidingInactiveShops() && (!shop.isActive() && shop.isVisible())) {
+                toHide.add(shop);
+            }
+
+            // not visible yet?
+            else if (item == null) {
+                if (!scs.getConfiguration().isHidingInactiveShops() || shop.isActive()) {
+                    // show it since it is active
+                    toShow.add(shop);
+                }
+                else {
+                    // more to remove the entries of the shop (frames...) than to remove it
+                    toHide.add(shop);
+                }
+
+                // has been shown but item is now dead?
+            } else if (item.isDead()) {
+                if (!scs.getConfiguration().isHidingInactiveShops() || shop.isActive()) {
+                    // remove it and show it again if active
+                    toHide.add(shop);
+                    toShow.add(shop);
+
+                } else {
+                    // inactive -> remove it
+                    toHide.add(shop);
+                }
+            }
+        } catch (Throwable t) {
+            scs.getLogger().log(Level.SEVERE, "Error while handling shop="+shop, t);
+        }
+    }
+
     /**
      * @see com.kellerkindt.scs.interfaces.ShopHandler#tick()
      */
     @Override
     public void tick() {
-        checkShopDisplayState();
+        // checkShopDisplayState();
     }
 
     /**
@@ -88,48 +167,8 @@ public class SimpleShopHandler implements ShopHandler {
             scs.getLogger().info("Refreshing items. Thread exec start: " + start);
         }
 
-        for (Shop p : this) {
-            try {
-                // Regular chunk.isloaded() causes bukkit to load the chunk...
-                if (!isChunkLoaded(p.getSpawnLocation())) {
-                    continue;
-                }
-                
-                // shop Item
-                Item item = shopItems.get(p);
-    
-                // inactive? hide if configuration allows that
-                if (scs.getConfiguration().isHidingInactiveShops() && (!p.isActive() && p.isVisible())) {
-                    hide(p);
-                }
-    
-                // not visible yet?
-                else if (item == null) {
-                    if (!scs.getConfiguration().isHidingInactiveShops() || p.isActive()) {
-                        // show it since it is active
-                        show(p);
-                    }
-                    else {
-                        // more to remove the entries of the shop (frames...) than to remove it
-                        hide(p);
-                    }
-    
-                // has been shown but item is now dead?
-                } else if (item.isDead()) {
-                    if (!scs.getConfiguration().isHidingInactiveShops() || p.isActive()) {
-                        // remove it and show it again if active
-                        hide(p);
-                        show(p);
-                        
-                    } else {
-                        // inactive -> remove it
-                        hide(p);
-                    }
-                }
-            } catch (Throwable t) {
-                scs.getLogger().log(Level.SEVERE, "Error while handling shop="+p, t);
-            }
-        }
+
+        recheckShopShowState(visibleShops);
 
         if (scs.getConfiguration().isDebuggingThreads()) {
             long end = System.nanoTime();
@@ -355,45 +394,38 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#loadChunk(org.bukkit.Chunk)
      */
     @Override
-    public void loadChunk(Chunk k) {
+    public void loadChunk(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
-            scs.getLogger().info("Load chunk: " + (k == null ? null : k.toString() + ", " + k.getWorld().getName()));
+            scs.getLogger().info("Load chunk: " + (chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
 
         // fix for #263?
-        if (k == null || k.getWorld() == null) {
+        if (chunk == null || chunk.getWorld() == null) {
             return;
         }
 
         try {
-            for (Shop p : this) {
+            for (Shop shop : this) {
 
                 // ignore shops without a valid world
-                if (p.getWorld() == null) {
-                    scs.getLogger().severe("Found showcase on not existing world! To remove perform: /scs purge u:" + p.getWorldUUID());
+                if (shop.getWorld() == null) {
+                    scs.getLogger().severe("Found showcase on not existing world! To remove perform: /scs purge u:" + shop.getWorldUUID());
                     continue;
                 }
 
-                double  kx = k.getX();
-                double  kz = k.getZ();
-                World   kw = k.getWorld();
 
-                Chunk   ck = p .getLocation().getChunk();
-                double  px = ck.getX();
-                double  pz = ck.getZ();
-                World   pw = ck.getWorld();
-
-                if (kx == px && kz == pz && kw.getName().equals(pw.getName())) {
+                if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
-                        scs.getLogger().info("Found shop to show: "+p.getUUID());
+                        scs.getLogger().info("Found shop to show: "+shop.getUUID());
                     }
 
                     // show if active
-                    if (!scs.getConfiguration().isHidingInactiveShops() || p.isActive()) {
-                        show(p);
+                    if (!scs.getConfiguration().isHidingInactiveShops() || shop.isActive()) {
+                        show(shop);
+
                     } else {
                         // just be sure everything is removed
-                        hide(p);
+                        hide(shop);
                     }
                 }
             }
@@ -406,33 +438,33 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#unloadChunk(org.bukkit.Chunk)
      */
     @Override
-    public void unloadChunk(Chunk k) {
+    public void unloadChunk(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
-            scs.getLogger().info("Unload chunk: "+(k == null ? null : k.toString() + ", " + k.getWorld().getName()));
+            scs.getLogger().info("Unload chunk: "+(chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
 
         try {
-            for (Shop p : this) {
+            List<Shop> toHide = new ArrayList<Shop>();
 
-                if (p.getWorld() == null) {
-                    scs.getLogger().info("Found showcase in not existing world! To remove perform: /scs purge u:" + p.getWorldUUID());
+            for (Shop shop : visibleShops) {
+
+                if (shop.getWorld() == null) {
+                    scs.getLogger().info("Found showcase in not existing world! To remove perform: /scs purge u:" + shop.getWorldUUID());
                     continue;
                 }
 
-                World   kw = k.getWorld();
-
-                boolean loaded  = isChunkLoaded(p.getLocation());
-                World   pw      = p.getWorld();
-
-                if (!loaded && kw.getName().equals(pw.getName())) {
-
+                if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
-                        scs.getLogger().info("Found scs to unload: " + p.getUUID());
+                        scs.getLogger().info("Found scs to unload: " + shop.getUUID());
                     }
                     
                     // hide
-                    hide(p);
+                    toHide.add(shop);
                 }
+            }
+
+            for (Shop shop : toHide) {
+                hide(shop);
             }
 
         } catch (NullPointerException npe) {
@@ -458,6 +490,7 @@ public class SimpleShopHandler implements ShopHandler {
         for (Shop p : this) {
             if (p.getBlock() != null) {
                 if (isChunkLoaded(p.getLocation())) {
+                    // System.out.println("showing shop, id="+p.getUUID()+", loc"+p.getLocation());
                     if (!scs.getConfiguration().isHidingInactiveShops() || p.isActive()) {
                         show(p);
                     }
@@ -478,6 +511,32 @@ public class SimpleShopHandler implements ShopHandler {
         
     }
 
+    public boolean isInChunk(Location location, Chunk chunk) {
+        return isInChunk(location, location.getWorld(), chunk);
+    }
+
+    public boolean isInChunk(Location location, World world, Chunk chunk) {
+        return world.getName().equals(chunk.getWorld().getName())
+            && getChunkX(location) == chunk.getX()
+            && getChunkZ(location) == chunk.getZ();
+    }
+
+    public int getChunkZ(Location location) {
+        return getChunkZ(location.getBlockZ());
+    }
+
+    public int getChunkZ(int blockZ) {
+        return (int)Math.floor(blockZ / 16d);
+    }
+
+    public int getChunkX(Location location) {
+        return getChunkX(location.getBlockX());
+    }
+
+    public int getChunkX(int blockX) {
+        return (int)Math.floor(blockX / 16d);
+    }
+
     /**
      * Checks whether the {@link Chunk} at the given
      * {@link Location} is loaded without loading it
@@ -486,8 +545,8 @@ public class SimpleShopHandler implements ShopHandler {
      * @return Whether the {@link Chunk} at the given {@link Location} is loaded
      */
     private boolean isChunkLoaded(Location loc) {
-        int   cx = loc.getBlockX() >> 4;
-        int   cy = loc.getBlockZ() >> 4;
+        int   cx = getChunkX(loc);
+        int   cz = getChunkZ(loc);
         World cw = loc.getWorld();
 
         // fix for #263 ?
@@ -495,7 +554,8 @@ public class SimpleShopHandler implements ShopHandler {
             return false;
         }
 
-        return cw.isChunkLoaded(cx, cy);
+        // System.out.println("isChunkLoaded: "+loc+", cx="+cx+", cy="+cy+": "+cw.isChunkLoaded(cx, cy));
+        return cw.isChunkLoaded(cx, cz);
     }
 
     @Override
@@ -575,6 +635,10 @@ public class SimpleShopHandler implements ShopHandler {
      */
     @Override
     public void hide(Shop shop) {
+        // set invisible
+        shop.setVisible(false);
+        visibleShops.remove(shop);
+
         // get the Item for this shop
         Item item    = shopItems.get(shop);
         
@@ -591,9 +655,6 @@ public class SimpleShopHandler implements ShopHandler {
 
             // remove item
             item.remove();
-            
-            // set invisible
-            shop.setVisible(false);
             
             // remove item
             shopItems.remove(shop);
@@ -612,7 +673,7 @@ public class SimpleShopHandler implements ShopHandler {
                 frame.setItem(null);
             }
         }
-        
+
     }
     
     
@@ -672,12 +733,21 @@ public class SimpleShopHandler implements ShopHandler {
                 itemStack.setAmount(scs.getConfiguration().getSpawnCount());
             }
             
-            
+
             
             Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
             
             // prevent item from being merged (at least in some cases)
-            item.getItemStack().getItemMeta().setDisplayName(UUID.randomUUID().toString());
+            item.getItemStack().getItemMeta().setDisplayName(shop.getUUID().toString());
+
+            // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
+
+            if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
+                scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getUUID()+", loc="+shop.getLocation());
+                // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
+            }
+
+
             
             
             /*
@@ -694,6 +764,7 @@ public class SimpleShopHandler implements ShopHandler {
             
             // set visible
             shop.setVisible(true);
+            visibleShops.add(shop);
         }
     }
     

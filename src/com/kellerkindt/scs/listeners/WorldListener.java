@@ -17,9 +17,13 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.shops.Shop;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
@@ -30,6 +34,12 @@ public class WorldListener implements Listener {
     
     public WorldListener (ShowCaseStandalone scs) {
         this.scs    = scs;
+
+        for (World world : scs.getServer().getWorlds()) {
+            for (Chunk k : world.getLoadedChunks()) {
+                scs.getShopHandler().loadChunk(k);
+            }
+        }
     }
     
     
@@ -41,5 +51,27 @@ public class WorldListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
     public void onChunkUnload(ChunkUnloadEvent event) {
         scs.getShopHandler().unloadChunk(event.getChunk());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onItemDespawnEvent(ItemDespawnEvent event) {
+        final Shop shop = scs.getShopHandler().getShop(event.getEntity());
+
+        if (shop != null && shop.isVisible()) {
+            event.setCancelled(true);
+
+            // System.out.println("canceled ItemDespawnEvent");
+
+            scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, new Runnable() {
+                @Override
+                public void run() {
+                    /*
+                     * since canceling the event does not guarantee the further existence of the Item,
+                     * recheck the shop show state as soon as this event has ended
+                     */
+                    scs.getShopHandler().recheckShopShowState(shop);
+                }
+            });
+        }
     }
 }
