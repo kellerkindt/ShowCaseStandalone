@@ -98,7 +98,7 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
                 if (shop == null) {
                     try {
                         toSave.notifyAll(); // notify flush
-                        toSave.wait();      // wait for more work
+                        toSave.wait(100);   // wait for more work, do not wait forever, otherwise #keepRunning() cannot be checked
                     } catch (InterruptedException ie) {
                         scs.getLogger().log(Level.WARNING, "Got interrupted, may cause performance issues", ie);
                     }
