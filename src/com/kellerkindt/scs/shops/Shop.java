@@ -773,17 +773,46 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
          * the shop needs to be rewritten
          */
         if (version != Properties.VERSION_SHOP) {
-            this.setChanged(true, new Runnable() {
-                @Override
-                public void run() {
-                    // nothing to do
-                }
-            });
+            this.setChanged();
         }
 
         else {
             // nothing to do, loading alone is no reason to have the changed state
             this.resetHasChanged();
+        }
+
+        {
+            // try to load names or ids if not present
+            bulkChanges(new Runnable() {
+                @Override
+                public void run() {
+                    // check for the owner name
+                    if (owner.getId() != null && owner.getName() == null) {
+                        setOwner(scs.getPlayerNameOrNull(owner.getId()));
+                    }
+
+                    // check for world name and id
+                    if (getLocation() != null && getLocation().getWorld() != null) {
+                        if (Shop.this.world.getName() == null) {
+                            Shop.this.world.setName(getLocation().getWorld().getName());
+                            Shop.this.setChanged();
+                        }
+
+                        if (Shop.this.world.getId() == null) {
+                            Shop.this.world.setId(getLocation().getWorld().getUID());
+                            Shop.this.setChanged();
+                        }
+                    }
+
+                    // check for member names
+                    for (NamedUUID member : members) {
+                        if (member.getId() != null && member.getName() == null) {
+                            addMember(member.getId(), scs.getPlayerNameOrNull(member.getId()));
+                            setChanged();
+                        }
+                    }
+                }
+            });
         }
     }
     /**
