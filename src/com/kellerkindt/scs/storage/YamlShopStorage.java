@@ -61,7 +61,9 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
     protected final Changeable.ChangeListener<Shop> shopChangeListener = new Changeable.ChangeListener<Shop>() {
         @Override
         public void onChanged(Shop shop) {
-            scs.getLogger().info("Shop changed, going to enqueue save request for shop.id="+shop.getId());
+            if (scs.getConfiguration().isDebuggingSave()) {
+                scs.getLogger().info("Shop changed, going to enqueue save request for shop.id=" + shop.getId());
+            }
             enqueueSaveRequest(shop);
         }
     };
@@ -105,7 +107,9 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
             }
 
 
-            scs.getLogger().info("Going to save asynchronously, shop.id="+shop.getId());
+            if (scs.getConfiguration().isDebuggingSave()) {
+                scs.getLogger().info("Going to save asynchronously, shop.id="+shop.getId());
+            }
             saveSafely(shop);
         }
     }

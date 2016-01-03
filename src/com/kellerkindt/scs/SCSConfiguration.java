@@ -175,7 +175,11 @@ public class SCSConfiguration extends Configuration {
     public long getSaveInterval () {
         return getForced(KEY_SAVE_INTERVAL, 60l);
     }
-    
+
+    public boolean isDebuggingSave() {
+        return getForced(KEY_DEBUG_SAVE, false);
+    }
+
     public boolean isDebuggingThreads () {
         return getForced(KEY_DEBUG_THREAD, false);
     }
