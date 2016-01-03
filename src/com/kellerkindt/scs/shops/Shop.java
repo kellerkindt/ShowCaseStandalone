@@ -756,6 +756,32 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                     map.put(KEY_MEMBERS, members);
                 }
 
+            case 2:
+                {
+                    // check for the owner name
+                    if (owner.getId() != null && owner.getName() == null) {
+                        owner.setName(scs.getPlayerNameOrNull(owner.getId()));
+                    }
+
+                    // check for world name and id
+                    if (getLocation() != null && getLocation().getWorld() != null) {
+                        if (Shop.this.world.getName() == null) {
+                            Shop.this.world.setName(getLocation().getWorld().getName());
+                        }
+
+                        if (Shop.this.world.getId() == null) {
+                            Shop.this.world.setId(getLocation().getWorld().getUID());
+                        }
+                    }
+
+                    // check for member names
+                    for (NamedUUID member : members) {
+                        if (member.getId() != null && member.getName() == null) {
+                            member.setName(scs.getPlayerNameOrNull(member.getId()));
+                        }
+                    }
+                }
+
             case Properties.VERSION_SHOP:
                 break;
                 
@@ -802,39 +828,6 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
             this.resetHasChanged();
         }
 
-        {
-            // try to load names or ids if not present
-            bulkChanges(new Runnable() {
-                @Override
-                public void run() {
-                    // check for the owner name
-                    if (owner.getId() != null && owner.getName() == null) {
-                        setOwner(scs.getPlayerNameOrNull(owner.getId()));
-                    }
-
-                    // check for world name and id
-                    if (getLocation() != null && getLocation().getWorld() != null) {
-                        if (Shop.this.world.getName() == null) {
-                            Shop.this.world.setName(getLocation().getWorld().getName());
-                            Shop.this.setChanged();
-                        }
-
-                        if (Shop.this.world.getId() == null) {
-                            Shop.this.world.setId(getLocation().getWorld().getUID());
-                            Shop.this.setChanged();
-                        }
-                    }
-
-                    // check for member names
-                    for (NamedUUID member : members) {
-                        if (member.getId() != null && member.getName() == null) {
-                            member.setName(scs.getPlayerNameOrNull(member.getId()));
-                            setChanged();
-                        }
-                    }
-                }
-            });
-        }
     }
     /**
      * @see java.lang.Object#toString()
