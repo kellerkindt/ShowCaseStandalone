@@ -17,39 +17,20 @@
 */
 package com.kellerkindt.scs.listeners;
 
-import java.util.Map.Entry;
-
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.events.*;
+import com.kellerkindt.scs.interfaces.ShowCaseListener;
+import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.shops.*;
+import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.events.ShowCaseCreateEvent;
-import com.kellerkindt.scs.events.ShowCaseDeleteEvent;
-import com.kellerkindt.scs.events.ShowCaseEvent;
-import com.kellerkindt.scs.events.ShowCaseInfoEvent;
-import com.kellerkindt.scs.events.ShowCaseInteractEvent;
-import com.kellerkindt.scs.events.ShowCaseItemAddEvent;
-import com.kellerkindt.scs.events.ShowCaseItemRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseLimitEvent;
-import com.kellerkindt.scs.events.ShowCaseMemberAddEvent;
-import com.kellerkindt.scs.events.ShowCaseMemberRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerBuyEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerExchangeEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerSellEvent;
-import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
-import com.kellerkindt.scs.events.ShowCaseRemoveEvent;
-import com.kellerkindt.scs.interfaces.ShowCaseListener;
-import com.kellerkindt.scs.shops.BuyShop;
-import com.kellerkindt.scs.shops.DisplayShop;
-import com.kellerkindt.scs.shops.ExchangeShop;
-import com.kellerkindt.scs.shops.SellShop;
-import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.utilities.ItemStackUtilities;
-import com.kellerkindt.scs.utilities.MaterialNames;
-import com.kellerkindt.scs.utilities.Term;
+import java.util.Map.Entry;
 
 /**
  * This class executes the request behind the event
@@ -247,10 +228,10 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
     public void onShowCaseMemberAddEvent (ShowCaseMemberAddEvent scmae) {
-        Shop    shop    = scmae.getShop();
-        String    member    = scmae.getMember();
+        Shop      shop   = scmae.getShop();
+        NamedUUID member = scmae.getMember();
         
-        shop.addMember( scs.getPlayerUUID(member) );
+        shop.addMember(member);
         scmae.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_ADDED_MEMBER.get());
     }
     
@@ -345,7 +326,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
     public void onShowCaseMemberRemoveEvent (ShowCaseMemberRemoveEvent scmre) {
-        scmre.getShop().removeMember( scs.getPlayerUUID(scmre.getMember()) );
+        scmre.getShop().removeMember( scmre.getMember() );
         scmre.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_REMOVED_MEMBER.get());
     }
     

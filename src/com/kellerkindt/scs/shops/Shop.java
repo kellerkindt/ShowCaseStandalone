@@ -412,6 +412,14 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     }
 
     /**
+     * @param member {@link NamedUUID} to add as member
+     * @return itself
+     */
+    public T addMember(NamedUUID member) {
+        return addMember(member.getId(), member.getName());
+    }
+
+    /**
      * To be able to add a member here, either the id or name
      * mustn't be null
      *
@@ -469,6 +477,19 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
      */
     public T removeMember(String name) {
         return removeMember(null, name);
+    }
+
+    /**
+     * WARNING: Names alone are not unique, there
+     * could be multiple players with the same name
+     * as given; therefore it alone could result in
+     * removing the wrong member
+     *
+     * @param member {@link NamedUUID} of the member to remove
+     * @return itself
+     */
+    public T removeMember(NamedUUID member) {
+        return removeMember(member.getId(), member.getName());
     }
 
     /**

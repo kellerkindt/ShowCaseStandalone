@@ -17,6 +17,7 @@
 */
 package com.kellerkindt.scs.events;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.entity.Player;
 
 import com.kellerkindt.scs.shops.Shop;
@@ -27,9 +28,9 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public abstract class ShowCaseMemberEvent extends ShowCaseShopEvent {
 
-    private String member;
+    private NamedUUID member;
     
-    public ShowCaseMemberEvent (Player player, Shop shop, String member) {
+    public ShowCaseMemberEvent (Player player, Shop shop, NamedUUID member) {
         super(player, shop);
         
         this.member    = member;
@@ -38,7 +39,7 @@ public abstract class ShowCaseMemberEvent extends ShowCaseShopEvent {
     /**
      * @return The member to add
      */
-    public String getMember () {
+    public NamedUUID getMember () {
         return member;
     }
 }

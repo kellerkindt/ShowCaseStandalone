@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -66,12 +67,17 @@ public class Member extends SimpleCommand {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
-        final Player    player    = (Player)sender;
-        final String    cmd        = args[0];
-        final String    member    = args.length > 1 ? args[1] : "";
+        final Player    player  = (Player)sender;
+        final String    cmd     = args[0];
+        final NamedUUID member  = new NamedUUID();
+
+        if (args.length > 1) {
+            member.setName(args[1]);
+            member.setId(scs.getPlayerUUID(member.getName()));
+        }
         
         // verify the command
-        if (!MEMBER_LIST.equalsIgnoreCase(cmd) && !MEMBER_ADD.equalsIgnoreCase(cmd) && !MEMBER_REMOVE.equalsIgnoreCase(cmd)) {
+        if (!MEMBER_LIST.equalsIgnoreCase(cmd) && (args.length < 2 || (!MEMBER_ADD.equalsIgnoreCase(cmd) && !MEMBER_REMOVE.equalsIgnoreCase(cmd)))) {
             throw new MissingOrIncorrectArgumentException();
         }
         
