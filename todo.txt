@@ -1,0 +1,2 @@
+ - Shop.unlimited -> Shop.amount = Integer.INFINITE_POSITIVE ?
+ - ShopHandler register as ChangeListener, hide/show on change?
