@@ -766,20 +766,23 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
             case 2:
                 {
+                    // get the values being loaded
+                    List<NamedUUID> members = (List<NamedUUID>)map.get(KEY_MEMBERS);
+                    NamedUUID       owner   = (NamedUUID)map.get(KEY_OWNER);
+                    NamedUUID       world   = (NamedUUID)map.get(KEY_WORLD);
+
                     // check for the owner name
                     if (owner.getId() != null && owner.getName() == null) {
                         owner.setName(scs.getPlayerNameOrNull(owner.getId()));
                     }
 
                     // check for world name and id
-                    if (getLocation() != null && getLocation().getWorld() != null) {
-                        if (Shop.this.world.getName() == null) {
-                            Shop.this.world.setName(getLocation().getWorld().getName());
-                        }
+                    if (world.getName() == null && scs.getServer().getWorld(world.getId()) != null) {
+                        world.setName(scs.getServer().getWorld(world.getId()).getName());
+                    }
 
-                        if (Shop.this.world.getId() == null) {
-                            Shop.this.world.setId(getLocation().getWorld().getUID());
-                        }
+                    if (world.getId() == null && scs.getServer().getWorld(world.getName()) != null) {
+                        world.setId(scs.getServer().getWorld(world.getName()).getUID());
                     }
 
                     // check for member names
