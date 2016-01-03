@@ -157,7 +157,7 @@ public class SignListener implements Listener {
      * @param shop Shop to gather the information from
      */
     public void formatSign (Sign sign, Shop shop) {
-        String owner = scs.getPlayerName( shop.getOwner() );
+        String owner = scs.getPlayerName( shop.getOwnerId() );
 
         sign.setLine(0, owner != null ? owner : "");
         sign.setLine(1, shop.getClass().getSimpleName());

@@ -19,6 +19,7 @@ package com.kellerkindt.scs.commands;
 
 import java.util.UUID;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,10 +45,14 @@ public class Buy extends Create {
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
         // prepare
-        Player        player        = (Player)sender;
-        Shop        shop        = new BuyShop(
+        Player      player  = (Player)sender;
+        Shop        shop    = new BuyShop(
+                scs,
                 UUID.randomUUID(),
-                player.getUniqueId(), 
+                new NamedUUID(
+                        player.getUniqueId(),
+                        player.getName()
+                ),
                 null,
                 null
                 );

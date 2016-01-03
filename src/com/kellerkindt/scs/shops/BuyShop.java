@@ -20,6 +20,8 @@ package com.kellerkindt.scs.shops;
 import java.util.Map;
 import java.util.UUID;
 
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -33,52 +35,58 @@ import com.kellerkindt.scs.Properties;
  * This class represents the buy-showcase
  */
 @SerializableAs(Properties.ALIAS_SHOP_BUY)
-public class BuyShop extends Shop {
-    
+public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
+
+    // --- for serialization and deserialization ---
     public static final String KEY_MAXAMOUNT = "buy.maxamount";
+    // ---------------------------------------------
     
-    private int maxAmount    = 0;
+    protected int maxAmount = 0;
     
     private BuyShop () {
         super();
     }    
     
-    public BuyShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
-        super(uuid, owner, location, itemStack);
+    public BuyShop (ShowCaseStandalone scs, UUID id, NamedUUID owner, Location location, ItemStack itemStack) {
+        super(scs, id, owner, location, itemStack);
     }
-    
-    /**
-     * @see com.kellerkindt.scs.shops.Shop#isActive()
-     */
+
+
     @Override
     public boolean isActive() {
         return isUnlimited() || getAmount() <= getMaxAmount();
     }
 
     /**
-     * The max amount to buy in this shop
-     * @param amount Max amount to set
+     * @param amount The new max amount to buy for this {@link BuyShop}
+     * @return itself
      */
-    public void setMaxAmount (int amount) {
-        this.maxAmount    = amount;
+    public T setMaxAmount (final int amount) {
+        return setChanged(
+                this.maxAmount != amount,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        BuyShop.this.maxAmount = amount;
+                    }
+                }
+        );
     }
     
     /**
-     * @return The max amount to buy of this shop
+     * @return The max amount to buy for this {@link BuyShop}
      */
     public int getMaxAmount () {
         return maxAmount;
     }
-    
-    /**
-     * @see com.kellerkindt.scs.shops.Shop#serialize()
-     */
+
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
         
         // add my value
-        map.put(KEY_MAXAMOUNT, getMaxAmount());
+        map.put(KEY_MAXAMOUNT, maxAmount);
         
         return map;
     }
@@ -91,18 +99,10 @@ public class BuyShop extends Shop {
         
         // just deserialize the common values
         shop.deserialize(map, Bukkit.getServer());
-        
-        shop.setMaxAmount((Integer)map.get(KEY_MAXAMOUNT));
+
+        // load this values
+        shop.maxAmount = (Integer)map.get(KEY_MAXAMOUNT);
         
         return shop;
-    }
-    
-    /**
-     * @see com.kellerkindt.scs.shops.Shop#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return super.hashCode()
-                +maxAmount;
     }
 }

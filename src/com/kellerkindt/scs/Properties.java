@@ -60,7 +60,8 @@ public class Properties {
     // don't forget to update these versions on locale, storage or shop changes
     public static final double  VERSION_LOCALE          = 2.9;
     public static final int     VERSION_STORAGE         = 7;
-    public static final int     VERSION_SHOP            = 1;
+    public static final int     VERSION_SHOP            = 2;
+    public static final int     VERSION_NAMED_UUID      = 0;
       
     
     // default values
@@ -86,6 +87,7 @@ public class Properties {
     public static final String  PERMISSION_REPAIR                   = "scs.repair";
     
     // serialization
+    public static final String ALIAS_NAMED_UUID                     = "scs.named-uuid";
     public static final String ALIAS_SHOP_BUY                       = "scs.buy";
     public static final String ALIAS_SHOP_SELL                      = "scs.sell";
     public static final String ALIAS_SHOP_DISPLAY                   = "scs.display";

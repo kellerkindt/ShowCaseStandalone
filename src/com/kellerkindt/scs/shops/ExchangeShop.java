@@ -17,32 +17,36 @@
 */
 package com.kellerkindt.scs.shops;
 
-import java.util.Map;
-import java.util.UUID;
-
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
-import com.kellerkindt.scs.Properties;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @SerializableAs(Properties.ALIAS_SHOP_EXCHANGE)
-public class ExchangeShop extends Shop {
+public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
+
+    // --- for serialization and deserialization ---
+    public static final String KEY_EXCHANGE_ITEMSTACK   = "exchange.itemstack";
+    public static final String KEY_EXCHANGE_AMOUNT      = "exchange.amount";
+    // ---------------------------------------------
     
-    public static final String KEY_EXCHANGE_ITEMSTACK    = "exchange.itemstack";
-    public static final String KEY_EXCHANGE_AMOUNT        = "exchange.amount";
-    
-    private ItemStack        exItemStack;
-    private int                exchangeAmount;    // amount to exchange items
+    private ItemStack   exItemStack;
+    private int         exchangeAmount;    // amount to exchange items
     
     private ExchangeShop () {
         super();
     }    
     
-    public ExchangeShop (UUID uuid, UUID owner, Location location, ItemStack itemStack, ItemStack exItemStack) {
-        super(uuid, owner, location, itemStack);
+    public ExchangeShop (ShowCaseStandalone scs, UUID id, NamedUUID owner, Location location, ItemStack itemStack, ItemStack exItemStack) {
+        super(scs, id, owner, location, itemStack);
         
         this.setExchangeItemStack    (exItemStack);
     }
@@ -63,8 +67,8 @@ public class ExchangeShop extends Shop {
         Map<String, Object> map = super.serialize();
         
         // add my value
-        map.put(KEY_EXCHANGE_AMOUNT,     getExchangeAmount());
-        map.put(KEY_EXCHANGE_ITEMSTACK, getExchangeItemStack());
+        map.put(KEY_EXCHANGE_AMOUNT,    exchangeAmount);
+        map.put(KEY_EXCHANGE_ITEMSTACK, exItemStack);
         
         return map;
     }
@@ -77,22 +81,13 @@ public class ExchangeShop extends Shop {
         
         // just deserialize the common values
         shop.deserialize(map, Bukkit.getServer());
-        
-        shop.setExchangeAmount        ((Integer)    map.get(KEY_EXCHANGE_AMOUNT));
-        shop.setExchangeItemStack    ((ItemStack)map.get(KEY_EXCHANGE_ITEMSTACK));
+
+        shop.exchangeAmount = ((Integer)  map.get(KEY_EXCHANGE_AMOUNT));
+        shop.exItemStack    = ((ItemStack)map.get(KEY_EXCHANGE_ITEMSTACK));
         
         return shop;
     }
-    
-    /**
-     * @see com.kellerkindt.scs.shops.Shop#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return super.hashCode()
-                +(exItemStack != null ? exItemStack.hashCode(): 0)
-                +exchangeAmount;
-    }
+
     
     /**
      * @return The amount of exchange-items
@@ -102,26 +97,42 @@ public class ExchangeShop extends Shop {
     }
     
     /**
-     * Sets the amount of the exchange-items
-     * @param value
+     * @param amount The new amount of exchange-items
+     * @return itself
      */
-    public void setExchangeAmount (int value) {
-        this.exchangeAmount = value;
+    public T setExchangeAmount (final int amount) {
+        return setChanged(
+                this.exchangeAmount != amount,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ExchangeShop.this.exchangeAmount = amount;
+                    }
+                }
+        );
     }
 
     /**
-     * @return The ItemStack of the exchange item
+     * @return The {@link ItemStack} of the exchange items
      */
     public ItemStack getExchangeItemStack () {
         return exItemStack;
     }
     
     /**
-     * Sets the exchange-ItemStack
-     * @param ex
+     * @param itemStack The new {@link ItemStack} of the exchange items
+     * @return itself
      */
-    public void setExchangeItemStack (ItemStack ex) {
-        this.exItemStack = ex;
+    public T setExchangeItemStack (final ItemStack itemStack) {
+        return setChanged(
+                !Objects.equals(this.exItemStack, itemStack),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ExchangeShop.this.exItemStack = itemStack;
+                    }
+                }
+        );
     }
 }
 

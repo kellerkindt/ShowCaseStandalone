@@ -17,17 +17,16 @@
 */
 package com.kellerkindt.scs.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.command.CommandSender;
-
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.Term;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -47,9 +46,9 @@ public class Prune extends SimpleCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
-        
-        ShopHandler                 sh             = scs.getShopHandler();
-        StorageHandler<ShopHandler>    storage        = scs.getShopStorageHandler();
+
+        ShopHandler                         sh      = scs.getShopHandler();
+        StorageHandler<ShopHandler, Shop>   storage = scs.getShopStorageHandler();
         
         try {
                 scs.sendMessage(sender, Term.PRUNE.get());
@@ -65,7 +64,7 @@ public class Prune extends SimpleCommand {
                 sh.addAll(shops);
 
                 scs.getLogger().info("Saving all currently loaded shops.");
-                storage.save(sh);
+                storage.saveAll(sh);
                 
         } catch (Exception ioe) {
             scs.getLogger().log(Level.SEVERE, "Couldn't perform prune successfully", ioe);

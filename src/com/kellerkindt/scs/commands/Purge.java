@@ -122,7 +122,7 @@ public class Purge extends SimpleCommand {
                 String worldMatcher = !isUUID && p.getWorld() != null
                         ? p.getWorld().getName()
                         : isUUID
-                            ? p.getWorldUUID().toString()
+                            ? p.getWorldId().toString()
                             : null;
             
                 if ( isPlayer && p.isOwner( scs.getPlayerUUID(name) ) && (ignoreWorld || world.equals(worldMatcher) )) {

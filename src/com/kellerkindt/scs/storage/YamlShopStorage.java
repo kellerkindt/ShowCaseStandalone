@@ -25,51 +25,82 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import com.kellerkindt.scs.PlayerSession;
+import com.kellerkindt.scs.PriceRange;
+import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.internals.SimpleThreaded;
+import com.kellerkindt.scs.internals.Transaction;
+import com.kellerkindt.scs.shops.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
-import com.kellerkindt.scs.shops.Shop;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  *
  * @author kellerkindt <michael at kellerkindt.com>
  */
-public class YamlShopStorage implements StorageHandler<ShopHandler> {
-    
+public class YamlShopStorage extends SimpleThreaded implements StorageHandler<ShopHandler, Shop> {
+
+    static {
+        // register for deserialization
+        ConfigurationSerialization.registerClass(BuyShop     .class);
+        ConfigurationSerialization.registerClass(SellShop    .class);
+        ConfigurationSerialization.registerClass(DisplayShop .class);
+        ConfigurationSerialization.registerClass(ExchangeShop.class);
+        ConfigurationSerialization.registerClass(NamedUUID   .class);
+    }
+
     public static final String PATH_SHOP    = "shop";
     public static final String PATH_VERSION = "version";
     public static final String ENDING       = ".yml";
-    
-    
+
+
     private File                shopDir    = null;
     private ShowCaseStandalone  scs        = null;
-    
+
     private List<File>        faildToLoad    = new ArrayList<File>();
     
-    public YamlShopStorage (ShowCaseStandalone scs, File shopDir) {
+    public YamlShopStorage (ShowCaseStandalone scs, File shopDir) throws IOException {
+        super();
+
         this.scs        = scs;
         this.shopDir    = shopDir;
         
-        this.shopDir.mkdirs();
+        if (!shopDir.exists() && !shopDir.mkdirs()) {
+            throw new IOException("Cannot access given directory: "+shopDir);
+        }
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.StorageHandler#load(com.kellerkindt.scs.interfaces.ShopHandler)
-     */
     @Override
-    public void load(ShopHandler handler) throws IOException {
-        
+    protected void run() {
+        // TODO
+    }
+
+    @Override
+    public void flush() throws IOException {
+        // TODO
+    }
+
+    @Override
+    public void save(Shop entity) throws IOException {
+        // TODO
+    }
+
+    @Override
+    public void loadAll(ShopHandler handler) throws IOException {
+
         // list of loaded shops
         List<Shop> shops     = new ArrayList<Shop>();
-        
+
         for (File file : shopDir.listFiles()) {
             try {
                 YamlConfiguration conf = new YamlConfiguration();
                 conf.load(file);
-                
+
                 // deserialize
                 Shop     shop     = (Shop)conf.get    (PATH_SHOP);
 //                int        version    =         conf.getInt    (PATH_VERSION, 6); // 6, since this was introduced at version 7
@@ -82,80 +113,78 @@ public class YamlShopStorage implements StorageHandler<ShopHandler> {
                     // add it
                     shops.add(shop);
                 }
-                
+
             } catch (Throwable t) {
                 faildToLoad.add(file);
                 scs.getLogger().log(Level.SEVERE, "Couldn't load shop from file "+file.getAbsolutePath(), t);
             }
         }
-        
+
         // add the mall to the handler
         handler.addAll(shops, true);
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.StorageHandler#save(com.kellerkindt.scs.interfaces.ShopHandler)
-     */
+
     @Override
-    public void save(ShopHandler handler) throws IOException {
-        
+    public void saveAll(ShopHandler handler) throws IOException {
+
         List<File> toDelete = new ArrayList<File>();
-        
+
         // gather files to delete
         for (File file : shopDir.listFiles()) {
             if (file.getName().endsWith(ENDING)) {
                 toDelete.add(file);
             }
         }
-        
+
         // do not delete a file if it failed to load
         toDelete.removeAll(faildToLoad);
-        
-        
+
+
         for (Shop shop : handler) {
             
-            File                 file    = getFile(shop.getUUID());
+            File                 file    = getFile(shop.getId());
             YamlConfiguration    conf    = new YamlConfiguration();
-            
+
             // do not delete this file
             toDelete.remove(file);
-            
+
             //do not save again, if the shop hasn't changed
             if (!shop.hasChanged()) {
                 continue;
             }
-            
+
             try {
                 // save
                 conf.set(PATH_VERSION,     Properties.VERSION_STORAGE);
                 conf.set(PATH_SHOP,     shop);
-                
+
                 // try to convert it, if it fails, original file won't be deleted
                 String data = conf.saveToString();
-                
+
                 // save it
                 FileWriter writer = new FileWriter(file);
-                
+
                 writer.write(data);
                 writer.flush();
                 writer.close();
-                
-                
-                
+
+
+
                 // reset has changed
                 shop.resetHasChanged();
 
             } catch (IOException ioe) {
-                scs.getLogger().log(Level.WARNING, "Couldn't save shop with UUID = " + shop.getUUID().toString()+", will try again soon", ioe);
+                scs.getLogger().log(Level.WARNING, "Couldn't save shop with UUID = " + shop.getId().toString()+", will try again soon", ioe);
             }
         }
-        
+
         // delete files
         for (File file : toDelete) {
             file.delete();
         }
     }
-    
+
     /**
      * @param uuid UUID to get the file for
      * @return The File for the given UUID
@@ -164,13 +193,6 @@ public class YamlShopStorage implements StorageHandler<ShopHandler> {
         return new File (shopDir, uuid.toString() + ENDING);
     }
 
-    /**
-     * @see com.kellerkindt.scs.interfaces.StorageHandler#flush()
-     */
-    @Override
-    public void flush() throws IOException {
-        // not needed here
-    }
 
     
 }

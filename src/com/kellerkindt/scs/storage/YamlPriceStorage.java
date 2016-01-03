@@ -22,21 +22,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.internals.SimpleThreaded;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.kellerkindt.scs.PriceRange;
 import com.kellerkindt.scs.interfaces.PriceRangeHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  *
  * @author michael <michael at email.com>
  */
-public class YamlPriceStorage implements StorageHandler<PriceRangeHandler> {
+public class YamlPriceStorage extends SimpleThreaded implements StorageHandler<PriceRangeHandler, PriceRange> {
     
     public static final String KEY_GLOBALMIN    = "pricerange.global.min";
     public static final String KEY_GLOBALMAX    = "pricerange.global.max";
     public static final String KEY_RANGELIST    = "pricerange.list";
+
+    static {
+        // register for deserialization
+        ConfigurationSerialization.registerClass(PriceRange.class, Properties.ALIAS_PRICERANGE);
+    }
     
     private File file;
     
@@ -45,8 +53,23 @@ public class YamlPriceStorage implements StorageHandler<PriceRangeHandler> {
     }
 
     @Override
+    protected void run() {
+        // TODO
+    }
+
+    @Override
+    public void flush() throws IOException {
+        // TODO
+    }
+
+    @Override
+    public void save(PriceRange entity) throws IOException {
+        // TODO
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    public void load(PriceRangeHandler handler) throws IOException {
+    public void loadAll(PriceRangeHandler handler) throws IOException {
         // nothing to do if the file dos not exist
         if (!file.exists()) {
             return;
@@ -63,7 +86,7 @@ public class YamlPriceStorage implements StorageHandler<PriceRangeHandler> {
     }
 
     @Override
-    public void save(PriceRangeHandler handler) throws IOException {
+    public void saveAll(PriceRangeHandler handler) throws IOException {
         YamlConfiguration conf = new YamlConfiguration();
         
         conf.set(KEY_GLOBALMIN, handler.getGlobalMin());
@@ -77,11 +100,6 @@ public class YamlPriceStorage implements StorageHandler<PriceRangeHandler> {
         
         conf.set(KEY_RANGELIST, list);
         conf.save(file);
-    }
-
-    @Override
-    public void flush() throws IOException {
-        // nothing to do
     }
 
 }

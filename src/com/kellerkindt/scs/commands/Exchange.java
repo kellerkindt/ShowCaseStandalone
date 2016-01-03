@@ -19,6 +19,7 @@ package com.kellerkindt.scs.commands;
 
 import java.util.UUID;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,8 +46,12 @@ public class Exchange extends Create {
         // prepare
         Player            player        = (Player)sender;
         ExchangeShop    shop        = new ExchangeShop(
+                scs,
                 UUID.randomUUID(),
-                player.getUniqueId(), 
+                new NamedUUID(
+                        player.getUniqueId(),
+                        player.getName()
+                ),
                 null,
                 null,
                 null

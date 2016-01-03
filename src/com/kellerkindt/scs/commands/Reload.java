@@ -20,6 +20,7 @@ package com.kellerkindt.scs.commands;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.kellerkindt.scs.shops.Shop;
 import org.bukkit.command.CommandSender;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
@@ -46,8 +47,8 @@ public class Reload extends SimpleCommand {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         // disable first, then reload, then re-enable.
-        ShopHandler                 sh         = scs.getShopHandler();
-        StorageHandler<ShopHandler>    storage    = scs.getShopStorageHandler();
+        ShopHandler                         sh         = scs.getShopHandler();
+        StorageHandler<ShopHandler, Shop>   storage    = scs.getShopStorageHandler();
         
         try {
             
@@ -65,10 +66,10 @@ public class Reload extends SimpleCommand {
             sh.hideAll();
             
             scs.getLogger().info("Writing changes to disk");
-            storage.save(sh);
+            storage.saveAll(sh);
                 
             scs.getLogger().info("Reloading shops from storage");
-            storage.load(sh);
+            storage.loadAll(sh);
             
             scs.getLogger().info("Starting shop update task");
             sh.start();

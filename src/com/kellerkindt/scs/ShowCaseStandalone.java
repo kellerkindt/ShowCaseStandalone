@@ -18,25 +18,26 @@
 
 package com.kellerkindt.scs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.kellerkindt.scs.Properties.EconomySystem;
+import com.kellerkindt.scs.balance.*;
+import com.kellerkindt.scs.events.ShowCaseEvent;
+import com.kellerkindt.scs.interfaces.*;
+import com.kellerkindt.scs.internals.*;
+import com.kellerkindt.scs.listeners.*;
+import com.kellerkindt.scs.shops.*;
+import com.kellerkindt.scs.storage.YamlPlayerSessionStorage;
+import com.kellerkindt.scs.storage.YamlPriceStorage;
+import com.kellerkindt.scs.storage.YamlShopStorage;
+import com.kellerkindt.scs.utilities.Messaging;
+import com.kellerkindt.scs.utilities.Term;
+import com.kellerkindt.scs.utilities.TermLoader;
 import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,66 +52,14 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
-import com.kellerkindt.scs.Properties.EconomySystem;
-import com.kellerkindt.scs.balance.BOSEconomyBalance;
-import com.kellerkindt.scs.balance.DummyBalance;
-import com.kellerkindt.scs.balance.EssentialsBalance;
-import com.kellerkindt.scs.balance.VaultBalance;
-import com.kellerkindt.scs.balance.iConomy5Balance;
-import com.kellerkindt.scs.balance.iConomy6Balance;
-import com.kellerkindt.scs.balance.iConomy8Balance;
-import com.kellerkindt.scs.events.ShowCaseEvent;
-import com.kellerkindt.scs.interfaces.Balance;
-import com.kellerkindt.scs.interfaces.PlayerSessionHandler;
-import com.kellerkindt.scs.interfaces.PriceRangeHandler;
-import com.kellerkindt.scs.interfaces.ShopHandler;
-import com.kellerkindt.scs.interfaces.StorageHandler;
-import com.kellerkindt.scs.internals.MetricsHandler;
-import com.kellerkindt.scs.internals.SimplePlayerSessionHandler;
-import com.kellerkindt.scs.internals.SimplePriceRangeHandler;
-import com.kellerkindt.scs.internals.SimpleShopHandler;
-import com.kellerkindt.scs.internals.Transaction;
-import com.kellerkindt.scs.listeners.BlockListener;
-import com.kellerkindt.scs.listeners.CommandExecutorListener;
-import com.kellerkindt.scs.listeners.DropChestListener;
-import com.kellerkindt.scs.listeners.DropChestListenerV2;
-import com.kellerkindt.scs.listeners.EntityListener;
-import com.kellerkindt.scs.listeners.HopperListener;
-import com.kellerkindt.scs.listeners.InventoryListener;
-import com.kellerkindt.scs.listeners.PlayerListener;
-import com.kellerkindt.scs.listeners.ResidenceListener;
-import com.kellerkindt.scs.listeners.ShowCaseExecutingListener;
-import com.kellerkindt.scs.listeners.ShowCaseVerifyingListener;
-import com.kellerkindt.scs.listeners.SignListener;
-import com.kellerkindt.scs.listeners.TownyListener;
-import com.kellerkindt.scs.listeners.WorldGuardListener;
-import com.kellerkindt.scs.listeners.WorldListener;
-import com.kellerkindt.scs.shops.BuyShop;
-import com.kellerkindt.scs.shops.DisplayShop;
-import com.kellerkindt.scs.shops.ExchangeShop;
-import com.kellerkindt.scs.shops.SellShop;
-import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.storage.YamlPlayerSessionStorage;
-import com.kellerkindt.scs.storage.YamlPriceStorage;
-import com.kellerkindt.scs.storage.YamlShopStorage;
-import com.kellerkindt.scs.utilities.Messaging;
-import com.kellerkindt.scs.utilities.Term;
-import com.kellerkindt.scs.utilities.TermLoader;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ShowCaseStandalone extends JavaPlugin {
-    
-    static {
-        // register for deserialization
-        ConfigurationSerialization.registerClass(BuyShop             .class,    Properties.ALIAS_SHOP_BUY);
-        ConfigurationSerialization.registerClass(SellShop            .class,    Properties.ALIAS_SHOP_SELL);
-        ConfigurationSerialization.registerClass(DisplayShop         .class,    Properties.ALIAS_SHOP_DISPLAY);
-        ConfigurationSerialization.registerClass(ExchangeShop        .class,    Properties.ALIAS_SHOP_EXCHANGE);
-        ConfigurationSerialization.registerClass(PlayerSession       .class,    Properties.ALIAS_PLAYERSESSION);
-        ConfigurationSerialization.registerClass(PriceRange          .class,    Properties.ALIAS_PRICERANGE);
-        ConfigurationSerialization.registerClass(Transaction         .class,    Properties.ALIAS_TRANSACTION);
-        ConfigurationSerialization.registerClass(Transaction.ShopType.class,    Properties.ALIAS_TRANSACTION_SHOPTYPE);
-    }
 
     
     private static ShowCaseStandalone       scs;
@@ -126,9 +75,9 @@ public class ShowCaseStandalone extends JavaPlugin {
     private PlayerSessionHandler    sessionHandler  = null;
     private PriceRangeHandler       priceHandler    = null;
     
-    private StorageHandler<ShopHandler>             shopStorage     = null;
-    private StorageHandler<PlayerSessionHandler>    sessionStorage  = null;
-    private StorageHandler<PriceRangeHandler>       priceStorage    = null;
+    private StorageHandler<ShopHandler, Shop>                   shopStorage     = null;
+    private StorageHandler<PlayerSessionHandler, PlayerSession> sessionStorage  = null;
+    private StorageHandler<PriceRangeHandler, PriceRange>       priceStorage    = null;
     
     
     private SCSConfiguration    config            = null;
@@ -152,7 +101,7 @@ public class ShowCaseStandalone extends JavaPlugin {
             getServer().getScheduler().cancelTask(syncTask);
             
             logger.info("Saving any remaining shop changes");
-            shopStorage.save(shopHandler);
+            shopStorage.saveAll(shopHandler);
             shopStorage.flush();
             
             logger.info("Removing displayed items");
@@ -160,11 +109,11 @@ public class ShowCaseStandalone extends JavaPlugin {
             
             
             logger.info("Saving PlayerSessions");
-            sessionStorage.save(sessionHandler);
+            sessionStorage.saveAll(sessionHandler);
             sessionStorage.flush();
             
             logger.info("Saving PriceRanges");
-            priceStorage.save(priceHandler);
+            priceStorage.saveAll(priceHandler);
             priceStorage.flush();
             
             
@@ -221,9 +170,9 @@ public class ShowCaseStandalone extends JavaPlugin {
             priceStorage    = new YamlPriceStorage          (      new File(getDataFolder(), Properties.PATH_PRICERANGE));
             
             logger.info("Loading data");
-            shopStorage     .load(shopHandler);
-            sessionStorage  .load(sessionHandler);
-            priceStorage    .load(priceHandler);
+            shopStorage     .loadAll(shopHandler);
+            sessionStorage  .loadAll(sessionHandler);
+            priceStorage    .loadAll(priceHandler);
             
             logger.info("Loaded Shops: "+shopHandler.size()+", PlayerSessions: "+sessionHandler.size()+", PriceRanges: "+priceHandler.size());
             
@@ -299,7 +248,7 @@ public class ShowCaseStandalone extends JavaPlugin {
                 
                 try {
                     // save changes
-                    ShowCaseStandalone.this.shopStorage.save(shopHandler);
+                    ShowCaseStandalone.this.shopStorage.saveAll(shopHandler);
                     
                 } catch (IOException ioe) {
                     logger.info("Couldn't save shop changes");
@@ -382,7 +331,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     
     /**
      * @param name Name of the {@link Player}
-     * @return The {@link UUID} of the (Offline-){@link Player} on the current {@link Server} with the given name
+     * @return The {@link UUID} of the (Offline-){@link Player} on the current {@link Server} with the given name or null
      */
     public UUID getPlayerUUID (String name) {
         return getPlayerUUID(name, getServer());
@@ -421,6 +370,19 @@ public class ShowCaseStandalone extends JavaPlugin {
      */
     public String getPlayerName (UUID uuid) {
         return getPlayerName(uuid, getServer());
+    }
+
+    /**
+     * @param id {@link UUID} to get the name of the player for
+     * @return The name of the player for the given {@link UUID} or null
+     */
+    public String getPlayerNameOrNull(UUID id) {
+        try {
+            return getPlayerName(id);
+        } catch (Throwable t) {
+            logger.log(Level.WARNING, "Failed to fetch player name for id="+id, t);
+        }
+        return null;
     }
     
     /**
@@ -769,7 +731,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     /**
      * @return The current StorageHandler
      */
-    public StorageHandler<ShopHandler> getShopStorageHandler(){
+    public StorageHandler<ShopHandler, Shop> getShopStorageHandler(){
         return this.shopStorage;
     }
     
@@ -783,7 +745,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     /**
      * @return The {@link StorageHandler} for the {@link PlayerSessionHandler}
      */
-    public StorageHandler<PlayerSessionHandler> getPlayerSessionStorage () {
+    public StorageHandler<PlayerSessionHandler, PlayerSession> getPlayerSessionStorage () {
         return sessionStorage;
     }
     
@@ -808,7 +770,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     /**
      * @return The {@link StorageHandler} for the {@link PriceRangeHandler}
      */
-    public StorageHandler<PriceRangeHandler> getPriceRangeStorage () {
+    public StorageHandler<PriceRangeHandler, PriceRange> getPriceRangeStorage () {
         return priceStorage;
     }
     
@@ -883,11 +845,17 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param shop    Shop to get the players from
      * @param msg    Message to send
      */
-    public void sendMessageToAll (Shop shop, String msg) {
+    public void sendMessageToAll (Shop<?> shop, String msg) {
         sendMessageToOwner(shop, msg);
         
-        for (UUID id : shop.getMembers()) {
-            sendMessage(getServer().getPlayer(id), msg);
+        for (NamedUUID member : shop.getMembers()) {
+            if (member.getId() != null) {
+                sendMessage(getServer().getPlayer(member.getId()), msg);
+            }
+
+            else if (member.getName() != null) {
+                sendMessage(getServer().getPlayerExact(member.getName()), msg);
+            }
         }
     }
     
@@ -897,8 +865,8 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param msg    Message to send
      */
     public void sendMessageToOwner (Shop shop, String msg) {
-        if (shop.getOwner() != null) {
-            sendMessage(getServer().getPlayer(shop.getOwner()), msg);
+        if (shop.getOwnerId() != null) {
+            sendMessage(getServer().getPlayer(shop.getOwnerId()), msg);
         }
     }
     
@@ -909,12 +877,12 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param message    Message to send
      */
     public void sendTransactionMessageToOwner (Shop shop, String message) {
-        if (shop.getOwner() == null) {
+        if (shop.getOwnerId() == null) {
             return; // bank account
         }
 
         // get the player
-        Player player = getServer().getPlayer(shop.getOwner());
+        Player player = getServer().getPlayer(shop.getOwnerId());
         
         // nope
         if (player == null) {

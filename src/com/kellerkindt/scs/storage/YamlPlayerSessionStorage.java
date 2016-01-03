@@ -22,20 +22,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.internals.SimpleThreaded;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.kellerkindt.scs.PlayerSession;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.PlayerSessionHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  *
  * @author michael <michael at kellerkindt.com>
  */
-public class YamlPlayerSessionStorage implements StorageHandler<PlayerSessionHandler> {
+public class YamlPlayerSessionStorage extends SimpleThreaded implements StorageHandler<PlayerSessionHandler, PlayerSession> {
 
     public static final String PATH_LIST    = "PlayerSessionVariables";
+
+    static {
+        // register for deserialization
+        ConfigurationSerialization.registerClass(PlayerSession.class, Properties.ALIAS_PLAYERSESSION);
+    }
     
     private ShowCaseStandalone  scs;
     private File                file;
@@ -46,7 +54,22 @@ public class YamlPlayerSessionStorage implements StorageHandler<PlayerSessionHan
     }
 
     @Override
-    public void load(PlayerSessionHandler handler) throws IOException {
+    protected void run() {
+
+    }
+
+    @Override
+    public void flush() throws IOException {
+        // TODO
+    }
+
+    @Override
+    public void save(PlayerSession entity) throws IOException {
+
+    }
+
+    @Override
+    public void loadAll(PlayerSessionHandler handler) throws IOException {
 
         // nothing to load if the file does not exist
         if (!file.exists()) {
@@ -71,7 +94,7 @@ public class YamlPlayerSessionStorage implements StorageHandler<PlayerSessionHan
     }
 
     @Override
-    public void save(PlayerSessionHandler handler) throws IOException {
+    public void saveAll(PlayerSessionHandler handler) throws IOException {
         YamlConfiguration     conf     = new YamlConfiguration();
         List<PlayerSession>    list    = new ArrayList<PlayerSession>();
         
@@ -85,10 +108,5 @@ public class YamlPlayerSessionStorage implements StorageHandler<PlayerSessionHan
         
         // save it to disk
         conf.save(file);
-    }
-
-    @Override
-    public void flush() throws IOException {
-        // nothing to do
     }
 }

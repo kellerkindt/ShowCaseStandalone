@@ -21,7 +21,7 @@ import java.io.IOException;
 
 
 
-public interface StorageHandler<T> {
+public interface StorageHandler<H, E> extends Threaded {
     
     
     /**
@@ -30,7 +30,7 @@ public interface StorageHandler<T> {
      * @param handler Handler to add the data to
      * @throws IOException
      */
-    public void load (T handler) throws IOException;
+    void loadAll(H handler) throws IOException;
     
     /**
      * Saves all data of the given handler,
@@ -38,7 +38,14 @@ public interface StorageHandler<T> {
      * has changed, will also reset it then
      * @param handler Handler to get the data from
      */
-    public void save (T handler) throws IOException;
+    void saveAll(H handler) throws IOException;
+
+    /**
+     * Saves the single given data set.
+     * @param entity Entity to save
+     * @throws IOException
+     */
+    void save(E entity) throws IOException;
     
     /**
      * All buffered data (if there is one),
@@ -46,5 +53,5 @@ public interface StorageHandler<T> {
      * Will block until they are written
      * @throws IOException
      */
-    public void flush () throws IOException;
+    void flush() throws IOException;
 }

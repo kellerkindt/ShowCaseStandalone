@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -38,6 +39,13 @@ import com.kellerkindt.scs.shops.Shop;
 */
 @SerializableAs(Properties.ALIAS_TRANSACTION)
 public class Transaction implements ConfigurationSerializable {
+
+    static {
+        // TODO
+        // register for deserialization
+        ConfigurationSerialization.registerClass(Transaction         .class, Properties.ALIAS_TRANSACTION);
+        ConfigurationSerialization.registerClass(Transaction.ShopType.class, Properties.ALIAS_TRANSACTION_SHOPTYPE);
+    }
     
     @SerializableAs(Properties.ALIAS_TRANSACTION_SHOPTYPE)
     public enum ShopType implements ConfigurationSerializable {
@@ -109,7 +117,7 @@ public class Transaction implements ConfigurationSerializable {
     private Transaction () {}
     
     public Transaction(Player player, Shop shop, int quantity) {
-        this(player.getUniqueId(), player.getName(), shop.getUUID(), quantity, shop.getPrice(),
+        this(player.getUniqueId(), player.getName(), shop.getId(), quantity, shop.getPrice(),
                 shop instanceof SellShop         ? ShopType.SELL     :
                 shop instanceof BuyShop             ? ShopType.BUY        :
                 shop instanceof ExchangeShop    ? ShopType.EXCHANGE : null);

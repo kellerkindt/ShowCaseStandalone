@@ -75,7 +75,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
     public void onShowCaseInfoEvent (ShowCaseInfoEvent scie) {
         Player    player    = scie.getPlayer();
         Shop    shop    = scie.getShop();
-        String    owner    = scs.getPlayerName(shop.getOwner());
+        String    owner    = scs.getPlayerName(shop.getOwnerId());
         
         if (shop instanceof DisplayShop) {
             scs.sendMessage(player, Term.ITEM_ON_DISPLAY.get(MaterialNames.getItemName(shop.getItemStack())));
@@ -382,9 +382,9 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
         int     added = ItemStackUtilities.addToInventory(scpbe.getPlayer().getInventory(), shop.getItemStack(), scpbe.getQuantity());
         double    price = added * shop.getPrice();
         
-        if (!shop.isUnlimited() && shop.getOwner() != null) {
+        if (!shop.isUnlimited() && shop.getOwnerId() != null) {
             // the owner only gets the money if the shop is not unlimited
-            scs.getBalanceHandler().add(shop.getOwner(),   price);
+            scs.getBalanceHandler().add(shop.getOwnerId(),   price);
         }
         
         // the costumer always has to pay the items
@@ -416,9 +416,9 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
         double    price    = removed * shop.getPrice();
         
         
-        if (!shop.isUnlimited() && shop.getOwner() != null) {
+        if (!shop.isUnlimited() && shop.getOwnerId() != null) {
             // the owner only looses its money if it isn't a unlimited shop
-            scs.getBalanceHandler().sub(shop.getOwner(),    price);
+            scs.getBalanceHandler().sub(shop.getOwnerId(),    price);
         }
         
         // the costumer has always to get its money

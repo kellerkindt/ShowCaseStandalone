@@ -217,27 +217,27 @@ public class SimpleShopHandler implements ShopHandler {
 
     private void addRaw(Shop p, boolean overwrite) {
         // if not already set a UUID, set it now
-        if (p.getUUID() == null) {
-            p.setUUID(UUID.randomUUID());
-            scs.getLogger().info("Added shop without UUID, UUID set to "+p.getUUID());
+        if (p.getId() == null) {
+            p.setId(UUID.randomUUID());
+            scs.getLogger().info("Added shop without UUID, UUID set to "+p.getId());
         }
         
         // be sure that the UUID is unique
-        while (uuidShops.containsKey(p.getUUID()) && !overwrite) {
-            p.setUUID(UUID.randomUUID());
+        while (uuidShops.containsKey(p.getId()) && !overwrite) {
+            p.setId(UUID.randomUUID());
         }
         
-        if (uuidShops.containsKey(p.getUUID()) && overwrite) {
-            removeShop(uuidShops.get(p.getUUID()));
+        if (uuidShops.containsKey(p.getId()) && overwrite) {
+            removeShop(uuidShops.get(p.getId()));
         }
         
         // add to lists
         blockShops    .put(p.getBlock(),     p);
-        uuidShops    .put(p.getUUID(),     p);
+        uuidShops    .put(p.getId(),     p);
         shops        .add(p);
         
         this.setFrames(p);
-        this.incrementShopAmount( p.getOwner() );
+        this.incrementShopAmount( p.getOwnerId() );
     }
     
     /**
@@ -348,12 +348,12 @@ public class SimpleShopHandler implements ShopHandler {
         hide(shop);
     
         blockShops    .remove(shop.getBlock());
-        uuidShops    .remove(shop.getUUID());
+        uuidShops    .remove(shop.getId());
 //        shops        .remove(shop);
         itemShops    .remove( shopItems    .remove(shop) );
     
         this.removeFrames(shop);
-        this.decrementShopAmount( shop.getOwner() );
+        this.decrementShopAmount( shop.getOwnerId() );
         
         fireChangeEvent();
     }
@@ -409,14 +409,14 @@ public class SimpleShopHandler implements ShopHandler {
 
                 // ignore shops without a valid world
                 if (shop.getWorld() == null) {
-                    scs.getLogger().severe("Found showcase on not existing world! To remove perform: /scs purge u:" + shop.getWorldUUID());
+                    scs.getLogger().severe("Found showcase on not existing world! To remove perform: /scs purge u:" + shop.getWorldId());
                     continue;
                 }
 
 
                 if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
-                        scs.getLogger().info("Found shop to show: "+shop.getUUID());
+                        scs.getLogger().info("Found shop to show: "+shop.getId());
                     }
 
                     // show if active
@@ -449,13 +449,13 @@ public class SimpleShopHandler implements ShopHandler {
             for (Shop shop : visibleShops) {
 
                 if (shop.getWorld() == null) {
-                    scs.getLogger().info("Found showcase in not existing world! To remove perform: /scs purge u:" + shop.getWorldUUID());
+                    scs.getLogger().info("Found showcase in not existing world! To remove perform: /scs purge u:" + shop.getWorldId());
                     continue;
                 }
 
                 if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
-                        scs.getLogger().info("Found scs to unload: " + shop.getUUID());
+                        scs.getLogger().info("Found scs to unload: " + shop.getId());
                     }
                     
                     // hide
@@ -617,10 +617,10 @@ public class SimpleShopHandler implements ShopHandler {
         
         @EventHandler(ignoreCancelled=true, priority=EventPriority.MONITOR)
         public void onShowCaseChange(ShowCaseOwnerSetEvent event) {
-            if (!Objects.equals(event.getNewOwnerName(), scs.getPlayerName( event.getShop().getOwner() ))) {
+            if (!Objects.equals(event.getNewOwnerName(), scs.getPlayerName( event.getShop().getOwnerId() ))) {
 
                 // the old owner has now one shop less
-                decrementShopAmount( event.getShop().getOwner() );
+                decrementShopAmount( event.getShop().getOwnerId() );
                 
                 // the new owner has now one shop more
                 incrementShopAmount( scs.getPlayerUUID(event.getNewOwnerName()) );
@@ -713,7 +713,7 @@ public class SimpleShopHandler implements ShopHandler {
     
             // check whether the item is valid
             if (shop.getItemStack() == null) {
-                scs.getLogger().severe("Cannot display damaged shop, UUID="+shop.getUUID());
+                scs.getLogger().severe("Cannot display damaged shop, UUID="+shop.getId());
                 return;
             }
             
@@ -738,12 +738,12 @@ public class SimpleShopHandler implements ShopHandler {
             Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
             
             // prevent item from being merged (at least in some cases)
-            item.getItemStack().getItemMeta().setDisplayName(shop.getUUID().toString());
+            item.getItemStack().getItemMeta().setDisplayName(shop.getId().toString());
 
             // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
 
             if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
-                scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getUUID()+", loc="+shop.getLocation());
+                scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getId()+", loc="+shop.getLocation());
                 // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
             }
 

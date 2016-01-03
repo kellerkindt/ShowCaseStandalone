@@ -17,21 +17,19 @@
 */
 package com.kellerkindt.scs.shops;
 
-import java.util.Map;
-import java.util.UUID;
-
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
-import com.kellerkindt.scs.Properties;
+import java.util.Map;
+import java.util.UUID;
 
-/**
- * @author Kellerkindt
- * This class represents the display showcase
- */
+
 @SerializableAs(Properties.ALIAS_SHOP_DISPLAY)
 public class DisplayShop extends Shop {
     
@@ -39,8 +37,8 @@ public class DisplayShop extends Shop {
         super();
     }    
     
-    public DisplayShop (UUID uuid, UUID owner, Location location, ItemStack itemStack) {
-        super(uuid, owner, location, itemStack);
+    public DisplayShop (ShowCaseStandalone scs, UUID id, NamedUUID owner, Location location, ItemStack itemStack) {
+        super(scs, id, owner, location, itemStack);
     }
     
     /**
