@@ -20,7 +20,6 @@ package com.kellerkindt.scs.shops;
 
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.interfaces.Changeable;
 import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.internals.SimpleChangeable;
 import org.bukkit.Location;
@@ -36,7 +35,7 @@ import java.util.logging.Level;
 /**
  * @param <T> The type of the child class
  */
-public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implements ConfigurationSerializable, Changeable<T> {
+public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implements ConfigurationSerializable {
     
     // --- for serialization and deserialization ---
     public static final String KEY_VERSION      = "version";
