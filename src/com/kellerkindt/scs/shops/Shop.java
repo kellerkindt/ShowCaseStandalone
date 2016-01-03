@@ -807,7 +807,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                     // check for member names
                     for (NamedUUID member : members) {
                         if (member.getId() != null && member.getName() == null) {
-                            addMember(member.getId(), scs.getPlayerNameOrNull(member.getId()));
+                            member.setName(scs.getPlayerNameOrNull(member.getId()));
                             setChanged();
                         }
                     }
