@@ -54,9 +54,9 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)    // monitor is to check the outcome (http://wiki.bukkit.org/Event_API_Reference)
     public void onShowCaseInfoEvent (ShowCaseInfoEvent scie) {
-        Player    player    = scie.getPlayer();
+        Player  player  = scie.getPlayer();
         Shop    shop    = scie.getShop();
-        String    owner    = scs.getPlayerName(shop.getOwnerId());
+        String  owner   = shop.getOwnerId() != null ? scs.getPlayerName(shop.getOwnerId()) : shop.getOwnerName();
         
         if (shop instanceof DisplayShop) {
             scs.sendMessage(player, Term.ITEM_ON_DISPLAY.get(MaterialNames.getItemName(shop.getItemStack())));
@@ -336,8 +336,8 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
      */
     @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
     public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent scose) {
-        scose.getShop().setOwner( scose.getNewOwnerName() != null ? scs.getPlayerUUID(scose.getNewOwnerName()) : null );
-        scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getNewOwnerName()));
+        scose.getShop().setOwner(scose.getNewOwner());
+        scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getNewOwner()));
     }
     
     /**

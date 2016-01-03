@@ -19,6 +19,7 @@ package com.kellerkindt.scs.commands;
 
 import java.util.List;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,12 +50,15 @@ public class Owner extends SimpleCommand {
 
         
         final Player player = (Player)sender;
-        final String owner    = (args != null && args.length > 0) ? args[0] : null;
+        final String name   = (args != null && args.length > 0) ? args[0] : null;
         
         registerShopManipulator(player, new EventShopManipulator(scs, sender) {
             @Override
             public ShowCaseEvent getEvent(Shop shop) {
-                return new ShowCaseOwnerSetEvent(player, shop, owner);
+                return new ShowCaseOwnerSetEvent(player, shop, new NamedUUID(
+                        name != null ? scs.getPlayerUUID(name) : null,
+                        name
+                ));
             }
         });
     }

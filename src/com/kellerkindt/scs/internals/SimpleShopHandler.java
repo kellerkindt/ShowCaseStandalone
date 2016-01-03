@@ -617,13 +617,15 @@ public class SimpleShopHandler implements ShopHandler {
         
         @EventHandler(ignoreCancelled=true, priority=EventPriority.MONITOR)
         public void onShowCaseChange(ShowCaseOwnerSetEvent event) {
-            if (!Objects.equals(event.getNewOwnerName(), scs.getPlayerName( event.getShop().getOwnerId() ))) {
+            if (!Objects.equals(event.getNewOwner().getId(), event.getShop().getOwnerId())) {
 
                 // the old owner has now one shop less
                 decrementShopAmount( event.getShop().getOwnerId() );
                 
                 // the new owner has now one shop more
-                incrementShopAmount( scs.getPlayerUUID(event.getNewOwnerName()) );
+                if (event.getNewOwner().getId() != null) {
+                    incrementShopAmount(event.getNewOwner().getId());
+                }
             }
         }
     }

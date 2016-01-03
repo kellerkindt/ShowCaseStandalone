@@ -226,16 +226,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
      * @return itself
      */
     public T setOwner (final UUID id) {
-        return setChanged(
-                !Objects.equals(owner.getId(), id),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        owner.setId(id);
-                        owner.setName(scs.getPlayerNameOrNull(id));
-                    }
-                }
-        );
+        return setOwner(id, scs.getPlayerNameOrNull(id));
     }
 
     /**
@@ -243,12 +234,29 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
      * @return itself
      */
     public T setOwner(final String name) {
+        return setOwner(scs.getPlayerUUID(name), name);
+    }
+
+    /**
+     * @param owner {@link NamedUUID} to set as owner
+     * @return itself
+     */
+    public T setOwner(NamedUUID owner) {
+        return setOwner(owner.getId(), owner.getName());
+    }
+
+    /**
+     * @param id {@link UUID} of the new owner
+     * @param name Name of the new owner
+     * @return itself
+     */
+    public T setOwner(final UUID id, final String name) {
         return setChanged(
-                !Objects.equals(owner.getName(), name),
+                !Objects.equals(owner.getId(), id) || !Objects.equals(owner.getName(), name),
                 new Runnable() {
                     @Override
                     public void run() {
-                        owner.setId  (scs.getPlayerUUID(name));
+                        owner.setId  (id);
                         owner.setName(name);
                     }
                 }

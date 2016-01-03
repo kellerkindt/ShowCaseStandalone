@@ -17,9 +17,9 @@
 */
 package com.kellerkindt.scs.events;
 
-import org.bukkit.entity.Player;
-
+import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.shops.Shop;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -27,10 +27,10 @@ import com.kellerkindt.scs.shops.Shop;
  */
 public class ShowCaseOwnerSetEvent extends ShowCaseShopEvent {
 
-    private String     newOwner;
+    private NamedUUID newOwner;
     
     
-    public ShowCaseOwnerSetEvent (Player player, Shop shop, String newOwnerName) {
+    public ShowCaseOwnerSetEvent (Player player, Shop shop, NamedUUID newOwnerName) {
         super(player, shop);
         
         this.newOwner    = newOwnerName;
@@ -38,16 +38,10 @@ public class ShowCaseOwnerSetEvent extends ShowCaseShopEvent {
     
     
     /**
-     * @return The name of the new owner to set
+     * @return The {@link NamedUUID} of the new owner
      */
-    public String getNewOwnerName () {
+    public NamedUUID getNewOwner() {
         return newOwner;
     }
-    
-    /**
-     * @param owner The new owner to set
-     */
-    public void setNewOwner (String name) {
-        this.newOwner    = name;
-    }
+
 }

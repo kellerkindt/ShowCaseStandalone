@@ -152,4 +152,9 @@ public class NamedUUID extends SimpleChangeable<NamedUUID> implements Configurat
 
         return namedUUID;
     }
+
+    @Override
+    public String toString() {
+        return "[id="+id+",name="+name+"]";
+    }
 }

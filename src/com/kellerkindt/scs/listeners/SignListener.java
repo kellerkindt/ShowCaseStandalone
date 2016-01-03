@@ -159,7 +159,11 @@ public class SignListener implements Listener {
     public void formatSign (Sign sign, Shop shop) {
         String owner = scs.getPlayerName( shop.getOwnerId() );
 
-        sign.setLine(0, owner != null ? owner : "");
+        if (owner == null) {
+            owner = shop.getOwnerName();
+        }
+
+        sign.setLine(0, owner != null ? owner : "?");
         sign.setLine(1, shop.getClass().getSimpleName());
         sign.setLine(2, shop.isUnlimited() ? Term.SIGN_UNLIMITED.get() : ""+shop.getAmount());
         sign.setLine(3, Term.SIGN_PRICE.get(""+shop.getPrice()));
