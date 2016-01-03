@@ -50,6 +50,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitWorker;
 import org.mcstats.Metrics;
 
 import java.io.File;
@@ -81,7 +82,6 @@ public class ShowCaseStandalone extends JavaPlugin {
     
     
     private SCSConfiguration    config            = null;
-    private int                 syncTask;
     private Logger              logger;
     
     private Map<Class<? extends Shop>, String>    createPerms     = new HashMap<Class<? extends Shop>, String>();
@@ -95,18 +95,15 @@ public class ShowCaseStandalone extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            
+            // stop changes from being happening
             logger.info("Stopping shop update task");
             shopHandler.stop();
-            getServer().getScheduler().cancelTask(syncTask);
-            
+
+            // save as soon as possible changes to disk
             logger.info("Saving any remaining shop changes");
             shopStorage.saveAll(shopHandler);
             shopStorage.flush();
-            
-            logger.info("Removing displayed items");
-            shopHandler.hideAll();
-            
+            shopStorage.stop(true);
             
             logger.info("Saving PlayerSessions");
             sessionStorage.saveAll(sessionHandler);
@@ -115,8 +112,13 @@ public class ShowCaseStandalone extends JavaPlugin {
             logger.info("Saving PriceRanges");
             priceStorage.saveAll(priceHandler);
             priceStorage.flush();
-            
-            
+
+
+            // general cleanup, critical phase is over
+            logger.info("Removing displayed items");
+            shopHandler.hideAll();
+
+
             logger.info("Disable request complete!");
             
         } catch (Throwable t) {
@@ -168,6 +170,10 @@ public class ShowCaseStandalone extends JavaPlugin {
             shopStorage     = new YamlShopStorage           (this, new File(getDataFolder(), Properties.PATH_STORAGE));
             sessionStorage  = new YamlPlayerSessionStorage  (this, new File(getDataFolder(), Properties.PATH_SESSIONS));
             priceStorage    = new YamlPriceStorage          (      new File(getDataFolder(), Properties.PATH_PRICERANGE));
+
+            shopStorage     .start();
+            sessionStorage  .start();
+            priceStorage    .start();
             
             logger.info("Loading data");
             shopStorage     .loadAll(shopHandler);
@@ -233,29 +239,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         setCreatePermission(DisplayShop .class, Properties.PERMISSION_CREATE_DISPLAY);
         setCreatePermission(ExchangeShop.class, Properties.PERMISSION_CREATE_EXCHANGE);
         
-        
-        
-        
-    
-        
-        // set up scheduler
-        syncTask = scs.getServer().getScheduler().scheduleSyncRepeatingTask(scs, new Runnable() {
-            
-            @Override
-            public void run() {
-                // let the ShopHandler do its stuff
-                ShowCaseStandalone.this.shopHandler.tick();
-                
-                try {
-                    // save changes
-                    ShowCaseStandalone.this.shopStorage.saveAll(shopHandler);
-                    
-                } catch (IOException ioe) {
-                    logger.info("Couldn't save shop changes");
-                    ioe.printStackTrace();
-                }
-            }
-        }, 5L, getConfiguration().getSaveInterval());
+
         
 
         try {
