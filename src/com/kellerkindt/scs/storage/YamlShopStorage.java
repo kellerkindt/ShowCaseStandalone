@@ -83,9 +83,6 @@ public class YamlShopStorage implements StorageHandler<ShopHandler> {
                     shops.add(shop);
                 }
                 
-                // add it
-                shops.add(shop);
-                
             } catch (Throwable t) {
                 faildToLoad.add(file);
                 scs.getLogger().log(Level.SEVERE, "Couldn't load shop from file "+file.getAbsolutePath(), t);
