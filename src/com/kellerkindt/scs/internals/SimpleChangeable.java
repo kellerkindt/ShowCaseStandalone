@@ -71,12 +71,35 @@ public abstract class SimpleChangeable<T extends SimpleChangeable<?>> implements
     }
 
     /**
+     * Contacts the {@link ChangeListener}s
+     * if the global notification is enabled
+     *
+     * @return itself
+     */
+    protected T setChanged() {
+        return setChanged(true, null);
+    }
+
+
+    /**
+     * Contacts the {@link ChangeListener}s
+     * if the given condition is true and the global notification
+     * is enabled
+     *
+     * @param condition Whether a value has changed
+     * @return itself
+     */
+    protected T setChanged(boolean condition) {
+        return setChanged(condition, null);
+    }
+
+    /**
      * Invokes the given {@link Runnable} if the given
      * condition is true and then contacts the {@link ChangeListener}s
      * if the given condition is true and the global notification
      * is enabled
      *
-     * @param condition Whether the value has changed
+     * @param condition Whether a value has changed
      * @param runnable {@link Runnable} to call to update the value
      * @return itself
      */
@@ -84,7 +107,9 @@ public abstract class SimpleChangeable<T extends SimpleChangeable<?>> implements
         this.changed |= condition;
 
         if (condition) {
-            runnable.run();
+            if (runnable != null) {
+                runnable.run();
+            }
             if (contact) {
                 notifyChangeListeners();
             }
