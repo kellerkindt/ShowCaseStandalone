@@ -73,7 +73,15 @@ public class YamlShopStorage implements StorageHandler<ShopHandler> {
                 // deserialize
                 Shop     shop     = (Shop)conf.get    (PATH_SHOP);
 //                int        version    =         conf.getInt    (PATH_VERSION, 6); // 6, since this was introduced at version 7
-                
+
+                if (shop == null) {
+                    // also failed
+                    faildToLoad.add(file);
+
+                } else {
+                    // add it
+                    shops.add(shop);
+                }
                 
                 // add it
                 shops.add(shop);
