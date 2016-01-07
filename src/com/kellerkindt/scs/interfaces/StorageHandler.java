@@ -18,40 +18,40 @@
 package com.kellerkindt.scs.interfaces;
 
 import java.io.IOException;
+import java.util.Collection;
 
 
-
-public interface StorageHandler<H, E> extends Threaded {
+public interface StorageHandler<E> extends Threaded {
     
     
     /**
-     * Loads the data and adds it to the given
-     * handler
-     * @param handler Handler to add the data to
-     * @throws IOException
+     * Loads as many elements as possible
+     * @return {@link Collection} of loaded elements
+     * @throws IOException On an critical issue, preventing further loading
      */
-    void loadAll(H handler) throws IOException;
-    
-    /**
-     * Saves all data of the given handler,
-     * optional behavior: only save data, that
-     * has changed, will also reset it then
-     * @param handler Handler to get the data from
-     */
-    void saveAll(H handler) throws IOException;
+    Collection<E> loadAll() throws IOException;
 
     /**
-     * Saves the single given data set.
-     * @param entity Entity to save
-     * @throws IOException
+     * @param elements {@link Collection} to save the elements of
+     * @throws IOException On an critical issue, preventing further saving
      */
-    void save(E entity) throws IOException;
+    void save(Collection<E> elements) throws IOException;
+
+    /**
+     * @param element Element to save
+     * @throws IOException On any issue while saving the given element
+     */
+    void save(E element) throws IOException;
+
+    /**
+     * @param element Element to delete
+     * @throws IOException On any issue while deleting the given element
+     */
+    void delete(E element) throws IOException;
     
     /**
-     * All buffered data (if there is one),
-     * will now be forced to be written
-     * Will block until they are written
-     * @throws IOException
+     * Writes all cached data to the {@link StorageHandler}'s destination
+     * @throws IOException On an critical issue, preventing further flushing
      */
     void flush() throws IOException;
 }

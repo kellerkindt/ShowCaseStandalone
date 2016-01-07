@@ -21,6 +21,7 @@ package com.kellerkindt.scs.interfaces;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -35,119 +36,140 @@ public interface ShopHandler extends Iterable<Shop> {
     
         
     /**
-     * @param i Item that is currently on display
-     * @return The shop for the given Item on display or null
+     * If a {@link Shop} is shown, there'll be an {@link Item}
+     * dropped for it. If you pass one of these {@link Item}s here,
+     * it'll return the {@link Shop} it has been dropped for
+     *
+     * @param item {@link Item} to get the {@link Shop} for
+     * @return The {@link Shop} for the given {@link Item} or null
      */
-    public Shop    getShop (Item i);
+    Shop getShop(Item item);
     
     /**
-     * @param b Block of the shop
-     * @return The shop for the given block or null
+     * Every {@link Shop} has a {@link Block}-location,
+     * if you pass that {@link Block} here, you it'll
+     * return the {@link Shop} that exists on the given
+     * {@link Block}-location
+     *
+     * @param block {@link Block} to get the {@link Shop} for
+     * @return The {@link Shop} for the given {@link Block} or null
      */
-    public Shop getShop (Block b);
+    Shop getShop(Block block);
     
     /**
-     * @param uuid    UUID of the requested shop
-     * @return The shop for the given UUID or null
+     * Every {@link Shop} has a {@link UUID}. This method
+     * will return the {@link Shop} known to this {@link ShopHandler}
+     * that has the given {@link UUID}
+     *
+     * @param id {@link UUID} of the {@link Shop} to return
+     * @return The {@link Shop} for the given {@link UUID} or null
      */
-    public Shop getShop (UUID uuid);
+    Shop getShop(UUID id);
     
     /**
-     * @param i Item on display
-     * @return Whether the given Item is bound to a shop
+     * If a {@link Shop} is shown, there'll be an {@link Item}
+     * dropped for it. If you pass one of these {@link Item}s
+     * here, it'll return true.
+     *
+     * @param item {@link Item} to check
+     * @return Whether the given {@link Item} has been dropped for a {@link Shop}
      */
-    public boolean isShopItem    (Item  i);
+    boolean isShopItem(Item  item);
     
     /**
-     * @param b Block to check
-     * @return Whether the given Block is a shop block
+     * Every {@link Shop} has a {@link Block}-location,
+     * if you pass a {@link Block}-location a {@link Shop}
+     * exists for, it'll return true.
+     *
+     * @param block {@link Block} to check
+     * @return Whether there exists a {@link Shop} for the given {@link Block}
      */
-    public boolean isShopBlock    (Block b);
+    boolean isShopBlock(Block block);
     
     /**
-     * Adds the given Shop
-     * Will also update the UUID if
-     * it is already given to another shop
-     * @param p Shop to add
+     * Might update the {@link Shop}'s {@link UUID},
+     * if there exists another {@link Shop} with the
+     * same {@link UUID} already
+     * @param shop {@link Shop} to add
      */
-    public void    addShop        (Shop p);
+    void addShop(Shop shop);
     
     /**
-     * Adds the given shop
-     * and overwrites an existing with the
-     * same UUID if it exists
-     * @param shop        Shop to add
-     * @param overwrite    Whether to overwrite existing shops
+     * Adds the given {@link Shop} to this {@link ShopHandler}.
+     * If {@code replace} is false, and there exists already
+     * a {@link Shop} with the {@link UUID} of the given {@link Shop},
+     * the given's {@link Shop} {@link UUID} will be changed.
+     * If {@code replace} is true, the already existing {@link Shop},
+     * would be replace by the given {@link Shop}
+     *
+     * @param shop {@link Shop} to add
+     * @param replace Whether to replace an already existing {@link Shop} with the same {@link UUID}
      */
-    public void addShop (Shop shop, boolean overwrite);
+    void addShop(Shop shop, boolean replace);
     
     /**
-     * Adds all Shops in the given Collection
-     * Will also update the UUID if
-     * it is already given to another shop
-     * @param collection Collection to load the shops from
+     * Will add all {@link Shop}s in the given {@link Collection}
+     * by calling {@link #addShop(Shop)} for each.
+     *
+     * @param collection {@link Collection} of {@link Shop}s to add
      */
-    public void    addAll    (Collection<Shop> collection);
+    void addAll(Collection<Shop> collection);
     
     /**
-     * Adds all Shops in the given Collection
-     * and overwrites an existing with the
-     * same UUID if it exists
-     * @param collection     Collection to load the shops from
-     * @param overwrite        Whether to overwrite existing shops
+     * Will add all {@link Shop}s in the given {@link Collection},
+     * by calling {@link #addShop(Shop, boolean)} for each.
+     *
+     * @param collection  {@link Collection} of {@link Shop}s to add
+     * @param replace See {@link #addShop(Shop, boolean)}
      */
-    public void    addAll    (Collection<Shop> collection, boolean overwrite);
+    void addAll(Collection<Shop> collection, boolean replace);
     
     /**
-     * Removes the given Shop
-     * @param p Shop to remove
+     * @param shop {@link Shop} to remove
      */
-    public void removeShop    (Shop p);
+    void removeShop(Shop shop);
     
     /**
-     * Removes all shop entries
+     * Removes all {@link Shop}s
      */
-    public void removeAll ();
+    void removeAll ();
     
     /**
-     * @param owner Name of the player to check as owner
-     * @return The amount of shops the given player owns
+     * @param owner {@link NamedUUID} of the owner
+     * @return The amount of {@link Shop}s the given player owns
      */
-    public int getShopAmount(String owner);
+    int getShopAmount(NamedUUID owner);
     
-    /**
-     * Loads all shops in the given chunk
-     * @param k    Chunk to load
-     */
-    public void loadChunk    (Chunk k);
-    
-    /**
-     * Unloads all shops in the given chunk
-     * @param k Chunk to unload
-     */
-    public void unloadChunk    (Chunk k);
-    
-    /**
-     * Hides all ShowCase-Shops
-     */
-    public void hideAll    ();
-    
-    /**
-     * Shows all ShowCase-Shops if the chunk is loaded
-     */
-    public void showAll ();
 
     /**
-     * Shows the given Shop, if the chunk is loaded
-     * @param shop Shop to load
+     * @param chunk {@link Chunk} to {@link #hide(Shop)} {@link Shop}s for
      */
-    public void show (Shop shop);
+    void showShopsFor(Chunk chunk);
+    
+    /**
+     * @param chunk {@link Chunk} to {@link #show(Shop)} {@link Shop}s for
+     */
+    void hideShopsFor(Chunk chunk);
+    
+    /**
+     * Hides all {@link Shop}s
+     */
+    void hideAll    ();
+    
+    /**
+     * Shows all {@link Shop}s
+     */
+    void showAll ();
 
     /**
-     * Hides the given Shop, if it is shown
-     * @param shop Shop to hide
+     * @param shop {@link Shop} to show
      */
-    public void hide (Shop shop);
+    void show(Shop shop);
+
+    /**
+     * @param shop {@link Shop} to hide
+     */
+    void hide(Shop shop);
     
     /**
      * Adds an ItemFrame to the ShopHandler,
@@ -178,23 +200,7 @@ public interface ShopHandler extends Iterable<Shop> {
     void recheckShopShowState(Shop shop);
     
     /**
-     * Starts the internal task to re-spawn the display items
+     * @return The size of this {@link ShopHandler, which is determined by the amount of {@link Shop}s in this {@link ShopHandler}
      */
-    public void start ();
-    
-    
-    /**
-     * Stops the internal task to re-spawn the display items
-     */
-    public void stop();
-    
-    /**
-     * The size of this ShopHandler / the amount of shops in this handler
-     */
-    public int size ();
-    
-    /**
-     * Let the {@link ShopHandler} be able to do some stuff in specific intervals
-     */
-    public void tick();
+    int size();
 }

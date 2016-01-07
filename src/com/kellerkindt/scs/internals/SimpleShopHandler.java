@@ -22,6 +22,7 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
 import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
 import com.kellerkindt.scs.interfaces.ShopHandler;
+import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
 import org.bukkit.Chunk;
@@ -46,24 +47,26 @@ import java.util.logging.Level;
 public class SimpleShopHandler implements ShopHandler {
 
 
-    private HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
-    private HashMap<Shop, Item>             shopItems   = new HashMap<Shop, Item>();
-    private HashMap<Block, Shop>            blockShops  = new HashMap<Block, Shop>();
-    private HashMap<UUID, Shop>             uuidShops   = new HashMap<UUID, Shop>();
-    private HashMap<UUID, Integer>          shopOwners  = new HashMap<UUID, Integer>();
-    private HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
-    private HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
-    private ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
+    protected HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
+    protected HashMap<Shop, Item>             shopItems   = new HashMap<Shop, Item>();
+    protected HashMap<Block, Shop>            blockShops  = new HashMap<Block, Shop>();
+    protected HashMap<UUID, Shop>             uuidShops   = new HashMap<UUID, Shop>();
+    protected HashMap<UUID, Integer>          shopOwners  = new HashMap<UUID, Integer>();
+    protected HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
+    protected HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
+    protected ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
 
     protected List<Shop>                 visibleShops   = new LinkedList<Shop>();
 
-    private ShowCaseStandalone    scs           = null;
-    private boolean               fireEvents    = true;
+    protected ShowCaseStandalone    scs           = null;
+    protected boolean               fireEvents    = true;
 
-    private InternalShopChangeListener changeListener;
+    protected InternalShopChangeListener changeListener;
+    protected StorageHandler<Shop>       storageHandler;
     
-    public SimpleShopHandler(ShowCaseStandalone scs) {
+    public SimpleShopHandler(ShowCaseStandalone scs, StorageHandler<Shop> storageHandler) {
         this.scs            = scs;
+        this.storageHandler = storageHandler;
         this.changeListener = new InternalShopChangeListener();
 
         scs.getServer().getPluginManager().registerEvents( this.changeListener, scs );
@@ -182,24 +185,24 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(org.bukkit.entity.Item)
      */
     @Override
-    public Shop getShop(Item i) {
-        return itemShops.get(i);
+    public Shop getShop(Item item) {
+        return itemShops.get(item);
     }
 
     /**
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(org.bukkit.block.Block)
      */
     @Override
-    public Shop getShop(Block b) {
-        return blockShops.get(b);
+    public Shop getShop(Block block) {
+        return blockShops.get(block);
     }
     
     /**
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(java.util.UUID)
      */
     @Override
-    public Shop getShop(UUID uuid) {
-        return uuidShops.get(uuid);
+    public Shop getShop(UUID id) {
+        return uuidShops.get(id);
     }
 
     /**
@@ -211,8 +214,8 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     @Override
-    public boolean isShopBlock(Block b) {
-        return blockShops.containsKey(b);
+    public boolean isShopBlock(Block block) {
+        return blockShops.containsKey(block);
     }
 
     private void addRaw(Shop p, boolean overwrite) {
@@ -318,13 +321,13 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#addShop(com.kellerkindt.scs.shops.Shop)
      */
     @Override
-    public void addShop(Shop p) {
-        addShop(p, false);
+    public void addShop(Shop shop) {
+        addShop(shop, false);
     }
     
     @Override
-    public void addShop(Shop p, boolean overwrite) {
-        addRaw(p, overwrite);
+    public void addShop(Shop p, boolean replace) {
+        addRaw(p, replace);
 
         fireChangeEvent();
     }
@@ -391,10 +394,10 @@ public class SimpleShopHandler implements ShopHandler {
     
 
     /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#loadChunk(org.bukkit.Chunk)
+     * @see com.kellerkindt.scs.interfaces.ShopHandler#showShopsFor(org.bukkit.Chunk)
      */
     @Override
-    public void loadChunk(Chunk chunk) {
+    public void showShopsFor(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
             scs.getLogger().info("Load chunk: " + (chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
@@ -435,10 +438,10 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#unloadChunk(org.bukkit.Chunk)
+     * @see com.kellerkindt.scs.interfaces.ShopHandler#hideShopsFor(org.bukkit.Chunk)
      */
     @Override
-    public void unloadChunk(Chunk chunk) {
+    public void hideShopsFor(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
             scs.getLogger().info("Unload chunk: "+(chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
@@ -577,7 +580,7 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     @Override
-    public void addAll(Collection<Shop> shops, boolean overwrite) {
+    public void addAll(Collection<Shop> shops, boolean replace) {
         // deactivate event firing
         fireEvents = false;
 
@@ -590,7 +593,7 @@ public class SimpleShopHandler implements ShopHandler {
                 continue;
             }
             
-            addShop(p, overwrite);
+            addShop(p, replace);
         }
 
         // enable event firing

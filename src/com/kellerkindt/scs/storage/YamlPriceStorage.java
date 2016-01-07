@@ -63,7 +63,7 @@ public class YamlPriceStorage extends SimpleThreaded implements StorageHandler<P
     }
 
     @Override
-    public void save(PriceRange entity) throws IOException {
+    public void save(PriceRange element) throws IOException {
         // TODO
     }
 

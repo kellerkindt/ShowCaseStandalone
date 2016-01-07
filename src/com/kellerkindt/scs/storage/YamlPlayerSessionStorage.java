@@ -64,7 +64,7 @@ public class YamlPlayerSessionStorage extends SimpleThreaded implements StorageH
     }
 
     @Override
-    public void save(PlayerSession entity) throws IOException {
+    public void save(PlayerSession element) throws IOException {
 
     }
 
