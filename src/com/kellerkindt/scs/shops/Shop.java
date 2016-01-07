@@ -680,10 +680,12 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                 }
 
                 try {
+                    Object owner = map.get(KEY_OWNER);
+
                     // convert the owners name to its UUID
                     map.put(KEY_OWNER, new NamedUUID(
-                            map.containsKey(KEY_OWNER) ? scs.getPlayerUUID((String)map.get(KEY_OWNER)) : null,
-                            (String)map.get(KEY_OWNER)
+                            owner != null && owner instanceof String && ((String)owner).length() > 0 ? scs.getPlayerUUID((String)owner) : null,
+                            owner != null && owner instanceof String && ((String)owner).length() > 0 ? (String)owner : null
                     ));
 
                     // already at output state of case1
@@ -700,6 +702,10 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                     List<NamedUUID> members = new ArrayList<NamedUUID>();
 
                     for (String name : names) {
+                        if (name == null || name.length() == 0) {
+                            continue;
+                        }
+
                         members.add(new NamedUUID(
                                 scs.getPlayerUUID(name),
                                 name
