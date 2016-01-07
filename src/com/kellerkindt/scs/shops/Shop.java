@@ -826,7 +826,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         }
 
         if (world == null) {
-            throw new RuntimeException("World not found, cannot load "+getClass().getSimpleName()+": "+this.world);
+            throw new RuntimeException("World not found, cannot load "+toString()+": "+this.world);
         }
 
         // set the location
