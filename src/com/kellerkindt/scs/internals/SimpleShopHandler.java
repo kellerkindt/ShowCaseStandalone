@@ -746,6 +746,8 @@ public class SimpleShopHandler implements ShopHandler {
 
             if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
                 scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getId()+", loc="+shop.getLocation());
+                item.remove();
+                return;
                 // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
             }
 
