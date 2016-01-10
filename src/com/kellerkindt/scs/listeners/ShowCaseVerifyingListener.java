@@ -443,10 +443,6 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
         if (scose.verify() && !scs.isAdmin(scose.getPlayer())) {
             scose.setCancelled(true);
             scose.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_SET_OWNER.get()));
-            
-        } else if (scose.verify()) {
-            scose.setCancelled(true);
-            scose.setCause(new Throwable(Term.ERROR_SET_OWNER_OFFLINE.get()));
         }
     }
 
