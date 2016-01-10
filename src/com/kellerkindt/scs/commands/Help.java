@@ -94,8 +94,12 @@ public class Help extends SimpleCommand {
                 )));
         
     }
-    
-    
+
+    @Override
+    public boolean hasPermissions(CommandSender sender) {
+        return scs.hasOnePermission(sender, permissions);
+    }
+
     @Override
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
         // get the requested page

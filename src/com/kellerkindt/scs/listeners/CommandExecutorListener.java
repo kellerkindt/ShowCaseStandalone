@@ -81,7 +81,7 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
         commands.add(new Display                            (scs, Properties.PERMISSION_CREATE_DISPLAY));
         commands.add(new Exchange                           (scs, Properties.PERMISSION_CREATE_EXCHANGE));
         commands.add(new Get                                (scs, Properties.PERMISSION_MANAGE));
-        commands.add(new Help                               (scs, Properties.PERMISSION_USE));
+        commands.add(new Help                               (scs, Properties.PERMISSION_USE, Properties.PERMISSION_ADMIN));
         commands.add(new Last                               (scs, Properties.PERMISSION_USE));
         commands.add(new com.kellerkindt.scs.commands.List  (scs, Properties.PERMISSION_ADMIN));
         commands.add(new Member                             (scs, Properties.PERMISSION_MANAGE));
