@@ -17,6 +17,8 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,15 +47,19 @@ public class WorldGuardListener implements Listener {
     public void onShopCreate (ShowCaseCreateEvent event) {
         if (event.isCancelled())
             return;
+
+        // TODO update WG integration
+        Location location = event.getShop().getLocation();
+        Player   player   = event.getPlayer();
         
-        Location    location    = event.getShop().getLocation();
-        Player        player        = event.getPlayer();
-        
-        GlobalRegionManager    manager     = worldGuard.getGlobalRegionManager();
-        boolean                isAllowed    = manager.canBuild(player, location);
+        GlobalRegionManager manager   = worldGuard.getGlobalRegionManager();
+        boolean             isAllowed = manager.canBuild(player, location);
         
         if (!isAllowed) {
             event.setCancelled(true);
+            event.setCause(new InsufficientPermissionException(
+                    Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()
+            ));
         }
     }
 }
