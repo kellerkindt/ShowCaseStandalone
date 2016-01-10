@@ -128,6 +128,11 @@ public class ShowCaseStandalone extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // static setups
+        scs         = this;
+        startup     = new Date();
+        warnings    = new HashMap<Date, String>();
+
         logger = getLogger();
         logger.info("Starting b"+getDescription().getVersion()+", created by "+Properties.BUILD_AUTHOR +" with great contribution by "+Properties.BUILD_CONTRIBUTOR);
         
@@ -144,11 +149,6 @@ public class ShowCaseStandalone extends JavaPlugin {
             // prevent further loading
             throw new RuntimeException("Couldn't load localizations", ioe);
         }
-
-        // static setups
-        scs         = this;
-        startup     = new Date();
-        warnings    = new HashMap<Date, String>();
 
         
         CommandExecutorListener listener    = new CommandExecutorListener(this);
