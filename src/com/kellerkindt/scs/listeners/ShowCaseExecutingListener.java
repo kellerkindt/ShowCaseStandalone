@@ -58,7 +58,7 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
         Shop    shop    = scie.getShop();
         String  owner   = shop.getOwnerName();
 
-        if (owner == null && shop.getOwnerId() == null) {
+        if (owner == null && shop.getOwnerId() != null) {
             owner = shop.getOwnerId().toString();
         }
 
