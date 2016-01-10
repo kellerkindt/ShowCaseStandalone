@@ -56,7 +56,15 @@ public class ShowCaseExecutingListener implements ShowCaseListener {
     public void onShowCaseInfoEvent (ShowCaseInfoEvent scie) {
         Player  player  = scie.getPlayer();
         Shop    shop    = scie.getShop();
-        String  owner   = shop.getOwnerId() != null ? scs.getPlayerName(shop.getOwnerId()) : shop.getOwnerName();
+        String  owner   = shop.getOwnerName();
+
+        if (owner == null && shop.getOwnerId() == null) {
+            owner = shop.getOwnerId().toString();
+        }
+
+        if (owner == null) {
+            owner = "[nobody]"; // TODO
+        }
         
         if (shop instanceof DisplayShop) {
             scs.sendMessage(player, Term.ITEM_ON_DISPLAY.get(MaterialNames.getItemName(shop.getItemStack())));
