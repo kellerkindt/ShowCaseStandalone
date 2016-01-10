@@ -157,4 +157,27 @@ public class NamedUUID extends SimpleChangeable<NamedUUID> implements Configurat
     public String toString() {
         return "[id="+id+",name="+name+"]";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj instanceof NamedUUID) {
+            NamedUUID other = (NamedUUID)obj;
+
+            // case 1, UUIDs match
+            if (this.id != null && other.id != null && this.id.equals(other.id)) {
+                return true;
+            }
+
+            // case 2, no UUIDs and names match
+            if ((this.id == null || other.id == null) && Objects.equals(this.name, other.name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
