@@ -1,41 +1,61 @@
-/**
-* ShowCaseStandalone
-* Copyright (C) 2014 Kellerkindt <copyright at kellerkindt.com>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ShowCaseStandalone
+ * Copyright (c) 2016-01-10 19:16 +01 by Kellerkindt, <copyright at kellerkindt.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.kellerkindt.scs.internals;
 
+import com.kellerkindt.scs.PriceRange;
+import com.kellerkindt.scs.interfaces.Changeable;
+import com.kellerkindt.scs.interfaces.PriceRangeHandler;
+import com.kellerkindt.scs.interfaces.StorageHandler;
+import org.bukkit.Material;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.bukkit.Material;
-
-import com.kellerkindt.scs.PriceRange;
-import com.kellerkindt.scs.interfaces.PriceRangeHandler;
+import java.util.logging.Logger;
 
 /**
- *
- * @author michael <michael at kellerkindt.com>
+ * @author Michael <michael at kellerkindt.com>
  */
 public class SimplePriceRangeHandler implements PriceRangeHandler {
 
-    private Map<Material, PriceRange> map    = new HashMap<Material, PriceRange>();
-    
-    private double    globalMin    = 0;
-    private double    globalMax    = Double.MAX_VALUE;
+    protected Logger                     logger;
+    protected StorageHandler<PriceRange> storage;
+
+    protected Map<Material, PriceRange>  map = new HashMap<Material, PriceRange>();
+
+    public SimplePriceRangeHandler(Logger logger, StorageHandler<PriceRange> storageHandler) {
+        this.logger  = logger;
+        this.storage = storageHandler;
+    }
+
+    @Override
+    public void prepare() throws IOException {
+        map.clear();
+        for (PriceRange range : storage.loadAll()) {
+            addInternal(range);
+        }
+    }
+
+    protected void addInternal(PriceRange range) {
+        map.put(range.getMaterial(), range);
+        range.setPriceRangeHandler(this);
+        range.addChangeListener(changeListener);
+    }
 
     @Override
     public int size() {
@@ -49,26 +69,26 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
 
     @Override
     public double getGlobalMax() {
-        return globalMax;
+        return getRange(null, false).getMax(false);
     }
 
     @Override
     public double getGlobalMin() {
-        return globalMin;
+        return getRange(null, false).getMin(false);
     }
 
     @Override
     public void setGlobalMax(double max) {
-        this.globalMax = max;
+        getRange(null, true).setMax(max);
     }
 
     @Override
     public void setGlobalMin(double min) {
-        this.globalMin = min;
+        getRange(null, true).setMin(min);
     }
 
     @Override
-    public PriceRange getRange(Material material) {
+    public PriceRange getRange(Material material, boolean saveNew) {
         // try to get it
         PriceRange range = map.get(material);
         
@@ -76,6 +96,11 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
         if (range == null) {
             range = new PriceRange(this, material);
             // do not add to the map!
+
+            if (saveNew) {
+                addInternal(range);
+                storage.save(range);
+            }
         }
         
         return range;
@@ -83,8 +108,8 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
 
     @Override
     public void setRange(PriceRange range) {
-        map.put(range.getMaterial(), range);
-        range.setPriceRangeHandler(this);
+        addInternal(range);
+        storage.save(range);
     }
 
     @Override
@@ -94,7 +119,7 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
 
     @Override
     public double getMin(Material material, boolean limitByGlobalMin) {
-        return getRange(material).getMin(limitByGlobalMin);
+        return getRange(material, false).getMin(limitByGlobalMin);
     }
 
     @Override
@@ -104,30 +129,34 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
 
     @Override
     public double getMax(Material material, boolean limitByGlobalMax) {
-        return getRange(material).getMax(limitByGlobalMax);
+        return getRange(material, false).getMax(limitByGlobalMax);
     }
 
     @Override
     public void setMin(Material material, double min) {
         // get the old one
-        PriceRange range = getRange(material);
-        
-        // overwrite it
-        map.put(material, new PriceRange(this, material, min, range.getMax(false)));
+        getRange(material, true).setMin(min);
     }
 
     @Override
     public void setMax(Material material, double max) {
         // get the old one
-        PriceRange range = getRange(material);
-        
-        // overwrite it
-        map.put(material, new PriceRange(this, material, range.getMin(false), max));
+        getRange(material, true).setMax(max);
     }
 
     @Override
     public void remove(Material material) {
-        map.remove(material);
+        PriceRange range = map.remove(material);
+
+        if (range != null) {
+            storage.delete(range);
+        }
     }
-    
+
+    protected Changeable.ChangeListener<PriceRange> changeListener = new Changeable.ChangeListener<PriceRange>() {
+        @Override
+        public void onChanged(PriceRange changeable) {
+            storage.save(changeable);
+        }
+    };
 }

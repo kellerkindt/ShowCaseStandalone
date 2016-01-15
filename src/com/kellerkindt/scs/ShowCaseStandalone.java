@@ -1,20 +1,19 @@
-/**
-* ShowCaseStandalone
-* Copyright (C) 2012 Kellerkindt <copyright at kellerkindt.com>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ShowCaseStandalone
+ * Copyright (c) 2016-01-15 19:06 +01 by Kellerkindt, <copyright at kellerkindt.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 package com.kellerkindt.scs;
 
@@ -50,7 +49,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitWorker;
 import org.mcstats.Metrics;
 
 import java.io.File;
@@ -75,10 +73,8 @@ public class ShowCaseStandalone extends JavaPlugin {
     private ShopHandler             shopHandler     = null;
     private PlayerSessionHandler    sessionHandler  = null;
     private PriceRangeHandler       priceHandler    = null;
-    
-    private StorageHandler<ShopHandler, Shop>                   shopStorage     = null;
-    private StorageHandler<PlayerSessionHandler, PlayerSession> sessionStorage  = null;
-    private StorageHandler<PriceRangeHandler, PriceRange>       priceStorage    = null;
+
+    private ThreadedController      threadedController;
     
     
     private SCSConfiguration    config            = null;
@@ -96,28 +92,12 @@ public class ShowCaseStandalone extends JavaPlugin {
     public void onDisable() {
         try {
             // stop changes from being happening
-            logger.info("Stopping shop update task");
-            shopHandler.stop();
-
-            // save as soon as possible changes to disk
-            logger.info("Saving any remaining shop changes");
-            shopStorage.saveAll(shopHandler);
-            shopStorage.flush();
-            shopStorage.stop(true);
-            
-            logger.info("Saving PlayerSessions");
-            sessionStorage.saveAll(sessionHandler);
-            sessionStorage.flush();
-            
-            logger.info("Saving PriceRanges");
-            priceStorage.saveAll(priceHandler);
-            priceStorage.flush();
-
+            logger.info("Stopping StorageHandlers");
+            threadedController.stop(true, true);
 
             // general cleanup, critical phase is over
             logger.info("Removing displayed items");
             shopHandler.hideAll();
-
 
             logger.info("Disable request complete!");
             
@@ -149,7 +129,6 @@ public class ShowCaseStandalone extends JavaPlugin {
             // prevent further loading
             throw new RuntimeException("Couldn't load localizations", ioe);
         }
-
         
         CommandExecutorListener listener    = new CommandExecutorListener(this);
         PluginCommand           command     = getCommand("scs");
@@ -161,25 +140,58 @@ public class ShowCaseStandalone extends JavaPlugin {
         
         
         try {
-            logger.info("Initialising handlers");
-            shopHandler     = new SimpleShopHandler (this);
-            sessionHandler  = new SimplePlayerSessionHandler(getConfiguration());
-            priceHandler    = new SimplePriceRangeHandler();
-            
-            logger.info("Initialising storage handlers");
-            shopStorage     = new YamlShopStorage           (this, new File(getDataFolder(), Properties.PATH_STORAGE));
-            sessionStorage  = new YamlPlayerSessionStorage  (this, new File(getDataFolder(), Properties.PATH_SESSIONS));
-            priceStorage    = new YamlPriceStorage          (      new File(getDataFolder(), Properties.PATH_PRICERANGE));
+            threadedController  = new ThreadedController(logger);
 
-            shopStorage     .start();
-            sessionStorage  .start();
-            priceStorage    .start();
-            
-            logger.info("Loading data");
-            shopStorage     .loadAll(shopHandler);
-            sessionStorage  .loadAll(sessionHandler);
-            priceStorage    .loadAll(priceHandler);
-            
+            logger.info("Initialising ShopHandler");
+            shopHandler         = new SimpleShopHandler(
+                    this,
+                    threadedController.add(
+                            new YamlShopStorage(
+                                    this,
+                                    new File(
+                                            getDataFolder(),
+                                            Properties.PATH_STORAGE
+                                    )
+                            )
+                    )
+            );
+
+            logger.info("Initialising PlayerSessionHandler");
+            sessionHandler      = new SimplePlayerSessionHandler(
+                    threadedController.add(
+                            new YamlPlayerSessionStorage(
+                                    logger,
+                                    new File(
+                                            getDataFolder(),
+                                            Properties.PATH_SESSIONS
+                                    )
+                            )
+                    ),
+                    getConfiguration()
+            );
+
+            logger.info("Initialising PriceRangeHandler");
+            priceHandler        = new SimplePriceRangeHandler(
+                    logger,
+                    threadedController.add(
+                            new YamlPriceStorage(
+                                    logger,
+                                    new File(
+                                            getDataFolder(),
+                                            Properties.PATH_PRICERANGE
+                                    )
+                            )
+                    )
+            );
+
+            logger.info("Starting StorageHandlers");
+            threadedController.start();
+
+            logger.info("Preparing StorageHandlers");
+            shopHandler   .prepare();
+            sessionHandler.prepare();
+            priceHandler  .prepare();
+
             logger.info("Loaded Shops: "+shopHandler.size()+", PlayerSessions: "+sessionHandler.size()+", PriceRanges: "+priceHandler.size());
             
         } catch (IOException ioe) {
@@ -713,24 +725,10 @@ public class ShowCaseStandalone extends JavaPlugin {
     }
     
     /**
-     * @return The current StorageHandler
-     */
-    public StorageHandler<ShopHandler, Shop> getShopStorageHandler(){
-        return this.shopStorage;
-    }
-    
-    /**
      * @return The {@link PlayerSessionHandler} in use
      */
     public PlayerSessionHandler getPlayerSessionHandler () {
         return sessionHandler;
-    }
-    
-    /**
-     * @return The {@link StorageHandler} for the {@link PlayerSessionHandler}
-     */
-    public StorageHandler<PlayerSessionHandler, PlayerSession> getPlayerSessionStorage () {
-        return sessionStorage;
     }
     
     /**
@@ -739,7 +737,7 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @return Whether the given price is in the set range for the given {@link Material}
      */
     public boolean inPriceRange (Material material, double price) {
-        PriceRange range = getPriceRangeHandler().getRange(material);
+        PriceRange range = getPriceRangeHandler().getRange(material, false);
         
         return range == null || (range.getMin() >= price && price <= range.getMax());
     }
@@ -749,13 +747,6 @@ public class ShowCaseStandalone extends JavaPlugin {
      */
     public PriceRangeHandler getPriceRangeHandler () {
         return priceHandler;
-    }
-    
-    /**
-     * @return The {@link StorageHandler} for the {@link PriceRangeHandler}
-     */
-    public StorageHandler<PriceRangeHandler, PriceRange> getPriceRangeStorage () {
-        return priceStorage;
     }
     
             

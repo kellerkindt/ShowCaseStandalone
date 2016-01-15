@@ -37,7 +37,7 @@ public class WorldListener implements Listener {
 
         for (World world : scs.getServer().getWorlds()) {
             for (Chunk k : world.getLoadedChunks()) {
-                scs.getShopHandler().loadChunk(k);
+                scs.getShopHandler().showShopsFor(k);
             }
         }
     }
@@ -45,12 +45,12 @@ public class WorldListener implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
     public void onChunkLoad(ChunkLoadEvent event) {
-        scs.getShopHandler().loadChunk(event.getChunk());
+        scs.getShopHandler().showShopsFor(event.getChunk());
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
     public void onChunkUnload(ChunkUnloadEvent event) {
-        scs.getShopHandler().unloadChunk(event.getChunk());
+        scs.getShopHandler().hideShopsFor(event.getChunk());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

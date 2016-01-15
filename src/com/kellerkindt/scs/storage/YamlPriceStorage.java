@@ -1,105 +1,144 @@
-/**
-* ShowCaseStandalone
-* Copyright (C) 2014 Kellerkindt <copyright at kellerkindt.com>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ShowCaseStandalone
+ * Copyright (c) 2016-01-10 19:18 +01 by Kellerkindt, <copyright at kellerkindt.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.kellerkindt.scs.storage;
+
+import com.kellerkindt.scs.PriceRange;
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.interfaces.StorageHandler;
+import com.kellerkindt.scs.internals.SimpleThreaded;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import com.kellerkindt.scs.Properties;
-import com.kellerkindt.scs.internals.SimpleThreaded;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.kellerkindt.scs.PriceRange;
-import com.kellerkindt.scs.interfaces.PriceRangeHandler;
-import com.kellerkindt.scs.interfaces.StorageHandler;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author michael <michael at email.com>
  */
-public class YamlPriceStorage extends SimpleThreaded implements StorageHandler<PriceRangeHandler, PriceRange> {
-    
-    public static final String KEY_GLOBALMIN    = "pricerange.global.min";
-    public static final String KEY_GLOBALMAX    = "pricerange.global.max";
-    public static final String KEY_RANGELIST    = "pricerange.list";
+public class YamlPriceStorage extends SimpleThreaded<YamlPriceStorage.Type, PriceRange> implements StorageHandler<PriceRange> {
+
+    public static final String KEY_VERSION   = "version";
+    public static final String KEY_GLOBALMIN = "pricerange.global.min";
+    public static final String KEY_GLOBALMAX = "pricerange.global.max";
+    public static final String KEY_RANGELIST = "pricerange.list";
 
     static {
         // register for deserialization
         ConfigurationSerialization.registerClass(PriceRange.class, Properties.ALIAS_PRICERANGE);
     }
+
+    enum Type {
+        SAVE,
+        DELETE
+    }
     
-    private File file;
+    protected File             file;
+    protected List<PriceRange> loadedList = new ArrayList<PriceRange>();
     
-    public YamlPriceStorage (File file) {
+    public YamlPriceStorage (Logger logger, File file) {
+        super(logger);
         this.file = file;
     }
 
+
     @Override
-    protected void run() {
-        // TODO
+    public PriceRange save(PriceRange element) {
+        return enqueue(Type.SAVE, element);
     }
 
     @Override
-    public void flush() throws IOException {
-        // TODO
+    public void save(Iterable<PriceRange> collection) {
+        enqueue(Type.SAVE, collection);
     }
 
     @Override
-    public void save(PriceRange entity) throws IOException {
-        // TODO
+    public void delete(PriceRange element) {
+        enqueue(Type.DELETE, element);
+    }
+
+    @Override
+    protected void process(Entry entry) {
+        switch(entry.request) {
+            case SAVE:
+                remove(entry.value); // replace similar entry
+                loadedList.add(entry.value);
+                save();
+                entry.value.resetHasChanged();
+                break;
+
+            case DELETE:
+                remove(entry.value);
+                save();
+                break;
+        }
+    }
+
+    protected void remove(PriceRange range) {
+        for (PriceRange r : loadedList) {
+            if (Objects.equals(r.getMaterial(), range.getMaterial())) {
+                loadedList.remove(r);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Saves the current {@link #loadedList}
+     */
+    protected void save() {
+        try {
+            YamlConfiguration conf = new YamlConfiguration();
+
+            conf.set(KEY_VERSION,   Properties.VERSION_STORAGE_PRICE);
+            conf.set(KEY_RANGELIST, loadedList);
+            conf.save(file);
+
+        } catch (IOException ioe) {
+            logger.log(Level.SEVERE, "Failed to save PriceRange", ioe);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void loadAll(PriceRangeHandler handler) throws IOException {
-        // nothing to do if the file dos not exist
-        if (!file.exists()) {
-            return;
-        }
-        
-        YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
-        
-        handler.setGlobalMin( conf.getDouble(KEY_GLOBALMIN) );
-        handler.setGlobalMax( conf.getDouble(KEY_GLOBALMAX) );
-        
-        for (PriceRange range : ((List<PriceRange>)conf.getList(KEY_RANGELIST))) {
-            handler.setRange(range);
-        }
-    }
+    public Collection<PriceRange> loadAll() throws IOException {
 
-    @Override
-    public void saveAll(PriceRangeHandler handler) throws IOException {
-        YamlConfiguration conf = new YamlConfiguration();
-        
-        conf.set(KEY_GLOBALMIN, handler.getGlobalMin());
-        conf.set(KEY_GLOBALMAX, handler.getGlobalMax());
-        
-        List<PriceRange> list = new ArrayList<PriceRange>();
-        
-        for (PriceRange range : handler) {
-            list.add(range);
+        YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
+        List<PriceRange>  list = new ArrayList<PriceRange>();
+
+        int version = conf.getInt(KEY_VERSION, 0); // has been introduced with version being 1
+
+        switch (version) {
+            case 0:
+                list.add(new PriceRange(null, null, conf.getDouble(KEY_GLOBALMIN), conf.getDouble(KEY_GLOBALMAX)));
         }
-        
-        conf.set(KEY_RANGELIST, list);
-        conf.save(file);
+
+        list.addAll((List<PriceRange>)conf.getList(KEY_RANGELIST));
+
+        loadedList.clear();
+        loadedList.addAll(list);
+
+        return list;
     }
 
 }

@@ -1,57 +1,59 @@
-/**
-* ShowCaseStandalone
-* Copyright (C) 2012 Kellerkindt <copyright at kellerkindt.com>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ShowCaseStandalone
+ * Copyright (c) 2016-01-10 19:40 +01 by Kellerkindt, <copyright at kellerkindt.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.kellerkindt.scs.interfaces;
 
 import java.io.IOException;
+import java.util.Collection;
 
 
-
-public interface StorageHandler<H, E> extends Threaded {
-    
+public interface StorageHandler<E> extends Threaded {
     
     /**
-     * Loads the data and adds it to the given
-     * handler
-     * @param handler Handler to add the data to
-     * @throws IOException
+     * Loads as many elements as possible
+     * @return {@link Collection} of loaded elements
+     * @throws IOException On an critical issue, preventing further loading
      */
-    void loadAll(H handler) throws IOException;
-    
-    /**
-     * Saves all data of the given handler,
-     * optional behavior: only save data, that
-     * has changed, will also reset it then
-     * @param handler Handler to get the data from
-     */
-    void saveAll(H handler) throws IOException;
+    Collection<E> loadAll() throws IOException;
 
     /**
-     * Saves the single given data set.
-     * @param entity Entity to save
-     * @throws IOException
+     * Enqueues the given elements to be saved
+     *
+     * @param elements {@link Iterable} to save the elements of
      */
-    void save(E entity) throws IOException;
+    void save(Iterable<E> elements);
+
+    /**
+     * Enqueues the given element to be saved
+     *
+     * @param element Element to save
+     * @return given element
+     */
+    E save(E element);
+
+    /**
+     * Enqueues the given element to be deleted
+     *
+     * @param element Element to delete
+     */
+    void delete(E element);
     
     /**
-     * All buffered data (if there is one),
-     * will now be forced to be written
-     * Will block until they are written
-     * @throws IOException
+     * Writes all cached data to the {@link StorageHandler}'s destination
+     * @throws IOException On an critical issue, preventing further flushing
      */
     void flush() throws IOException;
 }

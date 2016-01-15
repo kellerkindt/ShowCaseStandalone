@@ -66,7 +66,7 @@ public class Report extends SimpleCommand {
             
             ps.println("---- SCS report, created at     " + date + " ----");
             ps.println(" - Current SCS version:          "+scs.getDescription().getVersion());
-            ps.println(" - Current storage version:      "+Properties.VERSION_STORAGE);
+            ps.println(" - Current storage version:      "+Properties.VERSION_STORAGE_SHOP);
             ps.println(" - Current Bukkit version:       "+scs.getServer().getVersion());
             ps.println(" - Startup:                      "+DATE_FORMATTER.format(ShowCaseStandalone.getStartupTime()));
             ps.println(" - Total warnings since startup: "+ShowCaseStandalone.getTotalWarnings());

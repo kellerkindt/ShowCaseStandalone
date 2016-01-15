@@ -1,27 +1,29 @@
-/**
-* ShowCaseStandalone
-* Copyright (C) 2014 Kellerkindt <copyright at kellerkindt.com>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ShowCaseStandalone
+ * Copyright (c) 2016-01-15 18:58 +01 by Kellerkindt, <copyright at kellerkindt.com>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.kellerkindt.scs.internals;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.kellerkindt.scs.interfaces.Changeable;
+import com.kellerkindt.scs.interfaces.StorageHandler;
 import org.bukkit.entity.Player;
 
 import com.kellerkindt.scs.PlayerSession;
@@ -34,11 +36,31 @@ import com.kellerkindt.scs.interfaces.PlayerSessionHandler;
  */
 public class SimplePlayerSessionHandler implements PlayerSessionHandler {
 
-    private Map<UUID, PlayerSession> sessions         = new HashMap<UUID, PlayerSession>();
-    private SCSConfiguration         configuration;
+    protected Map<UUID, PlayerSession>      sessions         = new HashMap<UUID, PlayerSession>();
+    protected StorageHandler<PlayerSession> storageHandler;
+    protected SCSConfiguration              configuration;
     
-    public SimplePlayerSessionHandler (SCSConfiguration configuration) {
-        this.configuration    = configuration;
+    public SimplePlayerSessionHandler (StorageHandler<PlayerSession> storageHandler, SCSConfiguration configuration) {
+        this.storageHandler = storageHandler;
+        this.configuration  = configuration;
+    }
+
+    @Override
+    public void prepare() throws IOException {
+        sessions.clear();
+        for (PlayerSession session : storageHandler.loadAll()) {
+            addSessionNotToStorage(session);
+        }
+    }
+
+    /**
+     * Will add the given {@link PlayerSession} to this {@link PlayerSessionHandler}
+     * but won't notify the {@link StorageHandler} for it
+     * @param session {@link PlayerSession} to add
+     */
+    protected void addSessionNotToStorage(PlayerSession session) {
+        sessions.put(session.getPlayerId(), session);
+        session.addChangeListener(changeListener);
     }
 
     @Override
@@ -72,10 +94,11 @@ public class SimplePlayerSessionHandler implements PlayerSessionHandler {
             session = new PlayerSession(id);
             
             // defaults
-            session.setShowTransactionMessage    (configuration.getDefaultShowTransactionMessage());
-            session.setUnitSize                    (configuration.getDefaultUnit());
-            
-            sessions.put(id, session);
+            session.setShowTransactionMessage(configuration.getDefaultShowTransactionMessage());
+            session.setUnitSize              (configuration.getDefaultUnit());
+
+            addSessionNotToStorage(session);
+            storageHandler.save(session);
         }
         
         return session;
@@ -89,8 +112,9 @@ public class SimplePlayerSessionHandler implements PlayerSessionHandler {
     @Override
     public boolean addSession(PlayerSession session, boolean replace) {
         // set or replace --> replace allowed?
-        if (!sessions.containsKey(session.getUUID()) || replace) {
-            sessions.put(session.getUUID(), session);
+        if (!sessions.containsKey(session.getPlayerId()) || replace) {
+            addSessionNotToStorage(session);
+            storageHandler.save(session);
             return true;
         }
             
@@ -109,16 +133,32 @@ public class SimplePlayerSessionHandler implements PlayerSessionHandler {
 
     @Override
     public boolean removeSession(PlayerSession session) {
-        return removeSession(session.getUUID());
+        return removeSession(session.getPlayerId());
     }
 
     @Override
     public boolean removeSession(UUID id) {
-        return sessions.remove(id) != null;
+        PlayerSession session = sessions.remove(id);
+        if (session != null) {
+            session.removeChangeListener(changeListener);
+            storageHandler.delete(session);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void clear() {
+        for (PlayerSession session : sessions.values()) {
+            storageHandler.delete(session);
+        }
         sessions.clear();
     }
+
+    protected Changeable.ChangeListener<PlayerSession> changeListener = new Changeable.ChangeListener<PlayerSession>() {
+        @Override
+        public void onChanged(PlayerSession changeable) {
+            storageHandler.save(changeable);
+        }
+    };
 }

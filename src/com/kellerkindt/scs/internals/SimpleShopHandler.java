@@ -21,7 +21,9 @@ import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
 import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
+import com.kellerkindt.scs.interfaces.Changeable;
 import com.kellerkindt.scs.interfaces.ShopHandler;
+import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
 import org.bukkit.Chunk;
@@ -39,6 +41,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -46,27 +49,41 @@ import java.util.logging.Level;
 public class SimpleShopHandler implements ShopHandler {
 
 
-    private HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
-    private HashMap<Shop, Item>             shopItems   = new HashMap<Shop, Item>();
-    private HashMap<Block, Shop>            blockShops  = new HashMap<Block, Shop>();
-    private HashMap<UUID, Shop>             uuidShops   = new HashMap<UUID, Shop>();
-    private HashMap<UUID, Integer>          shopOwners  = new HashMap<UUID, Integer>();
-    private HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
-    private HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
-    private ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
+    protected HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
+    protected HashMap<Shop, Item>             shopItems   = new HashMap<Shop, Item>();
+    protected HashMap<Block, Shop>            blockShops  = new HashMap<Block, Shop>();
+    protected HashMap<UUID, Shop>             uuidShops   = new HashMap<UUID, Shop>();
+    protected HashMap<UUID, Integer>          shopOwners  = new HashMap<UUID, Integer>();
+    protected HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
+    protected HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
+    protected ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
 
     protected List<Shop>                 visibleShops   = new LinkedList<Shop>();
 
-    private ShowCaseStandalone    scs           = null;
-    private boolean               fireEvents    = true;
+    protected ShowCaseStandalone    scs           = null;
+    protected boolean               fireEvents    = true;
 
-    private InternalShopChangeListener changeListener;
-    
-    public SimpleShopHandler(ShowCaseStandalone scs) {
+    protected InternalShopChangeListener changeListener;
+    protected StorageHandler<Shop>       storageHandler;
+
+
+    public SimpleShopHandler(ShowCaseStandalone scs, StorageHandler<Shop> storageHandler) {
         this.scs            = scs;
+        this.storageHandler = storageHandler;
         this.changeListener = new InternalShopChangeListener();
 
         scs.getServer().getPluginManager().registerEvents( this.changeListener, scs );
+    }
+
+    @Override
+    public void prepare() throws IOException {
+        clear();
+        addAll(storageHandler.loadAll());
+    }
+
+    @Override
+    public StorageHandler<Shop> getStorageHandler() {
+        return storageHandler;
     }
 
     @Override
@@ -146,14 +163,6 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#tick()
-     */
-    @Override
-    public void tick() {
-        // checkShopDisplayState();
-    }
-
-    /**
      * This method displays or hides the shops
      * if the item disappeared, or the shop got
      * inactive
@@ -182,24 +191,24 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(org.bukkit.entity.Item)
      */
     @Override
-    public Shop getShop(Item i) {
-        return itemShops.get(i);
+    public Shop getShop(Item item) {
+        return itemShops.get(item);
     }
 
     /**
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(org.bukkit.block.Block)
      */
     @Override
-    public Shop getShop(Block b) {
-        return blockShops.get(b);
+    public Shop getShop(Block block) {
+        return blockShops.get(block);
     }
     
     /**
      * @see com.kellerkindt.scs.interfaces.ShopHandler#getShop(java.util.UUID)
      */
     @Override
-    public Shop getShop(UUID uuid) {
-        return uuidShops.get(uuid);
+    public Shop getShop(UUID id) {
+        return uuidShops.get(id);
     }
 
     /**
@@ -211,8 +220,8 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     @Override
-    public boolean isShopBlock(Block b) {
-        return blockShops.containsKey(b);
+    public boolean isShopBlock(Block block) {
+        return blockShops.containsKey(block);
     }
 
     private void addRaw(Shop p, boolean overwrite) {
@@ -223,21 +232,24 @@ public class SimpleShopHandler implements ShopHandler {
         }
         
         // be sure that the UUID is unique
-        while (uuidShops.containsKey(p.getId()) && !overwrite) {
+        while (!overwrite && uuidShops.containsKey(p.getId())) {
             p.setId(UUID.randomUUID());
         }
         
-        if (uuidShops.containsKey(p.getId()) && overwrite) {
+        if (overwrite && uuidShops.containsKey(p.getId())) {
             removeShop(uuidShops.get(p.getId()));
         }
         
         // add to lists
-        blockShops    .put(p.getBlock(),     p);
-        uuidShops    .put(p.getId(),     p);
-        shops        .add(p);
+        blockShops.put(p.getBlock(),     p);
+        uuidShops .put(p.getId(),     p);
+        shops     .add(p);
         
         this.setFrames(p);
         this.incrementShopAmount( p.getOwnerId() );
+
+        // get notified on changes
+        p.addChangeListener(shopChangeListener);
     }
     
     /**
@@ -318,13 +330,13 @@ public class SimpleShopHandler implements ShopHandler {
      * @see com.kellerkindt.scs.interfaces.ShopHandler#addShop(com.kellerkindt.scs.shops.Shop)
      */
     @Override
-    public void addShop(Shop p) {
-        addShop(p, false);
+    public void addShop(Shop shop) {
+        addShop(shop, false);
     }
     
     @Override
-    public void addShop(Shop p, boolean overwrite) {
-        addRaw(p, overwrite);
+    public void addShop(Shop p, boolean replace) {
+        addRaw(p, replace);
 
         fireChangeEvent();
     }
@@ -336,6 +348,10 @@ public class SimpleShopHandler implements ShopHandler {
         
         // remove from iterator list
         shops.remove(shop);
+        storageHandler.delete(shop);
+
+        // notifications are no longer desired
+        shop.removeChangeListener(shopChangeListener);
     }
     
     /**
@@ -357,17 +373,15 @@ public class SimpleShopHandler implements ShopHandler {
         
         fireChangeEvent();
     }
-    
-    /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#getShopAmount(java.lang.String)
-     */
+
+
     @Override
-    public int getShopAmount( String owner ) {
+    public int getShopAmount(UUID owner) {
         Integer amount = this.shopOwners.get( owner );
-        
+
         return ( amount != null ? amount : 0 );
     }
-    
+
     
     private void incrementShopAmount( UUID shopOwner ) {
         Integer amount = this.shopOwners.get( shopOwner );
@@ -391,10 +405,10 @@ public class SimpleShopHandler implements ShopHandler {
     
 
     /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#loadChunk(org.bukkit.Chunk)
+     * @see com.kellerkindt.scs.interfaces.ShopHandler#showShopsFor(org.bukkit.Chunk)
      */
     @Override
-    public void loadChunk(Chunk chunk) {
+    public void showShopsFor(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
             scs.getLogger().info("Load chunk: " + (chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
@@ -435,10 +449,10 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     /**
-     * @see com.kellerkindt.scs.interfaces.ShopHandler#unloadChunk(org.bukkit.Chunk)
+     * @see com.kellerkindt.scs.interfaces.ShopHandler#hideShopsFor(org.bukkit.Chunk)
      */
     @Override
-    public void unloadChunk(Chunk chunk) {
+    public void hideShopsFor(Chunk chunk) {
         if (scs.getConfiguration().isDebuggingChunks()) {
             scs.getLogger().info("Unload chunk: "+(chunk == null ? null : chunk.toString() + ", " + chunk.getWorld().getName()));
         }
@@ -499,18 +513,6 @@ public class SimpleShopHandler implements ShopHandler {
         }
     }
 
-
-
-    @Override
-    public void stop() {
-        
-    }
-
-    @Override
-    public void start() {
-        
-    }
-
     public boolean isInChunk(Location location, Chunk chunk) {
         return isInChunk(location, location.getWorld(), chunk);
     }
@@ -558,6 +560,22 @@ public class SimpleShopHandler implements ShopHandler {
         return cw.isChunkLoaded(cx, cz);
     }
 
+    /**
+     * Removes any entry from this {@link ShopHandler},
+     * no event invoking, no delegation to the {@link StorageHandler}
+     */
+    protected void clear() {
+        itemShops   .clear();
+        shopItems   .clear();
+        blockShops  .clear();
+        uuidShops   .clear();
+        shopOwners  .clear();
+        shopFrames  .clear();
+        frameShops  .clear();
+        shopFrames  .clear();
+        visibleShops.clear();
+    }
+
     @Override
     public void removeAll() {
         blockShops.clear();
@@ -577,7 +595,7 @@ public class SimpleShopHandler implements ShopHandler {
     }
 
     @Override
-    public void addAll(Collection<Shop> shops, boolean overwrite) {
+    public void addAll(Collection<Shop> shops, boolean replace) {
         // deactivate event firing
         fireEvents = false;
 
@@ -590,7 +608,7 @@ public class SimpleShopHandler implements ShopHandler {
                 continue;
             }
             
-            addShop(p, overwrite);
+            addShop(p, replace);
         }
 
         // enable event firing
@@ -945,7 +963,15 @@ public class SimpleShopHandler implements ShopHandler {
         }
     }
     
-    
+    protected Changeable.ChangeListener<Shop<?>> shopChangeListener = new Changeable.ChangeListener<Shop<?>>() {
+        @Override
+        public void onChanged(Shop<?> shop) {
+            if (scs.getConfiguration().isDebuggingSave()) {
+                scs.getLogger().info("Shop changed, going to enqueue save request for shop=" + shop);
+            }
+            storageHandler.save(shop);
+        }
+    };
     
 
     /**

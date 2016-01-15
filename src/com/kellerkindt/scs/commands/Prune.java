@@ -46,7 +46,8 @@ public class Prune extends SimpleCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
-
+        scs.sendMessage(sender, "This command is no longer valid");
+        /*
         ShopHandler                         sh      = scs.getShopHandler();
         StorageHandler<ShopHandler, Shop>   storage = scs.getShopStorageHandler();
         
@@ -54,8 +55,9 @@ public class Prune extends SimpleCommand {
                 scs.sendMessage(sender, Term.PRUNE.get());
                 scs.getLogger().info("Backup");
                 List<Shop>    shops    = new ArrayList<Shop>();
-                for (Shop p : sh)
+                for (Shop p : sh) {
                     shops.add(p);
+                }
                 
                 scs.getLogger().info("Remove all shops from storage.");
                 sh.removeAll();
@@ -69,7 +71,7 @@ public class Prune extends SimpleCommand {
         } catch (Exception ioe) {
             scs.getLogger().log(Level.SEVERE, "Couldn't perform prune successfully", ioe);
             scs.sendMessage(sender, Term.ERROR_GENERAL.get("pruning") + ioe.getLocalizedMessage());
-        }
+        }*/
     }
     
     

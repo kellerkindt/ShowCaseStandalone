@@ -18,10 +18,17 @@ package com.kellerkindt.scs.internals;
 
 import com.kellerkindt.scs.interfaces.Threaded;
 
+import java.io.Flushable;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * TODO
  */
-public abstract class SimpleThreaded implements Threaded {
+public abstract class SimpleThreaded<T extends Enum<T>, V> implements Threaded, Flushable {
 
     protected boolean running;
     protected boolean shallRun;
@@ -29,20 +36,101 @@ public abstract class SimpleThreaded implements Threaded {
     protected Thread worker;
     protected String workerName;
 
-    public SimpleThreaded() {
-        this(null);
+    protected Logger logger;
+
+    protected final Queue<Entry> entries = new LinkedList<Entry>();
+
+    public SimpleThreaded(Logger logger) {
+        this(logger, null);
     }
 
-    public SimpleThreaded(String workerName) {
+    public SimpleThreaded(Logger logger, String workerName) {
+        this.logger     = logger;
         this.workerName = workerName != null ? workerName : getClass().getSimpleName()+".worker";
         this.running    = false;
         this.shallRun   = false;
     }
 
     /**
+     * Creates a new queue entry for the given
+     * request and value
+     *
+     * @param request Request to enqueue
+     * @param value Value requested
+     * @return The given value
+     */
+    protected V enqueue(T request, V value) {
+        synchronized (entries) {
+            entries.add(new Entry(request, value));
+            entries.notifyAll();
+        }
+        return value;
+    }
+
+    /**
+     * Creates new queue entries for each of the
+     * given values for the given request
+     *
+     * @param request Request to enqueue
+     * @param values Values requested
+     * @return The given values
+     */
+    protected Iterable<V> enqueue(T request, Iterable<V> values) {
+        synchronized (entries) {
+            for (V value : values) {
+                entries.add(new Entry(request, value));
+            }
+            entries.notifyAll();
+        }
+        return values;
+    }
+
+    @Override
+    public void flush() throws IOException {
+        try {
+            // there is no reason to wait, if the worker is no longer running
+            if (isRunning()) {
+                synchronized (entries) {
+                    while (entries.size() > 0) {
+                        entries.wait();
+                    }
+                }
+            }
+
+        } catch (InterruptedException ie) {
+            throw new IOException(ie);
+        }
+    }
+
+    /**
      * Method that gets invoked by the worker {@link Thread}
      */
-    protected abstract void run();
+    protected void run() {
+        Entry entry;
+
+        while (keepRunning()) {
+            synchronized (entries) {
+                entry = entries.poll();
+
+                if (entry == null) {
+                    try {
+                        entries.notify();  // notify potential flush
+                        entries.wait();    // wait for more work
+                    } catch (InterruptedException ie) {
+                        logger.log(Level.WARNING, "Got interrupted, may cause performance issues, "+worker.getName(), ie);
+                    }
+
+                    // try again
+                    continue;
+                }
+            }
+
+            // there is work!
+            process(entry);
+        }
+    }
+
+    protected abstract void process(Entry entry);
 
     /**
      * @return Whether to keep the worker {@link Thread} running
@@ -106,7 +194,23 @@ public abstract class SimpleThreaded implements Threaded {
     public synchronized void stop(boolean join) throws InterruptedException {
         this.shallRun = false;
         while (running && join) {
+            // wake the worker up
+            synchronized (entries) {
+                entries.notifyAll();
+            }
+
+            // wait for response
             this.wait();
+        }
+    }
+
+    protected class Entry {
+        public final T request;
+        public final V value;
+
+        private Entry(T request, V value) {
+            this.request = request;
+            this.value   = value;
         }
     }
 }

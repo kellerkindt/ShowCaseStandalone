@@ -19,7 +19,9 @@ package com.kellerkindt.scs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import com.kellerkindt.scs.internals.SimpleChangeable;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -31,28 +33,30 @@ import com.kellerkindt.scs.interfaces.PriceRangeHandler;
  * @author michael <michael at kellerkindt.com>
  */
 @SerializableAs(Properties.ALIAS_PRICERANGE)
-public class PriceRange implements ConfigurationSerializable {
+public class PriceRange extends SimpleChangeable<PriceRange> implements ConfigurationSerializable {
+
+    // ------------- for serialization --------
+    public static final String KEY_MATERIAL = "material";
+    public static final String KEY_MIN      = "min";
+    public static final String KEY_MAX      = "max";
+    // -----------------------------------------
     
-    public static final String KEY_MATERIAL    = "material";
-    public static final String KEY_MIN        = "min";
-    public static final String KEY_MAX        = "max";
-    
-    private PriceRangeHandler    handler;
-    private Material            material;
-    private double                min;
-    private double                max;
+    private PriceRangeHandler handler;
+    private Material          material;
+    private double            min;
+    private double            max;
     
     public PriceRange (PriceRangeHandler handler, Material material, double min, double max) {
-        this.handler    = handler;
-        this.material    = material;
-        this.min        = min;
-        this.max        = max;
+        this.handler  = handler;
+        this.material = material;
+        this.min      = min;
+        this.max      = max;
     }
     
     public PriceRange (PriceRangeHandler handler, Material material, double max) {
         this(handler, material, 0, max);
     }
-    
+
     public PriceRange (PriceRangeHandler handler, Material material) {
         this(handler, material, 0, Double.MAX_VALUE);
     }
@@ -75,7 +79,22 @@ public class PriceRange implements ConfigurationSerializable {
     public void setPriceRangeHandler (PriceRangeHandler handler) {
         this.handler    = handler;
     }
-    
+
+    /**
+     * @param min The new min price for this {@link PriceRange}
+     * @return itself
+     */
+    public PriceRange setMin(final double min) {
+        return setChanged(
+                !Objects.equals(min, this.min),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        PriceRange.this.min = min;
+                    }
+                }
+        );
+    }
 
     /**
      * @return The min price for this range
@@ -90,11 +109,23 @@ public class PriceRange implements ConfigurationSerializable {
      */
     public double getMin (boolean limitByGlobalMin) {
         // check whether the global min is greater than this one
-        if (handler.getGlobalMin() > min) {
+        if (limitByGlobalMin && handler.getGlobalMin() > min) {
             return handler.getGlobalMin();
         }
         
         return min;
+    }
+
+    public PriceRange setMax(final double max) {
+        return setChanged(
+                !Objects.equals(this.max, max),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        PriceRange.this.max = max;
+                    }
+                }
+        );
     }
     
     /**
@@ -110,7 +141,7 @@ public class PriceRange implements ConfigurationSerializable {
      */
     public double getMax (boolean limitByGlobalMax) {
         // check whether the global max is less than this one
-        if (handler.getGlobalMax() < max) {
+        if (limitByGlobalMax && handler.getGlobalMax() < max) {
             return handler.getGlobalMax();
         }
         
@@ -127,8 +158,8 @@ public class PriceRange implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<String, Object>();
-        
-        map.put(KEY_MATERIAL,    material.toString());
+
+        map.put(KEY_MATERIAL,   material != null ? material.toString() : null);
         map.put(KEY_MIN,        min);
         map.put(KEY_MAX,        max);
         
@@ -142,9 +173,9 @@ public class PriceRange implements ConfigurationSerializable {
         // create the range
         PriceRange range = new PriceRange();
         
-        range.material    = Material.getMaterial( (String)map.get(KEY_MATERIAL) );
-        range.min        = (Double)    map.get(KEY_MIN);
-        range.max        = (Double)    map.get(KEY_MAX);
+        range.material  = Material.getMaterial( (String)map.get(KEY_MATERIAL) );
+        range.min       = (Double)map.get(KEY_MIN);
+        range.max       = (Double)map.get(KEY_MAX);
         
         return range;
     }

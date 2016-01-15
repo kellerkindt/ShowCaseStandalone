@@ -27,7 +27,7 @@ import com.kellerkindt.scs.PlayerSession;
  *
  * @author michael <michael at kellerkindt.com>
  */
-public interface PlayerSessionHandler extends Iterable<PlayerSession> {
+public interface PlayerSessionHandler extends Iterable<PlayerSession>, ResourceDependent {
     
     /**
      * @param player {@link Player} to return the session for

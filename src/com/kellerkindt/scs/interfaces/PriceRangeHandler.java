@@ -25,7 +25,7 @@ import com.kellerkindt.scs.PriceRange;
  *
  * @author michael <michael at kellerkindt.com>
  */
-public interface PriceRangeHandler extends Iterable<PriceRange> {
+public interface PriceRangeHandler extends Iterable<PriceRange>, ResourceDependent {
     
     /**
      * @return The amount of entries in this {@link PriceRangeHandler}
@@ -54,9 +54,10 @@ public interface PriceRangeHandler extends Iterable<PriceRange> {
     
     /**
      * @param material {@link Material} to get the {@link PriceRange} for
+     * @return saveNew Whether to save the returned {@link PriceRange} if create for this request
      * @return A {@link PriceRange} representing the price range for the given {@link Material}
      */
-    public PriceRange getRange (Material material);
+    public PriceRange getRange (Material material, boolean saveNew);
     
     /**
      * Overwrites the {@link PriceRangeHandler}
