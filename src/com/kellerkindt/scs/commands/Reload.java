@@ -47,8 +47,8 @@ public class Reload extends SimpleCommand {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         // disable first, then reload, then re-enable.
-        ShopHandler                         sh         = scs.getShopHandler();
-        StorageHandler<ShopHandler, Shop>   storage    = scs.getShopStorageHandler();
+        ShopHandler          handler = scs.getShopHandler();
+        StorageHandler<Shop> storage = handler.getStorageHandler();
         
         try {
             
@@ -59,23 +59,18 @@ public class Reload extends SimpleCommand {
             scs.sendMessage(sender, Term.MESSAGE_RELOADING.get("SCS"));
             
             scs.getLogger().info("Reloading SCS (command from " + sender.getName()+")");
-            scs.getLogger().info("Stopping shop update task");
-            sh.stop();
             
             scs.getLogger().info("Removing display items");
-            sh.hideAll();
+            handler.hideAll();
             
             scs.getLogger().info("Writing changes to disk");
-            storage.saveAll(sh);
+            storage.flush();
                 
-            scs.getLogger().info("Reloading shops from storage");
-            storage.loadAll(sh);
-            
-            scs.getLogger().info("Starting shop update task");
-            sh.start();
+            scs.getLogger().info("Reloading shops from disk");
+            handler.prepare();
             
             scs.getLogger().info("Showing display items in loaded chunks");
-            sh.showAll();
+            handler.showAll();
             
         } catch (Exception ioe) {
             scs.getLogger().log(Level.SEVERE, "Couldn'T perform reload successfully", ioe);

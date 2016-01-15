@@ -17,6 +17,7 @@
 */
 package com.kellerkindt.scs.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -47,15 +48,17 @@ public class Unit extends SimpleCommand {
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
         Player            player    = (Player)sender;
-        PlayerSession     session = scs.getPlayerSessionHandler().getSession(player);
+        PlayerSession     session   = scs.getPlayerSessionHandler().getSession(player, true);
         
-        if(args.length >= 1){
+        if (args.length > 0){
             int unit = 0;
-            
+
             try { 
-                unit = Integer.parseInt(args[1]);  
-            } catch (Exception e) {}
-            
+                unit = Integer.parseInt(args[0]);
+            } catch (Throwable t) {
+                // user will enter shit... so ignore it
+            }
+
             if(unit < 1) {
                 throw new MissingOrIncorrectArgumentException();
             }

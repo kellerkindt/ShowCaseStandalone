@@ -39,7 +39,7 @@ public class Range extends SimpleCommand {
     public static final String ARG_REMOVE    = "remove";
 
     public Range(ShowCaseStandalone scs, String...permissions) {
-        super(scs, permissions, false, 2);
+        super(scs, permissions, false, 1);
     }
 
     @Override
@@ -85,18 +85,19 @@ public class Range extends SimpleCommand {
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
         // try to get the material?
-        Material     material     = Material.getMaterial(args[0].toUpperCase());
-        boolean        global        = material == null && ARG_GLOBAL.equalsIgnoreCase(args[0]);
-        boolean        remove        = material == null && ARG_REMOVE.equalsIgnoreCase(args[0]);
+        Material material = Material.getMaterial(args[0].toUpperCase());
+        boolean  global   = material == null && ARG_GLOBAL.equalsIgnoreCase(args[0]);
+        boolean  remove   = material == null && ARG_REMOVE.equalsIgnoreCase(args[0]);
         
         // failed? because global is requested?
         if (material == null && !global && !remove) {
             throw new MissingOrIncorrectArgumentException();
         }
         
-        PriceRangeHandler     handler = scs.getPriceRangeHandler();
-        double                min        = 0;
-        double                max        = Double.MAX_VALUE;
+        PriceRangeHandler handler = scs.getPriceRangeHandler();
+        double            min     = 0;
+        double            max     = Double.MAX_VALUE;
+        boolean           update  = true;
         
 
         String message = null;
@@ -105,7 +106,7 @@ public class Range extends SimpleCommand {
             try {
                 // the first one is the min value
                 if (args.length > 1) {
-                    min    = Double.parseDouble(args[1]);
+                    min = Double.parseDouble(args[1]);
                 }
                 
                 // the (optional) second one is the max value
@@ -154,8 +155,9 @@ public class Range extends SimpleCommand {
                 
                 
             } else {
-                min = handler.getMin(material);
-                max = handler.getMax(material);
+                min     = handler.getMin(material);
+                max     = handler.getMax(material);
+                update  = false;
                 
                 if (max == Double.MAX_VALUE) {
                     max = Double.POSITIVE_INFINITY;
@@ -178,7 +180,7 @@ public class Range extends SimpleCommand {
             if (args.length < 2) {
                 throw new MissingOrIncorrectArgumentException();
             }
-            
+
 
             if (ARG_GLOBAL.equalsIgnoreCase(args[1])) {
                 handler.setGlobalMin(0);
@@ -202,24 +204,25 @@ public class Range extends SimpleCommand {
         
         
         
-        
-        // update all shops
-        for (Shop shop : scs.getShopHandler()) {
-            
-            // ignore this shop shop?
-            if (!global && !shop.getItemStack().getType().equals(material)) {
-                continue;
+        if (update) {
+            // update all shops
+            for (Shop shop : scs.getShopHandler()) {
+
+                // ignore this shop shop?
+                if (!global && !shop.getItemStack().getType().equals(material)) {
+                    continue;
+                }
+
+                // get the current price
+                double price = shop.getPrice();
+
+                // fit the price
+                price = Math.min(price, max);
+                price = Math.max(price, min);
+
+                // set the price
+                shop.setPrice(price);
             }
-            
-            // get the current price
-            double price = shop.getPrice();
-            
-            // fit the price
-            price = Math.min(price, max);
-            price = Math.max(price, min);
-            
-            // set the price
-            shop.setPrice(price);
         }
         
         

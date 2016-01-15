@@ -20,7 +20,10 @@ package com.kellerkindt.scs.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.internals.SimpleThreaded;
@@ -36,7 +39,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
  *
  * @author michael <michael at kellerkindt.com>
  */
-public class YamlPlayerSessionStorage extends SimpleThreaded implements StorageHandler<PlayerSessionHandler, PlayerSession> {
+public class YamlPlayerSessionStorage extends SimpleThreaded<YamlPlayerSessionStorage.Type, PlayerSession> implements StorageHandler<PlayerSession> {
 
     public static final String PATH_LIST    = "PlayerSessionVariables";
 
@@ -44,69 +47,102 @@ public class YamlPlayerSessionStorage extends SimpleThreaded implements StorageH
         // register for deserialization
         ConfigurationSerialization.registerClass(PlayerSession.class, Properties.ALIAS_PLAYERSESSION);
     }
+
+    enum Type {
+        SAVE,
+        DELETE
+    }
+
+    protected File                file;
+    protected List<PlayerSession> loadedList = new ArrayList<PlayerSession>();
     
-    private ShowCaseStandalone  scs;
-    private File                file;
-    
-    public YamlPlayerSessionStorage (ShowCaseStandalone scs, File file) {
-        this.scs    = scs;
+    public YamlPlayerSessionStorage (Logger logger, File file) {
+        super(logger);
+
         this.file   = file;
     }
 
     @Override
-    protected void run() {
+    protected void process(Entry entry) {
+        switch (entry.request) {
+            case SAVE:
+                loadedList.remove(entry.value);
+                loadedList.add(entry.value);
+                save();
+                entry.value.resetHasChanged();
+                break;
 
+            case DELETE:
+                if (loadedList.remove(entry.value)) {
+                    save();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Saves the current {@link #loadedList}
+     */
+    protected void save() {
+        try {
+            YamlConfiguration conf = new YamlConfiguration();
+
+            // add it to the YAML file
+            conf.set(PATH_LIST, loadedList);
+
+            for (PlayerSession session : loadedList) {
+                System.out.println(session);
+            }
+
+            // save it to disk
+            conf.save(file);
+
+        } catch (IOException ioe) {
+            logger.log(Level.SEVERE, "Failed to save PlayerSessionStorage", ioe);
+        }
     }
 
     @Override
-    public void flush() throws IOException {
-        // TODO
+    public PlayerSession save(PlayerSession element) {
+        return enqueue(Type.SAVE, element);
     }
 
     @Override
-    public void save(PlayerSession element) throws IOException {
-
+    public void save(Iterable<PlayerSession> elements) {
+        enqueue(Type.SAVE, elements);
     }
 
     @Override
-    public void loadAll(PlayerSessionHandler handler) throws IOException {
+    public void delete(PlayerSession element) {
+        enqueue(Type.DELETE, element);
+    }
+
+    @Override
+    public Collection<PlayerSession> loadAll() throws IOException {
+
+        List<PlayerSession> sessions = new ArrayList<PlayerSession>();
 
         // nothing to load if the file does not exist
-        if (!file.exists()) {
-            return;
-        }
-        
-        // load the file
-        YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
-        
-        
-        List<?> list = conf.getList(PATH_LIST);
-        
-        for (Object o : list) {
-            // well, just to be really sure :)
-            if (o instanceof PlayerSession) {
-                handler.addSession((PlayerSession)o);
-                
-            } else {
-                scs.getLogger().severe("Unknown value in the PlayerSession file: "+o);
+        if (file.exists()) {
+            // load the file
+            YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
+            List<?>           list = conf.getList(PATH_LIST);
+
+            for (Object o : list) {
+                // well, just to be really sure :)
+                if (o instanceof PlayerSession) {
+                    sessions.add((PlayerSession)o);
+
+                } else {
+                    logger.severe("Unknown value in the PlayerSession file: "+o);
+                }
             }
         }
-    }
 
-    @Override
-    public void saveAll(PlayerSessionHandler handler) throws IOException {
-        YamlConfiguration     conf     = new YamlConfiguration();
-        List<PlayerSession>    list    = new ArrayList<PlayerSession>();
-        
-        // add it to the list
-        for (PlayerSession session : handler) {
-            list.add(session);
-        }
-        
-        // add it to the YAML file
-        conf.set(PATH_LIST, list);
-        
-        // save it to disk
-        conf.save(file);
+        // update the current loaded state
+        this.loadedList.clear();
+        this.loadedList.addAll(sessions);
+
+        return sessions;
     }
 }

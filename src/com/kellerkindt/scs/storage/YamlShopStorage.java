@@ -17,33 +17,29 @@
 */
 package com.kellerkindt.scs.storage;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-
-import com.kellerkindt.scs.interfaces.Changeable;
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.internals.SimpleThreaded;
 import com.kellerkindt.scs.shops.*;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.kellerkindt.scs.Properties;
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.interfaces.ShopHandler;
-import com.kellerkindt.scs.interfaces.StorageHandler;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  *
  * @author kellerkindt <michael at kellerkindt.com>
  */
-public class YamlShopStorage extends SimpleThreaded implements StorageHandler<ShopHandler, Shop> {
+public class YamlShopStorage extends SimpleThreaded<YamlShopStorage.Type, Shop> implements StorageHandler<Shop> {
 
     static {
         // register for deserialization
@@ -54,28 +50,21 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
         ConfigurationSerialization.registerClass(NamedUUID   .class);
     }
 
+    enum Type {
+        SAVE,
+        DELETE
+    }
+
     public static final String PATH_SHOP    = "shop";
     public static final String PATH_VERSION = "version";
     public static final String ENDING       = ".yml";
 
-    protected final Changeable.ChangeListener<Shop> shopChangeListener = new Changeable.ChangeListener<Shop>() {
-        @Override
-        public void onChanged(Shop shop) {
-            if (scs.getConfiguration().isDebuggingSave()) {
-                scs.getLogger().info("Shop changed, going to enqueue save request for shop.id=" + shop.getId());
-            }
-            enqueueSaveRequest(shop);
-        }
-    };
 
     protected ShowCaseStandalone  scs        = null;
     protected File                shopDir    = null;
-    protected final Queue<Shop>   toSave     = new ConcurrentLinkedQueue<Shop>();
-
-    protected List<File>        faildToLoad  = new ArrayList<File>();
     
     public YamlShopStorage (ShowCaseStandalone scs, File shopDir) throws IOException {
-        super();
+        super(scs.getLogger());
 
         this.scs        = scs;
         this.shopDir    = shopDir;
@@ -86,48 +75,35 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
     }
 
     @Override
-    protected void run() {
-        Shop shop;
+    protected void process(Entry entry) {
+        switch (entry.request) {
 
-
-        while (keepRunning()) {
-            synchronized (toSave) {
-                // try to get the shop to save
-                shop = toSave.poll();
-
-                if (shop == null) {
-                    try {
-                        toSave.notifyAll(); // notify flush
-                        toSave.wait(100);   // wait for more work, do not wait forever, otherwise #keepRunning() cannot be checked
-                    } catch (InterruptedException ie) {
-                        scs.getLogger().log(Level.WARNING, "Got interrupted, may cause performance issues", ie);
-                    }
-                    continue;
+            case SAVE:
+                if (scs.getConfiguration().isDebuggingSave()) {
+                    logger.info("Going to save asynchronously, shop="+entry.value);
                 }
-            }
+                saveSafely(entry.value);
+                break;
 
-
-            if (scs.getConfiguration().isDebuggingSave()) {
-                scs.getLogger().info("Going to save asynchronously, shop.id="+shop.getId());
-            }
-            saveSafely(shop);
+            case DELETE:
+                if (scs.getConfiguration().isDebuggingSave()) {
+                    logger.info("Going to delete asynchronously, shop="+entry.value);
+                }
+                deleteSafely(entry.value);
+                break;
         }
     }
 
-    @Override
-    public void flush() throws IOException {
-        try {
-            // there is no reason to wait, if the worker is no longer running
-            if (isRunning()) {
-                synchronized (toSave) {
-                    while (toSave.size() > 0) {
-                        toSave.wait();
-                    }
-                }
-            }
-        } catch (InterruptedException ie) {
-            throw new IOException(ie);
+    protected void deleteSafely(Shop shop) {
+        if (!getFile(shop.getId()).delete()) {
+            logger.warning("Failed to delete file for shop="+shop);
         }
+    }
+
+
+    @Override
+    public Shop save(Shop shop) {
+        return enqueue(Type.SAVE, shop);
     }
 
     /**
@@ -143,31 +119,22 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
             return true;
 
         } catch (Throwable t) {
-            scs.getLogger().log(Level.SEVERE, "Shop changed but unable to save changes!", t);
+            logger.log(Level.SEVERE, "Shop changed but unable to save changes!", t);
             return false;
         }
     }
 
-    protected void enqueueSaveRequest(Shop shop) {
-        synchronized (toSave) {
-            // do not add it multiple times
-            if (!toSave.contains(shop)) {
-                toSave.add(shop);
-                toSave.notifyAll();
-            }
-        }
-    }
-
-    @Override
-    public void save(Shop shop) throws IOException {
-        enqueueSaveRequest(shop);
-    }
-
+    /**
+     * Saves the given {@link Shop} to the given {@link File}
+     * @param shop {@link Shop} to save
+     * @param dst {@link File} to save to
+     * @throws IOException On any error during saving
+     */
     protected void save(Shop shop, File dst) throws IOException {
         YamlConfiguration conf = new YamlConfiguration();
 
         // save
-        conf.set(PATH_VERSION,  Properties.VERSION_STORAGE);
+        conf.set(PATH_VERSION,  Properties.VERSION_STORAGE_SHOP);
         conf.set(PATH_SHOP,     shop);
 
         // try to convert it, if it fails, original file won't be deleted
@@ -185,80 +152,57 @@ public class YamlShopStorage extends SimpleThreaded implements StorageHandler<Sh
 
     }
 
-
     @Override
-    public void loadAll(ShopHandler handler) throws IOException {
+    public Collection<Shop> loadAll() throws IOException {
         // wait till everything has been written out
         flush();
 
         // list of loaded shops
-        List<Shop> shops     = new ArrayList<Shop>();
+        List<Shop> shops  = new ArrayList<Shop>();
+        File[]     files  = shopDir.listFiles();
 
-        for (File file : shopDir.listFiles()) {
-            try {
-                YamlConfiguration conf = new YamlConfiguration();
-                conf.load(file);
+        if (files != null) {
+            for (File file : files) {
+                try {
+                    YamlConfiguration conf = new YamlConfiguration();
+                    conf.load(file);
 
-                // deserialize
-                Shop     shop     = (Shop)conf.get(PATH_SHOP);
-                int      version  =  conf.getInt  (PATH_VERSION, 6); // 6, since this was introduced at version 7
+                    // deserialize
+                    Shop     shop     = (Shop)conf.get(PATH_SHOP);
+                    int      version  =  conf.getInt  (PATH_VERSION, 6); // 6, since this was introduced at version 7
 
-                if (shop == null) {
-                    // also failed
-                    faildToLoad.add(file);
+                    if (shop != null) {
+                        shops.add(shop);
+                    }
 
-                } else {
-                    // add it
-                    shops.add(shop);
-                    shop.addChangeListener(shopChangeListener);
+                } catch (Throwable t) {
+                    logger.log(Level.SEVERE, "Couldn't load shop from file "+file.getAbsolutePath(), t);
                 }
-
-            } catch (Throwable t) {
-                faildToLoad.add(file);
-                scs.getLogger().log(Level.SEVERE, "Couldn't load shop from file "+file.getAbsolutePath(), t);
             }
         }
 
-        // add the mall to the handler
-        handler.addAll(shops, true);
+
+        return shops;
     }
 
 
     @Override
-    public void saveAll(ShopHandler handler) throws IOException {
-
-        List<File> toDelete = new ArrayList<File>();
-
-        // gather files to delete
-        for (File file : shopDir.listFiles()) {
-            if (file.getName().endsWith(ENDING)) {
-                toDelete.add(file);
-            }
-        }
-
-        // do not delete a file if it failed to load
-        toDelete.removeAll(faildToLoad);
-
-
-        for (Shop shop : handler) {
-            File  file  = getFile(shop.getId());
-
-            // do not delete this file
-            toDelete.remove(file);
-
+    public void save(Iterable<Shop> shops) {
+        for (Shop shop : shops) {
             //do not save again, if the shop hasn't changed
             if (!shop.hasChanged()) {
                 continue;
             }
 
-
             // actual save request
-            enqueueSaveRequest(shop);
+            enqueue(Type.SAVE, shop);
         }
+    }
 
-        // delete files
-        for (File file : toDelete) {
-            file.delete();
+    @Override
+    public void delete(Shop shop) {
+        if (shop != null) {
+            enqueue(Type.DELETE, shop);
         }
     }
 

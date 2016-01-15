@@ -17,43 +17,23 @@
 */
 package com.kellerkindt.scs.listeners;
 
-import javax.naming.InsufficientResourcesException;
-
+import com.kellerkindt.scs.PriceRange;
+import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.SCSConfiguration;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.events.*;
+import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
+import com.kellerkindt.scs.interfaces.ShowCaseListener;
+import com.kellerkindt.scs.shops.*;
+import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import com.kellerkindt.scs.PriceRange;
-import com.kellerkindt.scs.Properties;
-import com.kellerkindt.scs.SCSConfiguration;
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.events.ShowCaseCreateEvent;
-import com.kellerkindt.scs.events.ShowCaseDeleteEvent;
-import com.kellerkindt.scs.events.ShowCaseInfoEvent;
-import com.kellerkindt.scs.events.ShowCaseInteractEvent;
-import com.kellerkindt.scs.events.ShowCaseItemAddEvent;
-import com.kellerkindt.scs.events.ShowCaseItemRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseLimitEvent;
-import com.kellerkindt.scs.events.ShowCaseMemberAddEvent;
-import com.kellerkindt.scs.events.ShowCaseMemberRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerBuyEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerExchangeEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerSellEvent;
-import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
-import com.kellerkindt.scs.events.ShowCaseRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseShopEvent;
-import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
-import com.kellerkindt.scs.interfaces.ShowCaseListener;
-import com.kellerkindt.scs.shops.BuyShop;
-import com.kellerkindt.scs.shops.DisplayShop;
-import com.kellerkindt.scs.shops.ExchangeShop;
-import com.kellerkindt.scs.shops.SellShop;
-import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.utilities.ItemStackUtilities;
-import com.kellerkindt.scs.utilities.MaterialNames;
-import com.kellerkindt.scs.utilities.Term;
+import javax.naming.InsufficientResourcesException;
 
 /**
  * This class verifies whether the event has to be
@@ -160,7 +140,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
     
     private boolean handlePriceRangeEventCheck (ShowCaseShopEvent event, double price) {
         Material    material    = event.getShop().getItemStack().getType();
-        PriceRange  range       = scs.getPriceRangeHandler().getRange(material);
+        PriceRange  range       = scs.getPriceRangeHandler().getRange(material, false);
         
         if (price > range.getMax() || price < range.getMin()) {
             event.setCancelled(true);
@@ -228,7 +208,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // check whether the player has to many shops
-            else if (config.getLimitationMaxAmountPerPlayer() >= 0 && scs.getShopHandler().getShopAmount(scce.getPlayer().getName()) >= config.getLimitationMaxAmountPerPlayer() && !scs.isAdmin(scce.getPlayer())) {
+            else if (config.getLimitationMaxAmountPerPlayer() >= 0 && scs.getShopHandler().getShopAmount(scce.getPlayer().getUniqueId()) >= config.getLimitationMaxAmountPerPlayer() && !scs.isAdmin(scce.getPlayer())) {
                 scce.setCancelled(true);
                 scce.setCause(new RuntimeException(Term.ERROR_SHOP_LIMIT_EXCEEDED.get()));
             }

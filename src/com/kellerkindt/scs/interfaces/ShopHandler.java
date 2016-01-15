@@ -18,6 +18,7 @@
 package com.kellerkindt.scs.interfaces;
 
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ import com.kellerkindt.scs.shops.Shop;
 
 
 
-public interface ShopHandler extends Iterable<Shop> {
+public interface ShopHandler extends Iterable<Shop>, ResourceDependent {
     
         
     /**
@@ -135,10 +136,10 @@ public interface ShopHandler extends Iterable<Shop> {
     void removeAll ();
     
     /**
-     * @param owner {@link NamedUUID} of the owner
+     * @param owner {@link UUID} of the owner
      * @return The amount of {@link Shop}s the given player owns
      */
-    int getShopAmount(NamedUUID owner);
+    int getShopAmount(UUID owner);
     
 
     /**
@@ -154,12 +155,12 @@ public interface ShopHandler extends Iterable<Shop> {
     /**
      * Hides all {@link Shop}s
      */
-    void hideAll    ();
+    void hideAll();
     
     /**
-     * Shows all {@link Shop}s
+     * Shows all {@link Shop}s in loaded {@link Chunk}s
      */
-    void showAll ();
+    void showAll();
 
     /**
      * @param shop {@link Shop} to show
@@ -170,6 +171,11 @@ public interface ShopHandler extends Iterable<Shop> {
      * @param shop {@link Shop} to hide
      */
     void hide(Shop shop);
+
+    /**
+     * @return The {@link StorageHandler} of this {@link ShopHandler}
+     */
+    StorageHandler<Shop> getStorageHandler();
     
     /**
      * Adds an ItemFrame to the ShopHandler,
