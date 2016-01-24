@@ -162,7 +162,7 @@ HELP_23:                                     "`Y/scs help admin - show admin com
 HELP_24:                                     "`Y/scs help 2 - show second help page."
 HELP_25:                                     "`g/scs exchange <item/this> <item/this> {amount} {price}"
 HELP_26:                                     "`G - creates a exchange-showcase. price= for how many 2nd Items you sell the first"
-HELP_27:                                     "`g/scs member <add|remove> {name} `G- adds ore removes a member"
+HELP_27:                                     "`g/scs member <add|remove> {name} `G- adds or removes a member"
 HELP_28:                                     "`g/scs about `G - Shows information about this plugin"
 HELP_29:                                     "`g/scs version `G - Shows information about this version"
 HELP_30:                                     "`g/scs range <remove/material/global> <material/min> [max] `G - Creates or removes a PriceRange for the requested Material or globally"
