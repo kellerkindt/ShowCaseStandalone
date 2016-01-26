@@ -17,6 +17,7 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import com.palmergames.bukkit.towny.object.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,9 +27,6 @@ import org.bukkit.event.Listener;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseCreateEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.TownBlockOwner;
-import com.palmergames.bukkit.towny.object.TownBlockType;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class TownyListener implements Listener {
     
@@ -58,20 +56,24 @@ public class TownyListener implements Listener {
                 if (!isPlotOwner(player, location))
                     event.setCancelled(true);
             
-        } catch (NotRegisteredException nre) {}
+        } catch (NotRegisteredException nre) {
+            // TODO decide on what to do on default, inside the calling method (default return true or false)
+        }
         
         try {
             if (scs.getConfiguration().isTownyNeedingResident())
                 if (!hasResident(player, location))
                     event.setCancelled(true);
             
-        } catch (NotRegisteredException nre) {}
+        } catch (NotRegisteredException nre) {
+            // TODO decide on what to do on default, inside the calling method (default return true or false)
+        }
         
     }
     
     
     /**
-     * @param location
+     * @param location The {@link Location} to check whether is wilderness
      * @return true if the given location is wilderness
      */
     public boolean isWilderness (Location location) {
@@ -79,31 +81,37 @@ public class TownyListener implements Listener {
     }
     
     /**
-     * @param player
-     * @param location
+     * @param player {@link Player} that requires to be owner
+     * @param location {@link Location} to check ownership for
      * @return true if the given player is owner in the given plot
      * @throws NotRegisteredException 
      */
     public boolean isPlotOwner (Player player, Location location) throws NotRegisteredException {
-        TownBlockOwner    owner    = TownyUniverse.getDataSource().getResident(player.getName());
-        return TownyUniverse.getTownBlock(location).isOwner(owner);
+        TownBlock       block = TownyUniverse.getTownBlock(location);
+        TownBlockOwner  owner = TownyUniverse.getDataSource().getResident(player.getName());
+        return block != null && owner != null && block.isOwner(owner);
     }
     
     /**
-     * @param player
-     * @param location
+     * @param player {@link Player} that requires to be resident
+     * @param location {@link Location} to check for
      * @return    true if the given player has a resident in the town 
      * @throws NotRegisteredException 
      */
     public boolean hasResident (Player player, Location location) throws NotRegisteredException {
-        return TownyUniverse.getTownBlock(location).getTown().hasResident(player.getName());
+        TownBlock block = TownyUniverse.getTownBlock(location);
+        Town      town  = block != null ? block.getTown() : null;
+
+        return town != null && town.hasResident(player.getName());
     }
     
     /**
-     * @param location
+     * @param location {@link Location} to check for
      * @return    true if the given block is in a shop plot
      */
     public boolean isInsideShopPlot (Location location) {
-        return TownyUniverse.getTownBlock(location).getType() == TownBlockType.COMMERCIAL;
+        TownBlock block = TownyUniverse.getTownBlock(location);
+
+        return block != null  && block.getType() == TownBlockType.COMMERCIAL;
     }
 }
