@@ -1,2 +1,2 @@
  - Shop.unlimited -> Shop.amount = Integer.INFINITE_POSITIVE ?
- - ShopHandler register as ChangeListener, hide/show on change?
+ - '/scs id' to show the (uu-)id of an shop?
