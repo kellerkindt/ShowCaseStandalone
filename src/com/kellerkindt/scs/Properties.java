@@ -53,7 +53,7 @@ public class Properties {
     public static final String  URL_BUKKIT              = "http://dev.bukkit.org/server-mods/scs";
     
     public static final String  BUILD_AUTHOR            = "kellerkindt";    // Author of the plugin
-    public static final String  BUILD_CONTRIBUTOR       = "sorklin, Ryzko"; // every very helpful person
+    public static final String  BUILD_CONTRIBUTOR       = "sorklin, Ceddini, Ryzko"; // every very helpful person
     public static final boolean BUILD_ISDEV             = true;
 
         
