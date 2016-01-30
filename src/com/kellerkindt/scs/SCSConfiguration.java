@@ -225,7 +225,11 @@ public class SCSConfiguration extends Configuration {
     }
     
     public String getLocalizationFile () {
-        return getForced(KEY_LOCALIZATION_FILE, "locale_EN.yml");
+        return getForced(KEY_LOCALIZATION_FILE, getLocalizationFileDefault());
+    }
+
+    public String getLocalizationFileDefault() {
+        return "locale_EN.yml";
     }
     
     public double getLocalizationVersion () {

@@ -122,8 +122,18 @@ public class ShowCaseStandalone extends JavaPlugin {
         
         try {
             // Initialize localization
-            logger.info("Loaded localization: " + getConfiguration().getLocalizationFile()); 
-            TermLoader.loadTerms(new File( getDataFolder(), getConfiguration().getLocalizationFile() ));
+            logger.info("Loaded localization: " + getConfiguration().getLocalizationFile());
+
+            File localeDefault = new File(getDataFolder(), getConfiguration().getLocalizationFileDefault());
+            File localeConf    = new File(getDataFolder(), getConfiguration().getLocalizationFile());
+
+            // first load the default one, so missing translations will not cause that much trouble
+            if (localeDefault.exists() && localeDefault.canRead()) {
+                TermLoader.loadTerms(localeDefault);
+            }
+
+            // load the requested localisation
+            TermLoader.loadTerms(localeConf);
             
         } catch (IOException ioe) {
             // prevent further loading
@@ -407,8 +417,54 @@ public class ShowCaseStandalone extends JavaPlugin {
         if (playerOffline != null) {
             return playerOffline.getName();
         }
-        
+
         throw new RuntimeException("Couldn't get name of player for UUID="+uuid);
+    }
+
+    /**
+     * @param player {@link NamedUUID} of a the player to get the name for
+     * @return The last known name of the given player whatever the {@link UUID} points to
+     */
+    public String getPlayerName(NamedUUID player) {
+        return getPlayerName(player, getServer());
+    }
+
+    /**
+     * @param player {@link NamedUUID} of a the player to get the name for
+     * @param server {@link Server} to read the name for the {@link UUID} from
+     * @return The last known name of the given player whatever the {@link UUID} points to
+     */
+    public static String getPlayerName(NamedUUID player, Server server) {
+        if (player.getName() != null) {
+            return player.getName();
+        }
+
+        return getPlayerName(player.getId(), server);
+    }
+
+    /**
+     * @param player {@link NamedUUID} of a the player to get the name for
+     * @return The last known name of the given player whatever the {@link UUID} points to
+     */
+    public String getPlayerNameOrNull(NamedUUID player) {
+        return getPlayerNameOrNull(player, getServer());
+    }
+
+    /**
+     * @param player {@link NamedUUID} of a the player to get the name for
+     * @param server {@link Server} to read the name for the {@link UUID} from
+     * @return The last known name of the given player whatever the {@link UUID} points to
+     */
+    public static String getPlayerNameOrNull(NamedUUID player, Server server) {
+        if (player.getName() != null) {
+            return player.getName();
+        }
+
+        try {
+            return getPlayerName(player.getId(), server);
+        } catch (Throwable t) {
+            return null;
+        }
     }
     
     /**

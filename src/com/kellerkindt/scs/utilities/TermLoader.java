@@ -37,7 +37,7 @@ public class TermLoader {
     
     /**
      * Loads the terms from the given File
-     * @param filename
+     * @param file
      * @throws IOException
      */
     public static void loadTerms (File file) throws IOException {

@@ -68,7 +68,7 @@ public abstract class ShowCaseShopEvent extends ShowCaseEvent {
     /**
      * @return The Shop that is involved in this event or null
      */
-    public Shop getShop () {
+    public Shop<?> getShop () {
         return shop;
     }
     

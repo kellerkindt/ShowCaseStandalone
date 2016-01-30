@@ -20,12 +20,16 @@ package com.kellerkindt.scs.shops;
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +52,24 @@ public class DisplayShop extends Shop {
     public boolean isActive() {
         return true;
     }
-    
+
+
+    @Override
+    public List<String> getDescription() {
+        List<String> list = new ArrayList<String>();
+        String       name = scs.getPlayerNameOrNull(owner);
+
+        list.add(Term.INFO_SHOP_DISPLAY.get(
+                MaterialNames.getItemName(getItemStack()),
+                null,
+                name != null ? Term.INFO_SHOP_BY_PLAYER.get(name) : null
+        ));
+
+        getEnchantmentDescription(list, getItemStack());
+
+        return list;
+    }
+
     /**
      * @see ConfigurationSerializable
      */

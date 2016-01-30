@@ -17,11 +17,15 @@
 */
 package com.kellerkindt.scs.shops;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -55,6 +59,24 @@ public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
     @Override
     public boolean isActive() {
         return isUnlimited() || getAmount() <= getMaxAmount();
+    }
+
+    @Override
+    public List<String> getDescription() {
+        List<String> list = new ArrayList<String>();
+        Term         term = isUnlimited() ? Term.INFO_SHOP_BUY_UNLIMITED : Term.INFO_SHOP_BUY;
+        String       name = scs.getPlayerNameOrNull(owner);
+
+        list.add(term.get(
+                MaterialNames.getItemName(getItemStack()),
+                scs.getBalanceHandler().format(getPrice()),
+                name != null   ? Term.INFO_SHOP_BY_PLAYER    .get(name)           : "",
+                !isUnlimited() ? Term.INFO_SHOP_STOCK_CURRENT.get(""+getAmount()) : ""
+        ));
+
+        getEnchantmentDescription(list, getItemStack());
+
+        return list;
     }
 
     /**

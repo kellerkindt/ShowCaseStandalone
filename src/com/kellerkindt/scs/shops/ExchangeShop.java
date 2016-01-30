@@ -20,15 +20,15 @@ package com.kellerkindt.scs.shops;
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @SerializableAs(Properties.ALIAS_SHOP_EXCHANGE)
 public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
@@ -58,7 +58,27 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
     public boolean isActive() {
         return isUnlimited() || getAmount() > 0; // TODO check
     }
-    
+
+    @Override
+    public List<String> getDescription() {
+        List<String> list = new ArrayList<String>();
+        Term         term = isUnlimited() ? Term.INFO_SHOP_EXCHANGE_UNLIMITED : Term.INFO_SHOP_EXCHANGE;
+        String       name = scs.getPlayerNameOrNull(owner);
+
+        list.add(term.get(
+                MaterialNames.getItemName(getItemStack()),
+                ""+((int)getPrice()),
+                name != null   ? Term.INFO_SHOP_BY_PLAYER    .get(name)           : "",
+                !isUnlimited() ? Term.INFO_SHOP_STOCK_CURRENT.get(""+getAmount()) : "",
+                MaterialNames.getItemName(getExchangeItemStack())
+        ));
+
+        getEnchantmentDescription(list, getItemStack());
+        getEnchantmentDescription(list, getExchangeItemStack());
+
+        return list;
+    }
+
     /**
      * @see com.kellerkindt.scs.shops.Shop#serialize()
      */

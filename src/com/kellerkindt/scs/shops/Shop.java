@@ -22,11 +22,14 @@ import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.internals.SimpleChangeable;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -851,6 +854,36 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         }
 
     }
+
+    /**
+     * @return {@link List} of {@link String}s, representing a line each, for the description of this {@link Shop}
+     */
+    public abstract List<String> getDescription();
+
+    /**
+     * Adds a description for {@link Enchantment}s on the
+     * given {@link ItemStack}. Won't add anything if there
+     * are no {@link Enchantment}s on the given {@link ItemStack}
+     *
+     * @param list {@link List} to add the description to
+     * @param stack {@link ItemStack} to add the description for
+     * @return The given {@link List}
+     */
+    public List<String> getEnchantmentDescription(List<String> list, ItemStack stack) {
+        if (getItemStack().getEnchantments().size() > 0) {
+            list.add(Term.INFO_SHOP_ENCHANTMENTS.get(MaterialNames.getItemName(getItemStack())));
+            for (Map.Entry<Enchantment, Integer> entry : getItemStack().getEnchantments().entrySet()) {
+                list.add(Term.INFO_SHOP_ENCHANTMENT.get(
+                        entry.getKey().getName(),
+                        ""+entry.getValue()
+                ));
+            }
+        }
+
+        return list;
+    }
+
+
     /**
      * @see java.lang.Object#toString()
      */
