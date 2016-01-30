@@ -17,6 +17,7 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.ShowCaseStandalone;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,31 +34,52 @@ import com.kellerkindt.scs.events.ShowCaseCreateEvent;
  * @author michael <michael at kellerkindt.com>
  */
 public class ResidenceListener implements Listener {
+
+    protected ShowCaseStandalone scs;
+    protected SCSConfiguration   config;
     
-    private SCSConfiguration config;
-    
-    public ResidenceListener (SCSConfiguration config) {
-        this.config = config;
+    public ResidenceListener (ShowCaseStandalone scs) {
+        this.scs    = scs;
+        this.config = scs.getConfiguration();
     }
 
     @EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
     public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
+        if (config.isDebuggingShopCreation()) {
+            scs.getLogger().info("Entered ResidenceListener::onShowCaseCreateEvent");
+        }
         
-        Location            location    = event.getShop().getLocation();
-        Player                player        = event.getPlayer();
+        Location location = event.getShop().getLocation();
+        Player   player   = event.getPlayer();
         
         // try to get the residence
         ClaimedResidence residence = Residence.getResidenceManager().getByLoc(location);
+
+        if (config.isDebuggingShopCreation()) {
+            scs.getLogger().info("ClaimedResidence="+residence+", for location="+location);
+        }
         
         if (residence != null) {
             
             boolean hasFlag = residence.getPermissions().playerHas(player.getName(), config.getResidenceFlag(), false);
             boolean isOwner = player.getName().equals(residence.getOwner());
+
+            if (config.isDebuggingShopCreation()) {
+                scs.getLogger().info("hasFlag="+hasFlag+", isOwner="+isOwner);
+            }
             
             if (!hasFlag && !(config.getResidenceAllowOwner() && isOwner)) {
                 // no permissions
                 event.setCancelled(true);
+
+                if (config.isDebuggingShopCreation()) {
+                    scs.getLogger().info("ShowCaseCreateEvent cancelled");
+                }
             }
+        }
+
+        if (config.isDebuggingShopCreation()) {
+            scs.getLogger().info("Leaving ResidenceListener::onShowCaseCreateEvent");
         }
     }
     

@@ -1013,7 +1013,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         // Residence
         if (className.equals("com.bekvon.bukkit.residence.Residence") && getConfiguration().getResidenceHookInto()) {
             logger.info("Hooked into Residence");
-            registerEvents(new ResidenceListener(getConfiguration()));
+            registerEvents(new ResidenceListener(this));
         }
         
         // Vault

@@ -27,6 +27,7 @@
     import com.kellerkindt.scs.utilities.Term;
     import org.bukkit.enchantments.Enchantment;
     import org.bukkit.entity.Player;
+    import org.bukkit.event.EventException;
     import org.bukkit.event.EventHandler;
     import org.bukkit.event.EventPriority;
 
@@ -155,17 +156,33 @@
          */
         @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
         public void onShowCaseCreateEvent (ShowCaseCreateEvent scce) {
+            if (scs.getConfiguration().isDebuggingShopCreation()) {
+                scs.getLogger().info("Entered ShowCaseExecutingListener::onShowCaseCreateEvent");
+            }
+
             // get the shop to add
-            Shop    shop    = scce.getShop();
-            double    cost    = scs.getCreatePrice(shop.getClass());
+            Shop   shop = scce.getShop();
+            double cost = scs.getCreatePrice(shop.getClass());
+
+            if (scs.getConfiguration().isDebuggingShopCreation()) {
+                scs.getLogger().info("Adding shop="+shop+" to ShopHandler");
+            }
 
             // add the shop
             scs.getShopHandler().addShop(shop);
-            scs.getShopHandler().show    (shop);
+            scs.getShopHandler().show   (shop);
+
+            if (scs.getConfiguration().isDebuggingShopCreation()) {
+                scs.getLogger().info("Going to take creation cost="+cost);
+            }
 
             // remove the money
             scs.getBalanceHandler().sub(scce.getPlayer(), cost);
             scce.setMsgSuccessfully(Term.MESSAGE_SUCCESSFULL_CREATED.get());
+
+            if (scs.getConfiguration().isDebuggingShopCreation()) {
+                scs.getLogger().info("Leaving ShowCaseExecutingListener::onShowCaseCreateEvent");
+            }
         }
 
         /**

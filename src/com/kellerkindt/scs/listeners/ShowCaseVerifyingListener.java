@@ -161,6 +161,10 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
     @Override
     @EventHandler (ignoreCancelled=true, priority=EventPriority.HIGHEST)
     public void onShowCaseCreateEvent(ShowCaseCreateEvent scce) {
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Entered ShowCaseVerifyingListener::onShowCaseCreateEvent, cancelled="+scce.isCancelled());
+        }
+
         if (scce.verify()) {
             
             SCSConfiguration config = scs.getConfiguration();
@@ -171,7 +175,10 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             
             double  cost        = scs.getCreatePrice      (shop.getClass());
             String  permCreate  = scs.getCreatePermission (shop.getClass());
-            
+
+            if (config.isDebuggingShopCreation()) {
+
+            }
             
             if (shop instanceof DisplayShop) {
                 // if you have the permission, you do not need a item to create the shop
@@ -254,6 +261,10 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
         }
+
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Leaving ShowCaseVerifyingListener::onShowCaseCreateEvent, cancelled="+scce.isCancelled());
+        }
     }
 
     /**
@@ -281,11 +292,11 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
     public void onShowCaseItemRemoveEvent(ShowCaseItemRemoveEvent scire) {
         if (scire.verify()) {
             
-            Player    player    = scire.getPlayer();
-            Shop    shop    = scire.getShop();
-            int        amount    = scire.getAmount();
+            Player player = scire.getPlayer();
+            Shop   shop   = scire.getShop();
+            int    amount = scire.getAmount();
 
-            Throwable    cause    = null;
+            Throwable cause = null;
             
             if (!scs.canManage(player, shop, false)) {
                 // not enough permissions

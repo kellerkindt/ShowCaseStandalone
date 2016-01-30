@@ -32,21 +32,29 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.GlobalRegionManager;
 
 public class WorldGuardListener implements Listener {
-    
-    private WorldGuardPlugin    worldGuard;
+
+    protected ShowCaseStandalone scs;
+    protected WorldGuardPlugin   worldGuard;
     
     public WorldGuardListener (ShowCaseStandalone scs, Plugin wGuard) {
+        this.scs = scs;
         
         if (wGuard instanceof WorldGuardPlugin)
             worldGuard    = (WorldGuardPlugin)wGuard;
         else
-            throw new ClassCastException("Given Plugin is not WG");
+            throw new ClassCastException("Given Plugin is not WorldGuard");
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
     public void onShopCreate (ShowCaseCreateEvent event) {
-        if (event.isCancelled())
+        if (!event.verify()) {
+            // nothing to do
             return;
+        }
+
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Entered ShowCaseExecutingListener::onShowCaseCreateEvent");
+        }
 
         // TODO update WG integration
         Location location = event.getShop().getLocation();
@@ -60,6 +68,14 @@ public class WorldGuardListener implements Listener {
             event.setCause(new InsufficientPermissionException(
                     Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()
             ));
+
+            if (scs.getConfiguration().isDebuggingShopCreation()) {
+                scs.getLogger().info("Declined cause player is not allowed to build here");
+            }
+        }
+
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Leaving ShowCaseExecutingListener::onShowCaseCreateEvent");
         }
     }
 }

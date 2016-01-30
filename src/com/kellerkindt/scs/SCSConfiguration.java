@@ -66,6 +66,7 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_DEBUG_SAVE               = "Debug.Save";
     public static final String KEY_DEBUG_SHOWEXTRAMESSAGES  = "Debug.ShowExtraMessages";
     public static final String KEY_DEBUG_LOG                = "Debug.Log";
+    public static final String KEY_DEBUG_SHOP_CREATION      = "Debug.Shop.Creation";
     
     public static final String KEY_LOCALIZATION_FILE        = "Localization.File";
     public static final String KEY_LOCALIZATION_VERSION     = "Localization.Version";
@@ -92,7 +93,7 @@ public class SCSConfiguration extends Configuration {
         super(config);
         
         // "import" old values / apply updates
-        rename("DefaultUnit",                        "Default.Unit");                     // 2014-03-02
+        rename("DefaultUnit",                       "Default.Unit");                     // 2014-03-02
         rename("DefaultShowTransactionMessages",    "Default.ShowTransactionMessages"); // 2014-03-02
         
         
@@ -194,6 +195,10 @@ public class SCSConfiguration extends Configuration {
     
     public boolean isDebuggingLog () {
         return getForced(KEY_DEBUG_LOG, false);
+    }
+
+    public boolean isDebuggingShopCreation() {
+        return getForced(KEY_DEBUG_SHOP_CREATION, false);
     }
     
     public boolean isDisplayShopUsingSigns () {

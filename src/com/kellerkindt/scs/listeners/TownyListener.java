@@ -17,6 +17,8 @@
 */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
+import com.kellerkindt.scs.utilities.Term;
 import com.palmergames.bukkit.towny.object.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,6 +30,8 @@ import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseCreateEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 
+import java.util.Date;
+
 public class TownyListener implements Listener {
     
     private ShowCaseStandalone    scs;
@@ -38,37 +42,66 @@ public class TownyListener implements Listener {
 
     @EventHandler (priority=EventPriority.NORMAL, ignoreCancelled=true)
     public void onShowCaseCreateEvent (ShowCaseCreateEvent event) {
-        
-        Location            location    = event.getShop().getLocation();
-        Player                player        = event.getPlayer();
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Entered TownyListener::onShowCaseCreateEvent, cancelled="+event.isCancelled());
+        }
+
+        Location location = event.getShop().getLocation();
+        Player   player   = event.getPlayer();
         
         // http://code.google.com/a/eclipselabs.org/p/towny/issues/detail?id=1400
         if (TownyUniverse.getTownBlock(location) != null && !TownyUniverse.getTownBlock(location).hasTown()) {
             return;
         }
 
-        if (!scs.getConfiguration().isTownyAllowingInWilderness())
-            if (isWilderness(location))
+        if (!scs.getConfiguration().isTownyAllowingInWilderness()) {
+            if (isWilderness(location)) {
                 event.setCancelled(true);
-        
-        try {
-            if (scs.getConfiguration().isTownyNeedingToBeOwner())
-                if (!isPlotOwner(player, location))
-                    event.setCancelled(true);
-            
-        } catch (NotRegisteredException nre) {
-            // TODO decide on what to do on default, inside the calling method (default return true or false)
+                event.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()));
+
+                if (scs.getConfiguration().isDebuggingShopCreation()) {
+                    scs.getLogger().info("Declined cause not allowed in wilderness");
+                }
+            }
         }
         
         try {
-            if (scs.getConfiguration().isTownyNeedingResident())
-                if (!hasResident(player, location))
+            if (scs.getConfiguration().isTownyNeedingToBeOwner()) {
+                if (!isPlotOwner(player, location)) {
                     event.setCancelled(true);
+                    event.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()));
+
+                    if (scs.getConfiguration().isDebuggingShopCreation()) {
+                        scs.getLogger().info("Declined cause player is not owner of plot");
+                    }
+                }
+            }
             
         } catch (NotRegisteredException nre) {
             // TODO decide on what to do on default, inside the calling method (default return true or false)
+            ShowCaseStandalone.getWarnings().put(new Date(), nre.toString());
         }
         
+        try {
+            if (scs.getConfiguration().isTownyNeedingResident()) {
+                if (!hasResident(player, location)) {
+                    event.setCancelled(true);
+                    event.setCause(new InsufficientPermissionException(Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()));
+
+                    if (scs.getConfiguration().isDebuggingShopCreation()) {
+                        scs.getLogger().info("Declined cause player is not resident");
+                    }
+                }
+            }
+            
+        } catch (NotRegisteredException nre) {
+            // TODO decide on what to do on default, inside the calling method (default return true or false)
+            ShowCaseStandalone.getWarnings().put(new Date(), nre.toString());
+        }
+
+        if (scs.getConfiguration().isDebuggingShopCreation()) {
+            scs.getLogger().info("Leaving TownyListener::onShowCaseCreateEvent, cancelled="+event.isCancelled());
+        }
     }
     
     
@@ -91,7 +124,7 @@ public class TownyListener implements Listener {
         TownBlockOwner  owner = TownyUniverse.getDataSource().getResident(player.getName());
         return block != null && owner != null && block.isOwner(owner);
     }
-    
+
     /**
      * @param player {@link Player} that requires to be resident
      * @param location {@link Location} to check for
