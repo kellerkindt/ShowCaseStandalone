@@ -25,10 +25,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,6 +119,10 @@ public class YamlPriceStorage extends SimpleThreaded<YamlPriceStorage.Type, Pric
     @Override
     @SuppressWarnings("unchecked")
     public Collection<PriceRange> loadAll() throws IOException {
+        if (!file.exists()) {
+            // nothing to load
+            return new ArrayList<PriceRange>(0);
+        }
 
         YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
         List<PriceRange>  list = new ArrayList<PriceRange>();
@@ -133,7 +134,11 @@ public class YamlPriceStorage extends SimpleThreaded<YamlPriceStorage.Type, Pric
                 list.add(new PriceRange(null, null, conf.getDouble(KEY_GLOBALMIN), conf.getDouble(KEY_GLOBALMAX)));
         }
 
-        list.addAll((List<PriceRange>)conf.getList(KEY_RANGELIST));
+        if (conf.isList(KEY_RANGELIST)) {
+            list.addAll((List<PriceRange>) conf.getList(KEY_RANGELIST));
+        } else {
+            logger.warning("'"+KEY_RANGELIST+"' seems not to be a valid list in "+file);
+        }
 
         loadedList.clear();
         loadedList.addAll(list);
