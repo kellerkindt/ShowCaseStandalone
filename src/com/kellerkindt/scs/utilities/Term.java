@@ -269,7 +269,7 @@ public enum Term {
         }
         
         for (int i = 0; i < value.length; i++) {
-            term = term.replace(indicator+(i+1), value[i] != null ? value[i] : "<unknown>");
+            term = term.replace(indicator+(i+1), value[i] != null ? value[i] : "");
         }
         
         return term;
