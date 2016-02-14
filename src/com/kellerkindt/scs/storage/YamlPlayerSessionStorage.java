@@ -94,6 +94,7 @@ public class YamlPlayerSessionStorage extends SimpleThreaded<YamlPlayerSessionSt
                 System.out.println(session);
             }
 
+
             // save it to disk
             conf.save(file);
 

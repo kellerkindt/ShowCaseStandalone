@@ -1015,6 +1015,12 @@ public class ShowCaseStandalone extends JavaPlugin {
             logger.info("Hooked into Residence");
             registerEvents(new ResidenceListener(this));
         }
+
+        // FBascis, need to workaround Anti-InventoryDupe thingy
+        if (className.equals("org.originmc.fbasics.FBasics") && getConfiguration().isDisablingFBasicsInventoryDupeListener()) {
+            logger.info("Hooked into FBasics");
+            registerEvents(new FBasicsAntiInventoryDupeListener(this, plugin));
+        }
         
         // Vault
         if (className.equals("net.milkbowl.vault.Vault") && isAllowedEconomySystem(className)) {
