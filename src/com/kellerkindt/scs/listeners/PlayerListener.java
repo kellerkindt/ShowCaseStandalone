@@ -63,14 +63,14 @@ public class PlayerListener implements Listener {
             return;
         }
         
-        Action                action        = pie.getAction();
-        Player                player        = pie.getPlayer();
-        Block                block         = pie.getClickedBlock();
+        Action           action      = pie.getAction();
+        Player           player      = pie.getPlayer();
+        Block            block       = pie.getClickedBlock();
 
-        LocationSelector    locSelector    = scs.removeLocationSelector(player);
-        Shop                 shop        = scs.getShopHandler().getShop(block);
-        ShowCaseEvent        event        = null;
-        boolean             cancel      = false;
+        LocationSelector locSelector = scs.removeLocationSelector(player);
+        Shop             shop        = scs.getShopHandler().getShop(block);
+        ShowCaseEvent    event       = null;
+        boolean          cancel      = false;
         
         if (locSelector != null && action == Action.RIGHT_CLICK_BLOCK) {
             // a location has been selected
@@ -90,14 +90,15 @@ public class PlayerListener implements Listener {
         
         if (event != null) {            
             // dispatch event
-            scs.callShowCaseEvent(event, player);
-            cancel = !event.isCancelled();
+            cancel = !scs.callShowCaseEvent(event, player);
         }
 
         /*
          *  cancel the current event so nothing else does work with the interaction,
          *  if the ShowCaseEvent was not cancelled
          */
-        pie.setCancelled(cancel);
+        if (cancel) {
+            pie.setCancelled(true);
+        }
     }
 }
