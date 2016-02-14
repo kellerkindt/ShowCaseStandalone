@@ -27,9 +27,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
@@ -44,6 +46,7 @@ import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.Term;
 import com.kellerkindt.scs.utilities.Utilities;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SignListener implements Listener {
     
@@ -52,7 +55,32 @@ public class SignListener implements Listener {
     public SignListener (ShowCaseStandalone scs) {
         this.scs    = scs;
     }
-    
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
+    public void onPlayerInteract (PlayerInteractEvent pie) {
+        // only right click, left click is still required to destroy the sign
+        if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        Block block = pie.getClickedBlock();
+
+        // block needs to be a sign
+        if (block.getState() instanceof Sign) {
+            Sign  sign   = (Sign)block.getState();
+            Block behind = Utilities.getBlockBehind(sign);
+            Shop  shop   = scs.getShopHandler().getShop(behind);
+
+            if (shop != null) {
+                // call the ShowCaseInteractEvent as if clicked on the actual block
+                if (!scs.callShowCaseEvent(new ShowCaseInteractEvent(pie.getPlayer(), shop, true), pie.getPlayer())) {
+                    // cancel whatever would have happened if this sign would not be a shop-sign
+                    pie.setCancelled(true);
+                }
+            }
+        }
+    }
+
     @EventHandler(ignoreCancelled=true, priority=EventPriority.LOW)
     public void onShowCaseInteractEvent (ShowCaseInteractEvent event) {
         if (event.getPlayer().getItemInHand() != null) {
