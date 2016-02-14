@@ -19,6 +19,7 @@ package com.kellerkindt.scs.internals;
 
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.events.ShowCaseItemSpawnEvent;
 import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
 import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
 import com.kellerkindt.scs.interfaces.Changeable;
@@ -46,7 +47,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 
-public class SimpleShopHandler implements ShopHandler {
+public class SimpleShopHandler implements ShopHandler, Listener {
 
 
     protected HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
@@ -72,7 +73,8 @@ public class SimpleShopHandler implements ShopHandler {
         this.storageHandler = storageHandler;
         this.changeListener = new InternalShopChangeListener();
 
-        scs.getServer().getPluginManager().registerEvents( this.changeListener, scs );
+        scs.getServer().getPluginManager().registerEvents(this, scs);
+        scs.getServer().getPluginManager().registerEvents(this.changeListener, scs);
     }
 
     @Override
@@ -159,31 +161,6 @@ public class SimpleShopHandler implements ShopHandler {
             }
         } catch (Throwable t) {
             scs.getLogger().log(Level.SEVERE, "Error while handling shop="+shop, t);
-        }
-    }
-
-    /**
-     * This method displays or hides the shops
-     * if the item disappeared, or the shop got
-     * inactive
-     * NOTE: this must be called from a synchronized Bukkit Thread 
-     */
-    public void checkShopDisplayState() {
-        long start = System.nanoTime();
-        
-        // show some debug information
-        if (scs.getConfiguration().isDebuggingThreads()) {
-            scs.getLogger().info("Refreshing items. Thread exec start: " + start);
-        }
-
-
-        recheckShopShowState(visibleShops);
-
-        if (scs.getConfiguration().isDebuggingThreads()) {
-            long end = System.nanoTime();
-            long net = end - start;
-            scs.getLogger().info("Thread exec end: " + end);
-            scs.getLogger().info("Took:            " + net);
         }
     }
 
@@ -736,59 +713,73 @@ public class SimpleShopHandler implements ShopHandler {
                 scs.getLogger().severe("Cannot display damaged shop, UUID="+shop.getId());
                 return;
             }
-            
-            // spawn new item
-            Location     spawnLocation    = shop.getSpawnLocation();
-            ItemStack    itemStack        = shop.getItemStack().clone();
-            
-            if (scs.getConfiguration().isSpawningToMax()) {
-                itemStack.setAmount(itemStack.getMaxStackSize());
 
-            } else {
+
+
+            scs.callShowCaseEvent(new ShowCaseItemSpawnEvent(
+                    null,
+                    shop,
+                    shop.getSpawnLocation()
+            ), null);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = false, priority = EventPriority.NORMAL)
+    public void onShowCaseItemSpawnEvent(ShowCaseItemSpawnEvent event) {
+
+        // spawn new item
+        Shop         shop             = event.getShop();
+        Location     spawnLocation    = event.getLocation();
+        ItemStack    itemStack        = shop.getItemStack().clone();
+
+        if (scs.getConfiguration().isSpawningToMax()) {
+            itemStack.setAmount(itemStack.getMaxStackSize());
+
+        } else {
                 /*
                  *  barrier 1, an amount of 0 does not cause any pickup event (seems to be so)
                  *  !! Mobs can pick the Item up, but do not drop it, since it has an amount of 0,
                  *     although they can use it ^^
                  */
-                itemStack.setAmount(scs.getConfiguration().getSpawnCount());
-            }
-            
-
-            
-            Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
-            
-            // prevent item from being merged (at least in some cases)
-            item.getItemStack().getItemMeta().setDisplayName(shop.getId().toString());
-
-            // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
-
-            if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
-                scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getId()+", loc="+shop.getLocation());
-                item.remove();
-                return;
-                // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
-            }
+            itemStack.setAmount(scs.getConfiguration().getSpawnCount());
+        }
 
 
-            
-            
+
+        Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
+
+        // prevent item from being merged (at least in some cases)
+        item.getItemStack().getItemMeta().setDisplayName(shop.getId().toString());
+
+        // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
+
+        if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
+            scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop="+shop.getId()+", loc="+shop.getLocation());
+            item.remove();
+            return;
+            // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
+        }
+
+
+
+
             /*
              *  barrier 2, astronomy high pickup delay which can't
              *  be reached in a normal Item life
              *  Does not work on mobs (mc1.7.9)
              */
-            item.setPickupDelay(Properties.DEFAULT_PICKUP_DELAY);
-            item.setVelocity(new Vector(0, 0.01, 0));
-            
-            // add to lists
-            shopItems.put(shop, item);
-            itemShops.put(item, shop);
-            
-            // set visible
-            shop.setVisible(true);
-            visibleShops.add(shop);
-        }
+        item.setPickupDelay(Properties.DEFAULT_PICKUP_DELAY);
+        item.setVelocity(new Vector(0, 0.01, 0));
+
+        // add to lists
+        shopItems.put(shop, item);
+        itemShops.put(item, shop);
+
+        // set visible
+        shop.setVisible(true);
+        visibleShops.add(shop);
     }
+
     
     /**
      * @param shop Shop to check

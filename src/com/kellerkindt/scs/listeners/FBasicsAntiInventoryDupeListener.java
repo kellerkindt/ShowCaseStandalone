@@ -19,6 +19,7 @@ package com.kellerkindt.scs.listeners;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.events.ShowCaseCreateEvent;
+import com.kellerkindt.scs.events.ShowCaseItemSpawnEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -47,8 +48,7 @@ public class FBasicsAntiInventoryDupeListener implements Listener {
     protected FBasics            fBasics;
     protected AntiGlitchSettings settings;
 
-    protected Boolean beforeItemSpawn;
-    protected Boolean beforeShowcaseCreate;
+    protected Boolean before;
 
     public FBasicsAntiInventoryDupeListener(ShowCaseStandalone scs, Plugin plugin) {
         this.scs        = scs;
@@ -90,40 +90,20 @@ public class FBasicsAntiInventoryDupeListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.LOWEST)
-    public void onItemSpawnEventBeforeAntiInventoryDupeListener(ItemSpawnEvent event) {
-        debug("onItemSpawnEventBeforeAntiInventoryDupeListener, isInventoryDupe="+isFBasicsInventoryDupe());
-        if (scs.getShopHandler().isShopItem(event.getEntity())) {
-            this.beforeItemSpawn = isFBasicsInventoryDupe();
-            setFBasicsInventoryDupe(false);
-            debug(" disabled FBasicsInventoryDupe");
-        }
-    }
-
-    @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
-    public void onItemSpawnEventAfterAntiInventoryDupeListener(ItemSpawnEvent event) {
-        debug("onItemSpawnEventAfterAntiInventoryDupeListener, before="+beforeItemSpawn);
-        if (scs.getShopHandler().isShopItem(event.getEntity()) && beforeItemSpawn != null) {
-            setFBasicsInventoryDupe(beforeItemSpawn);
-            debug(" restored FBasicsInventoryDupe="+beforeItemSpawn);
-            beforeItemSpawn = null;
-        }
-    }
-
-    @EventHandler(ignoreCancelled = false, priority = EventPriority.LOWEST)
-    public void onShowCaseCreateEventBeforeAntiInventoryDupeListener(ShowCaseCreateEvent event) {
-        debug("onShowCaseCreateEventBeforeAntiInventoryDupeListener, isInventoryDupe="+isFBasicsInventoryDupe());
-        this.beforeShowcaseCreate = isFBasicsInventoryDupe();
+    public void onShowCaseItemSpawnEventBeforeAntiInventoryDupeListener(ShowCaseItemSpawnEvent event) {
+        debug("onShowCaseItemSpawnEventBeforeAntiInventoryDupeListener, isInventoryDupe="+isFBasicsInventoryDupe());
+        this.before = isFBasicsInventoryDupe();
         setFBasicsInventoryDupe(false);
         debug(" disabled FBasicsInventoryDupe");
     }
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
-    public void onShowCaseCreateEventAfterAntiInventoryDupeListener(ShowCaseCreateEvent event) {
-        debug("onShowCaseCreateEventAfterAntiInventoryDupeListener, beforeShowcaseCreate="+isFBasicsInventoryDupe());
-        if (beforeShowcaseCreate != null) {
-            setFBasicsInventoryDupe(beforeShowcaseCreate);
-            debug(" restored FBasicsInventoryDupe="+beforeShowcaseCreate);
-            beforeShowcaseCreate = null;
+    public void onShowCaseItemSpawnEventAfterAntiInventoryDupeListener(ShowCaseItemSpawnEvent event) {
+        debug("onShowCaseItemSpawnEventAfterAntiInventoryDupeListener, before="+isFBasicsInventoryDupe());
+        if (before != null) {
+            setFBasicsInventoryDupe(before);
+            debug(" restored FBasicsInventoryDupe="+ before);
+            before = null;
         }
     }
 }
