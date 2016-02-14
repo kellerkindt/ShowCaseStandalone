@@ -17,6 +17,7 @@ softdepend:
   - iMonies
   - WorldGuard
   - Residence
+  - FBasics
 description: |
   ShowCaseStandalone allows you to create mini shops on top of blocks.  The item for
   sale or purchase is displayed on top of the block.
