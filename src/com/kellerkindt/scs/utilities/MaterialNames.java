@@ -14,8 +14,13 @@ public class MaterialNames {
     
     
     public static String getItemName(ItemStack stack){
-        int     id        = stack.getTypeId();
-        short    meta    = stack.getDurability();
+        int   id   = stack.getTypeId();
+        short meta = stack.getDurability();
+
+
+        if (stack.getItemMeta().hasDisplayName()) {
+            return stack.getItemMeta().getDisplayName();
+        }
         
         switch(id) {
             default:
