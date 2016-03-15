@@ -18,8 +18,7 @@
 package com.kellerkindt.scs.listeners;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import com.kellerkindt.scs.events.*;
@@ -44,6 +43,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class SignListener implements Listener {
     
     private ShowCaseStandalone    scs;
+    private Map<UUID, Long> lastEvents = new WeakHashMap<UUID, Long>();
     
     public SignListener (ShowCaseStandalone scs) {
         this.scs    = scs;
@@ -57,6 +57,7 @@ public class SignListener implements Listener {
         }
 
         Block block = pie.getClickedBlock();
+
 
         // block needs to be a sign
         if (block.getState() instanceof Sign) {
@@ -73,7 +74,17 @@ public class SignListener implements Listener {
                         break;
 
                     case LEFT_CLICK_BLOCK:
-                        event = new ShowCaseInfoEvent(pie.getPlayer(), shop);
+                        /**
+                         * Fire the event only on button pu to down moment,
+                         * so removing the actual sign is possible
+                         */
+                        Long last = lastEvents.get(pie.getPlayer().getUniqueId());
+
+                        if (last != null && (last+1) > sign.getWorld().getTime()) {
+                            event = new ShowCaseInfoEvent(pie.getPlayer(), shop);
+                        }
+
+                        lastEvents.put(pie.getPlayer().getUniqueId(), sign.getWorld().getTime());
                         break;
                 }
 
