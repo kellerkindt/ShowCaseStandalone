@@ -126,22 +126,32 @@
       
       
       <!-- copy metrics into this jar -->
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <executions>
-              <execution>
-                  <phase>prepare-package</phase>
-                  <goals>
-                      <goal>unpack-dependencies</goal>
-                  </goals>
-                  <configuration>
-                      <includeGroupIds>org.mcstats</includeGroupIds>
-                      <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.3</version>
+            <configuration>
+                <artifactSet>
+                    <includes>
+                        <include>org.mcstats.*:*</include>
+                    </includes>
+                </artifactSet>
+                <relocations>
+                    <relocation>
+                        <pattern>org.mcstats</pattern>
+                        <shadedPattern>com.kellerkindt.scs.internals</shadedPattern>
+                    </relocation>
+                </relocations>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
       
     </plugins>
   </build>
@@ -193,9 +203,9 @@
       
       <!-- mcstats / metrics -->
       <dependency>
-          <groupId>org.mcstats</groupId>
+          <groupId>org.mcstats.bukkit</groupId>
           <artifactId>metrics</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>R8-SNAPSHOT</version>
           <!-- <scope>compile</scope> -->
       </dependency>
       
