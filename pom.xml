@@ -188,14 +188,14 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <scope>provided</scope>
-          <version>1.8.8-R0.1-SNAPSHOT</version>
+          <version>1.9-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
       <dependency>
           <groupId>org.mcstats</groupId>
           <artifactId>metrics</artifactId>
-          <version>R6</version>
+          <version>1.2-SNAPSHOT</version>
           <!-- <scope>compile</scope> -->
       </dependency>
       
