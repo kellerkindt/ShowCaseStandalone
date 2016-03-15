@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import com.kellerkindt.scs.events.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,14 +36,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.events.ShowCaseInteractEvent;
-import com.kellerkindt.scs.events.ShowCaseItemAddEvent;
-import com.kellerkindt.scs.events.ShowCaseItemRemoveEvent;
-import com.kellerkindt.scs.events.ShowCaseOwnerSetEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerBuyEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerExchangeEvent;
-import com.kellerkindt.scs.events.ShowCasePlayerSellEvent;
-import com.kellerkindt.scs.events.ShowCasePriceSetEvent;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.Term;
 import com.kellerkindt.scs.utilities.Utilities;
@@ -59,7 +52,7 @@ public class SignListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
     public void onPlayerInteract (PlayerInteractEvent pie) {
         // only right click, left click is still required to destroy the sign
-        if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (pie.getAction() != Action.RIGHT_CLICK_BLOCK && pie.getAction() != Action.LEFT_CLICK_BLOCK) {
             return;
         }
 
@@ -72,8 +65,21 @@ public class SignListener implements Listener {
             Shop  shop   = scs.getShopHandler().getShop(behind);
 
             if (shop != null) {
+                ShowCaseEvent event = null;
+
+                switch (pie.getAction()) {
+                    case RIGHT_CLICK_BLOCK:
+                        event = new ShowCaseInteractEvent(pie.getPlayer(), shop, true);
+                        break;
+
+                    case LEFT_CLICK_BLOCK:
+                        event = new ShowCaseInfoEvent(pie.getPlayer(), shop);
+                        break;
+                }
+
+
                 // call the ShowCaseInteractEvent as if clicked on the actual block
-                if (!scs.callShowCaseEvent(new ShowCaseInteractEvent(pie.getPlayer(), shop, true), pie.getPlayer())) {
+                if (event != null && !scs.callShowCaseEvent(event, pie.getPlayer())) {
                     // cancel whatever would have happened if this sign would not be a shop-sign
                     pie.setCancelled(true);
                 }
