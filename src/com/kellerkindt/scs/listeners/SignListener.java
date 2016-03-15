@@ -80,7 +80,9 @@ public class SignListener implements Listener {
                          */
                         Long last = lastEvents.get(pie.getPlayer().getUniqueId());
 
-                        if (last != null && (last+1) > sign.getWorld().getTime()) {
+
+
+                        if (last == null || (last+6) < sign.getWorld().getTime()) {
                             event = new ShowCaseInfoEvent(pie.getPlayer(), shop);
                         }
 
