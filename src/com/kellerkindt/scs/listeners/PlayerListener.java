@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -32,6 +33,7 @@ import com.kellerkindt.scs.events.ShowCaseEvent;
 import com.kellerkindt.scs.events.ShowCaseInfoEvent;
 import com.kellerkindt.scs.events.ShowCaseInteractEvent;
 import com.kellerkindt.scs.shops.Shop;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class PlayerListener implements Listener {
     
@@ -57,9 +59,15 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
     public void onPlayerInteract (PlayerInteractEvent pie) {
+
         
         // Abort if action does not fit - saves power :)
         if (!pie.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !pie.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            return;
+        }
+
+        // ignore double-events, which are caused by the second hand
+        if (pie.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
         
@@ -84,9 +92,8 @@ public class PlayerListener implements Listener {
         } else if (shop != null && action == Action.LEFT_CLICK_BLOCK) {
             // info event
             event = new ShowCaseInfoEvent(player, shop);
-            
-            
         }
+
         
         if (event != null) {            
             // dispatch event
