@@ -26,16 +26,23 @@ import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import com.kellerkindt.scs.SCSConfiguration;
 import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.commands.CommandException;
+import com.kellerkindt.scs.interfaces.MultiStageCommand;
+import com.kellerkindt.scs.interfaces.RunLater;
+import com.kellerkindt.scs.interfaces.TriggerableRunLater;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -49,7 +56,9 @@ import com.kellerkindt.scs.shops.Shop;
 
 
 public class Utilities {
-    
+
+    public static final String ITEM_NAME_ITEM_IN_HAND = "this";
+    public static final String ITEM_NAME_ITEM_LATER   = "that";
     
     private Utilities () {}
     
@@ -171,10 +180,52 @@ public class Utilities {
         String     name    = material.toString();
         return name+":"+((int)data);
     }
+
+    /**
+     *
+     * @param player {@link Player} to get the {@link ItemStack} for
+     * @param arg Either {@link #ITEM_NAME_ITEM_IN_HAND} indicating to return the current item in hand / on cursor,
+     *            or {@link #ITEM_NAME_ITEM_LATER} to return the item in hand / on cursor later on, or a valid item name
+     * @param consumer {@link Consumer} that is going to receive the {@link ItemStack} that has been identified
+     * @param runLaterConsumer {@link Consumer} to register a {@link RunLater} instance which will only be needed for {@link #ITEM_NAME_ITEM_LATER}
+     * @throws MissingOrIncorrectArgumentException
+     */
+    public static void getItemStack(Player player, String arg, Consumer<ItemStack> consumer, Consumer<TriggerableRunLater> runLaterConsumer) throws MissingOrIncorrectArgumentException {
+        // replace bukkits ItemStack with the generic one, this will get rid of various errors later on
+        TriggerableRunLater runLater = new TriggerableRunLater() {
+            @Override
+            public void trigger() {
+                consumer.accept(new ItemStack(player.getItemOnCursor()));
+            }
+
+            @Override
+            public void abort(Player player) {
+                // nothing to do
+            }
+        };
+
+        if (ITEM_NAME_ITEM_LATER.equalsIgnoreCase(arg)) {
+            // trigger later
+            runLaterConsumer.accept(runLater);
+
+        } else if (ITEM_NAME_ITEM_IN_HAND.equalsIgnoreCase(arg)) {
+            // trigger now
+            runLater.trigger();
+        }
+
+        else {
+            try {
+                // try to parse the string
+                consumer.accept(Utilities.getItemStackFromString(arg.toUpperCase()));
+            } catch (Exception e) {
+                throw new MissingOrIncorrectArgumentException();
+            }
+        }
+    }
     
     public static ItemStack getItemStack(Player player, String arg) throws MissingOrIncorrectArgumentException {
         try {
-            if(arg.equalsIgnoreCase("this")){
+            if(arg.equalsIgnoreCase(ITEM_NAME_ITEM_IN_HAND)){
                 // get rid of the CraftBukkit version ... causes errors later
                 return new ItemStack( player.getItemInHand() );
             } else {

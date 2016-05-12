@@ -10,7 +10,7 @@
 
 ABORT:                                       "`yShowcase Operation abgebrochen."
 DISABLE:                                     "SCS ist deaktiviert."
-NEXT:                                        "`gRechts-klick auf das ShowCase, ot gib `Y/scs abort `g ein, um den Vorgang abzubrechen."
+NEXT:                                        "`gRechts-klick auf das ShowCase, oder gib `Y/scs abort `g ein, um den Vorgang abzubrechen."
 PRUNE:                                       "Optimiere Datenbank..."
 WARNING_DEV_VERSION:                         "`rACHTUNG: Dies ist eine Entwicklungs-Version, die EVTL Bugs enthaelt. Bitte sei dir dem bewusst!"
 
@@ -185,6 +185,7 @@ INFO_SHOP_BUY:                               "`y%1`w wird jeweils für `y%2`w%3`
 INFO_SHOP_BUY_UNLIMITED:                     "`y%1`w wird jeweils für `y%2`w%3`w gekauft%4`w."
 INFO_SHOP_EXCHANGE:                          "`y%1`w wird jeweils für `y%2`w `y%5`w%3`w verkauft%4`w."
 INFO_SHOP_EXCHANGE_UNLIMITED:                "`y%1`w wird jeweils für `y%2`w `y%5`w%3`w verkauft%4`w."
+INFO_SHOP_EXCHANGE_SPECIFY_ITEM:             "`gSelektiere das zweite Item und gib `Y/scs that`g ein, oder gib `Y/scs abort ` ein, um den Vorgang abzubrechen."
 INFO_SHOP_DISPLAY:                           "`y%1`w wird%3`w ausgestellt."
 INFO_SHOP_ENCHANTMENTS:                      "`wVerzauberungen von `y%1`w:"
 INFO_SHOP_ENCHANTMENT:                       "`w * `y%1`w: `y%2"

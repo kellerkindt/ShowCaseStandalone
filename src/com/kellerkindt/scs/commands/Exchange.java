@@ -17,21 +17,28 @@
 */
 package com.kellerkindt.scs.commands;
 
-import java.util.UUID;
-
+import com.kellerkindt.scs.ShopManipulator;
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
+import com.kellerkindt.scs.interfaces.MultiStageCommand;
+import com.kellerkindt.scs.interfaces.RunLater;
 import com.kellerkindt.scs.internals.NamedUUID;
+import com.kellerkindt.scs.shops.ExchangeShop;
+import com.kellerkindt.scs.shops.Shop;
+import com.kellerkindt.scs.utilities.Term;
+import com.kellerkindt.scs.utilities.Utilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.shops.ExchangeShop;
-import com.kellerkindt.scs.utilities.Utilities;
+import java.util.UUID;
 
 /**
  *
  * @author michael <michael at kellerkindt.com>
  */
 public class Exchange extends Create {
+
+    public static final String ARG_SECOND_THIS = "that";
     
     public Exchange (ShowCaseStandalone scs, String ... permissions) {
         super(scs, permissions, 4);
@@ -44,8 +51,8 @@ public class Exchange extends Create {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         // prepare
-        Player            player        = (Player)sender;
-        ExchangeShop    shop        = new ExchangeShop(
+        Player       player        = (Player)sender;
+        ExchangeShop shop        = new ExchangeShop(
                 scs,
                 UUID.randomUUID(),
                 new NamedUUID(
@@ -56,15 +63,36 @@ public class Exchange extends Create {
                 null,
                 null
                 );
-        
-        // parse the arguments
-        shop.setItemStack            (Utilities    .getItemStack    (player,     args[0]));
-        shop.setExchangeItemStack    (Utilities    .getItemStack    (player,     args[1]));
-        setAmount                    (shop,                                     args[2]);
-        shop.setPrice                (Double        .parseDouble    (            args[3]));
-        
-        // register the shop, so its location will be set
-        registerShopToCreate(player, shop);
-    }
 
+
+        shop.setItemStack(Utilities.getItemStack(player, args[0]));
+
+        setAmount    (shop,              args[2]);
+        shop.setPrice(Double.parseDouble(args[3]));
+
+
+        // second ItemStack allows post-selection
+        Utilities.getItemStack(player, args[1], (exchangeItemStack) -> {
+            // set the ItemStack
+            shop.setExchangeItemStack(exchangeItemStack);
+
+            // start making this shop available
+            registerShopToCreate(player, shop);
+
+        }, (runLater) -> {
+            scs.registerRunLater(player, new MultiStageCommand() {
+                @Override
+                public void execute(CommandSender sender, String[] args) throws CommandException {
+                    runLater.trigger();
+                }
+
+                @Override
+                public void abort(Player player) {
+                    runLater.abort(player);
+                }
+            });
+            scs.sendMessage(player, Term.INFO_SHOP_EXCHANGE_SPECIFY_ITEM.get());
+        });
+
+    }
 }

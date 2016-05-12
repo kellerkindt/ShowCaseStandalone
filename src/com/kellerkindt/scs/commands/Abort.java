@@ -19,10 +19,12 @@ package com.kellerkindt.scs.commands;
 
 import java.util.List;
 
+import com.kellerkindt.scs.interfaces.RunLater;
 import org.bukkit.command.CommandSender;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.utilities.Term;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -43,8 +45,15 @@ public class Abort extends SimpleCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        // check whether the command sender is a player
-        scs.sendMessage(sender, Term.ABORT.get());
+        if (sender instanceof Player) {
+            RunLater runLater = scs.removeRunLater((Player)sender);
+
+            if (runLater != null) {
+                runLater.abort((Player)sender);
+            }
+
+            scs.sendMessage(sender, Term.ABORT.get());
+        }
     }
 
     

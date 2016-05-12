@@ -186,6 +186,7 @@ INFO_SHOP_BUY:                               "`y%1`w is being bought for `y%2`w 
 INFO_SHOP_BUY_UNLIMITED:                     "`y%1`w is being bought for `y%2`w each%3`w%4`w."
 INFO_SHOP_EXCHANGE:                          "`y%1`w is being sold for `y%2`w `y%5`w each%3`w%4`w."
 INFO_SHOP_EXCHANGE_UNLIMITED:                "`y%1`w is being sold for `y%2`w `y%5`w each%3`w%4`w."
+INFO_SHOP_EXCHANGE_SPECIFY_ITEM:             "`gMove your cursor  to the second item and type `Y/scs that`g, or type `Y/scs abort `gto abort."
 INFO_SHOP_DISPLAY:                           "`y%1`w is being displayed%3`w."
 INFO_SHOP_ENCHANTMENTS:                      "`wEnchantments of `y%1`w:"
 INFO_SHOP_ENCHANTMENT:                       "`w * `y%1`w: `y%2"
