@@ -160,7 +160,7 @@ HELP_21:                                     "`g/scs message {receive|ignore} `G
 HELP_22:                                     "`Gtransaction messages for your shops."
 HELP_23:                                     "`Y/scs help admin - show admin commands."
 HELP_24:                                     "`Y/scs help 2 - show second help page."
-HELP_25:                                     "`g/scs exchange <item/this> <item/this> {amount} {price}"
+HELP_25:                                     "`g/scs exchange <item/this> <item/this/that> {amount} {price}"
 HELP_26:                                     "`G - creates a exchange-showcase. price= for how many 2nd Items you sell the first"
 HELP_27:                                     "`g/scs member <add|remove> {name} `G- adds or removes a member"
 HELP_28:                                     "`g/scs about `G - Shows information about this plugin"
