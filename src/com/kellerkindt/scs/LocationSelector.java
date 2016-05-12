@@ -17,17 +17,18 @@
 */
 package com.kellerkindt.scs;
 
+import com.kellerkindt.scs.interfaces.RunLater;
 import org.bukkit.Location;
 
 /**
  *
  * @author michael <michael at kellerkindt.com>
  */
-public interface LocationSelector {
+public interface LocationSelector extends RunLater {
 
     
     /**
      * @param location {@link Location} that has been selected
      */
-    public void onLocationSelected (Location location);
+    void onLocationSelected (Location location);
 }

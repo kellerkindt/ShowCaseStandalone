@@ -75,8 +75,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     private PriceRangeHandler       priceHandler    = null;
 
     private ThreadedController      threadedController;
-    
-    
+
     private SCSConfiguration    config            = null;
     private Logger              logger;
     
@@ -573,6 +572,11 @@ public class ShowCaseStandalone extends JavaPlugin {
             // register for later manipulation
             registerLocationSelector(player, new LocationSelector() {
                 @Override
+                public void abort(Player player) {
+                    // nothing to do on abort, GC will do the work
+                }
+
+                @Override
                 public void onLocationSelected(Location location) {
                     // get the shop
                     Shop shop = getShopHandler().getShop(location.getBlock());
@@ -596,7 +600,7 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @param selector    {@link LocationSelector} to register for the given {@link Player}
      */
     public void registerLocationSelector (Player player, LocationSelector selector) {
-        player.setMetadata(Properties.METADATA_PLAYER_LOCATIONSELECTOR, new FixedMetadataValue(this, selector));
+        registerRunLater(player, selector);
     }
     
     /**
@@ -604,9 +608,7 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @return The {@link LocationSelector} that has been removed or null if not set
      */
     public LocationSelector removeLocationSelector (Player player) {
-        LocationSelector selector = getLocationSelector(player);
-        player.removeMetadata(Properties.METADATA_PLAYER_LOCATIONSELECTOR, this);
-        return selector;
+        return removeRunLater(player, LocationSelector.class);
     }
     
     /**
@@ -614,15 +616,84 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @return The {@link LocationSelector} registered for the given {@link Player} or null
      */
     public LocationSelector getLocationSelector (Player player) {
-        List<MetadataValue>     selectors     = (List<MetadataValue>)player.getMetadata(Properties.METADATA_PLAYER_LOCATIONSELECTOR);
-        LocationSelector        selector    = null;
-        
-        if (selectors != null && selectors.size() > 0) {
-            Iterator<MetadataValue> itr    = selectors.iterator();
-            selector = (LocationSelector)itr.next().value();
+        return getRunLater(player, LocationSelector.class);
+    }
+
+    /**
+     * Aborts an existing {@link RunLater} registration if present,
+     * then replaces it with the given one
+     *
+     * @param player {@link Player} to register the {@link RunLater} for
+     * @param runLater {@link RunLater} to be invoked
+     */
+    public void registerRunLater(Player player, RunLater runLater) {
+        RunLater previous = removeRunLater(player);
+
+        if (previous != null) {
+            previous.abort(player);
         }
-        
-        return selector;
+
+        player.setMetadata(Properties.KEY_PLAYER_METADATA_RUN_LATER, new FixedMetadataValue(this, runLater));
+    }
+
+
+    /**
+     * @param player {@link Player} to get the current {@link RunLater} for
+     * @return The current {@link RunLater} registration or null if none exists
+     */
+    public RunLater getRunLater(Player player) {
+        return getRunLater(player, RunLater.class);
+    }
+
+    /**
+     * If there is a {@link RunLater} registration, it will try to cast it to the given
+     * class and return if if possible. If casting is not possible, null will be returned.
+     *
+     * @param player {@link Player} to get the current {@link RunLater} for
+     * @param castTo {@link Class} to cast the returned {@link RunLater} if available
+     * @return The current {@link RunLater} registration or null if none exists
+     */
+    public <T extends RunLater> T getRunLater(Player player, Class<T> castTo) {
+        List<MetadataValue> list     = player.getMetadata(Properties.KEY_PLAYER_METADATA_RUN_LATER);
+        RunLater            runLater;
+
+        if (list != null && list.size() > 0) {
+            runLater = (RunLater)list.get(0).value();
+
+            if (runLater != null && castTo.isInstance(runLater)) {
+                return castTo.cast(runLater);
+            }
+        }
+
+        return null;
+
+    }
+
+
+    /**
+     * @param player {@link Player} to remove the {@link RunLater} for
+     * @return Removed {@link RunLater} or null if none was registered
+     */
+    public RunLater removeRunLater(Player player) {
+        return removeRunLater(player, RunLater.class);
+    }
+
+    /**
+     * If there is a {@link RunLater} registration, it will try to cast it to the given
+     * class and return if if possible. If casting is not possible, null will be returned.
+     *
+     * Will remove the underlying {@link RunLater} only, if instance of the given class
+     *
+     * @param player {@link Player} to remove the {@link RunLater} for
+     * @param castTo {@link Class} to cast the returned {@link RunLater} if available
+     * @return Removed {@link RunLater} or null if none was registered
+     */
+    public <T extends RunLater> T removeRunLater(Player player, Class<T> castTo) {
+        T runLater = getRunLater(player, castTo);
+        if (runLater != null) {
+            player.removeMetadata(Properties.KEY_PLAYER_METADATA_RUN_LATER, this);
+        }
+        return runLater;
     }
     
     /**
@@ -761,8 +832,8 @@ public class ShowCaseStandalone extends JavaPlugin {
         
         return hasPer;
     }
-    
-    /*
+
+    /**
      * Returns the BalanceHandler
      */
     public Balance getBalanceHandler () {

@@ -58,7 +58,7 @@ public class Properties {
 
         
     // don't forget to update these versions on locale, storage or shop changes
-    public static final double  VERSION_LOCALE          = 3.13;
+    public static final double  VERSION_LOCALE          = 3.201;
     public static final int     VERSION_STORAGE_SHOP    = 7;
     public static final int     VERSION_STORAGE_PRICE   = 1;
     public static final int     VERSION_SESSION         = 1;
@@ -100,6 +100,6 @@ public class Properties {
     public static final String ALIAS_TRANSACTION_SHOPTYPE           = "scs.transaction.shoptype";
     
     // name of the key added to a player to mark it for a location-selection
-    public static final String METADATA_PLAYER_LOCATIONSELECTOR     = "scs.locationselector";
+    public static final String KEY_PLAYER_METADATA_RUN_LATER        = "scs.run.later";
     
 }
