@@ -111,7 +111,12 @@ public abstract class Create extends SimpleCommand {
     
     public void registerShopToCreate (final Player player, final Shop shop) {
         registerLocationSelector(player, new LocationSelector() {
-            
+
+            @Override
+            public void abort(Player player) {
+                // nothing to do
+            }
+
             @Override
             public void onLocationSelected(Location location) {
                 // update the location and perform the event
