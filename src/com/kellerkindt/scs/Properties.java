@@ -54,7 +54,7 @@ public class Properties {
     
     public static final String  BUILD_AUTHOR            = "kellerkindt";    // Author of the plugin
     public static final String  BUILD_CONTRIBUTOR       = "sorklin, Ceddini, Ryzko"; // every very helpful person
-    public static final boolean BUILD_ISDEV             = false;
+    public static final boolean BUILD_ISDEV             = true;
 
         
     // don't forget to update these versions on locale, storage or shop changes
