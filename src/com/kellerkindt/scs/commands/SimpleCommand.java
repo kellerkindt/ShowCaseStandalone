@@ -17,6 +17,7 @@
 */
 package com.kellerkindt.scs.commands;
 
+import com.kellerkindt.scs.interfaces.MultiStageCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -98,7 +99,17 @@ public abstract class SimpleCommand implements Command {
         scs.registerLocationSelector(player, selector);
         scs.sendMessage(player, Term.NEXT.get());
     }
-    
+
+
+    /**
+     * @param player {@link Player} to register the given {@link MultiStageCommand} for
+     * @param command {@link MultiStageCommand} to register
+     * @param message Message, containing the instructions for what to do, to send to the {@link Player}
+     */
+    public void registerMultiStageCommand(Player player, MultiStageCommand command, String message) {
+        scs.registerRunLater(player, command);
+        scs.sendMessage(player, message);
+    }
 
     @Override
     public boolean hasPermissions(CommandSender sender) {
