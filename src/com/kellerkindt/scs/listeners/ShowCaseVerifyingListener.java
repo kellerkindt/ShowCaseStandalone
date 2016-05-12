@@ -563,7 +563,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
                 return;
             }
             
-            if (amountTo > scpee.getShop().getAmount()) {
+            if (amountTo > scpee.getShop().getAmount() && !scpee.getShop().isUnlimited()) {
                 amountTo = scpee.getShop().getAmount();
             }
             
