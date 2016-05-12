@@ -18,6 +18,9 @@
       <repository.url.host>https://dl.tallbyte.com/</repository.url.host>
       <repository.url.path>pub/mvn/</repository.url.path>
       <repository.url>${repository.url.host}${repository.url.path}</repository.url>
+
+      <version.java.source>1.8</version.java.source>
+      <version.java.output>1.6</version.java.output>
   </properties>
   
   
@@ -41,19 +44,61 @@
       </resource>
     </resources>
     <plugins>
-        
-      <!-- compiler -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      
-      
-      <!-- packager (needed to add data to the manifest) -->
+
+        <!-- compiler -->
+        <plugin>
+            <!-- Using the eclipse compiler allows for different source and target,
+                which is a good thing (outweighing that this is a rarely used combination,
+                and most people use javac) This should also allow us to run maven builds
+                on a JRE and not a JDK. -->
+
+            <!-- Note that initial experiments with an earlier version of maven-compiler-plugin
+                showed that the eclipse compiler bundled with that gave incorrect lines in
+                the debug information. By using a newer version of the plexus-compiler-eclipse
+                plugin this is hopefully less of an issue. If not we must also bundle a newer
+                version of the eclipse compiler itself. -->
+
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+                <source>${version.java.source}</source>
+                <target>${version.java.source}</target>
+                <debug>true</debug>
+                <optimize>true</optimize>
+                <fork>true</fork>
+                <compilerId>eclipse</compilerId>
+            </configuration>
+            <dependencies>
+                <dependency>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-compiler-eclipse</artifactId>
+                    <version>2.6</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+
+        <!-- port it to an older java version (android -> java 1.6 / 1.7) -->
+        <plugin>
+            <groupId>net.orfjackal.retrolambda</groupId>
+            <artifactId>retrolambda-maven-plugin</artifactId>
+            <version>2.0.6</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>process-main</goal>
+                        <goal>process-test</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <target>${version.java.output}</target>
+                <fork>false</fork>
+            </configuration>
+        </plugin>
+
+
+        <!-- packager (needed to add data to the manifest) -->
       <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <configuration>
