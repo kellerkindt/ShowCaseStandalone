@@ -17,92 +17,79 @@
  */
 package com.kellerkindt.scs.balance;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.iConomy.iConomy;
+import com.iConomy.system.Account;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
-public class iConomy5Balance implements Balance {
-    
-    private iConomy             iconomy;
-    private ShowCaseStandalone  scs;
+import java.util.UUID;
+import java.util.function.Function;
+
+public class iConomy5Balance extends iConomyBalance implements Balance {
+
+    private iConomy iconomy;
 
     public iConomy5Balance(ShowCaseStandalone scs, Plugin plugin) {
-        this.scs         = scs;
-        this.iconomy     = (iConomy) plugin;
+        super(scs);
+        this.iconomy = (iConomy) plugin;
     }
 
     @Override
-    public boolean hasEnough(Player p, double amount) {
-        return hasEnough(p.getName(), amount);
-    }
-    
-    
-    @Override
-    public boolean hasEnough(UUID id, double amount) {
-        return hasEnough(scs.getPlayerName(id), amount);
-    }
-    
-    public boolean hasEnough(String p, double amount) {
-        try {
-            return iConomy.getAccount(p).getHoldings().hasEnough(amount);
-        } catch (NullPointerException npe) {
-            scs.getLogger().warning("Player does not exist: "+p);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
+    public boolean isActive() {
         return iconomy.isEnabled();
     }
 
-    @Override
-    public void add(Player p, double amount) {
-        add(p.getName(), amount);
-    }
-    
-    @Override
-    public void add(UUID id, double amount) {
-        add(scs.getPlayerName(id), amount);
-    }
-
-    private void add(String p, double amount) {
-        try {
-            iConomy.getAccount(p).getHoldings().add(amount);
-        } catch (NullPointerException npe) {
-            scs.getLogger().warning("Player does not exist: "+p);
-        }
+    private boolean executeIfAccountExists(String playerName, Function<Account, Boolean> function) {
+        return executeIfNotNull(
+                playerName,
+                (name) -> {
+                    Account account = iConomy.getAccount(name);
+                    return account == null || account.getHoldings() == null ? null : account;
+                },
+                function
+        );
     }
 
     @Override
-    public void sub(Player p, double amount) {
-        sub(p.getName(), amount);
-    }
-    
-    @Override
-    public void sub(UUID id, double amount) {
-        sub(scs.getPlayerName(id), amount);
-    }
-
-    private void sub(String p, double amount) {
-        try {
-            iConomy.getAccount(p).getHoldings().subtract(amount);
-        } catch (NullPointerException npe) {
-            scs.getLogger().warning("Player does not exist: "+p);
-        }
+    public boolean exists(OfflinePlayer player, UUID playerId, String playerName) {
+        return executeIfAccountExists(
+                getPlayerName(player, playerId, playerName),
+                (account) -> account != null
+        );
     }
 
     @Override
-    public String getClassName() {
-        return iConomy.class.getName();
+    public boolean has(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return executeIfAccountExists(
+                getPlayerName(player, playerId, playerName),
+                (account) -> account.getHoldings().hasEnough(amount)
+        );
     }
 
     @Override
+    public boolean add(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return executeIfAccountExists(
+                getPlayerName(player, playerId, playerName),
+                (account) -> {
+                    account.getHoldings().add(amount);
+                    return true;
+                }
+        );
+    }
+
+    @Override
+    public boolean sub(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return executeIfAccountExists(
+                getPlayerName(player, playerId, playerName),
+                (account) -> {
+                    account.getHoldings().subtract(amount);
+                    return true;
+                }
+        );
+    }
+
     public String format(double amount) {
         return iConomy.format(amount);
     }

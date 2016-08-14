@@ -17,14 +17,12 @@
 */
 package com.kellerkindt.scs.balance;
 
-import java.util.UUID;
-
-import net.milkbowl.vault.economy.Economy;
-
-import org.bukkit.entity.Player;
-
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.OfflinePlayer;
+
+import java.util.UUID;
 
 public class VaultBalance implements Balance {
     
@@ -37,42 +35,89 @@ public class VaultBalance implements Balance {
     }
 
     @Override
-    public String getClassName() {
-        return economy.getClass().getName();
-    }
-    
-    @Override
-    public boolean hasEnough(Player p, double amount) {
-        return hasEnough(p.getUniqueId(), amount);
-    }
-    
-    public boolean hasEnough(UUID id, double amount) {
-        return economy.has(scs.getServer().getOfflinePlayer(id), amount);
+    public boolean isActive() {
+        return economy != null && economy.isEnabled();
     }
 
     @Override
-    public boolean isEnabled() {
-        return economy.isEnabled();
+    public boolean exists(OfflinePlayer player, UUID playerId, String playerName) {
+        if (player != null) {
+            return economy.hasAccount(player);
+        }
+
+        if (playerId != null) {
+            return economy.hasAccount(
+                    scs.getServer().getOfflinePlayer(playerId)
+            );
+        }
+
+        return playerName != null && economy.hasAccount(playerName);
+    }
+
+
+    @Override
+    public boolean has(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        if (player != null) {
+            return economy.has(player, amount);
+        }
+
+        if (playerId != null) {
+            return economy.has(
+                    scs.getServer().getOfflinePlayer(playerId),
+                    amount
+            );
+        }
+
+        return playerName != null
+            && economy.has(
+                scs.getServer().getOfflinePlayer(playerName),
+                amount
+        );
+    }
+    @Override
+    public boolean add(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        if (player != null) {
+            return economy.depositPlayer(
+                    player,
+                    amount
+            ).transactionSuccess();
+        }
+
+        if (playerId != null) {
+            return economy.depositPlayer(
+                    scs.getServer().getOfflinePlayer(playerId),
+                    amount
+            ).transactionSuccess();
+        }
+
+        return playerName != null
+            && economy.depositPlayer(
+                playerName,
+                amount
+            ).transactionSuccess();
     }
 
     @Override
-    public void add(Player p, double amount) {
-        add(p.getUniqueId(), amount);
-    }
-    
-    @Override
-    public void add(UUID id, double amount) {
-        economy.depositPlayer(scs.getServer().getOfflinePlayer(id), amount);
-    }
+    public boolean sub(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        if (player != null) {
+            return economy.withdrawPlayer(
+                    player,
+                    amount
+            ).transactionSuccess();
+        }
 
-    @Override
-    public void sub(Player p, double amount) {
-        sub(p.getUniqueId(), amount);
-    }
-    
-    @Override
-    public void sub(UUID id, double amount) {
-        economy.withdrawPlayer(scs.getServer().getOfflinePlayer(id), amount);
+        if (playerId != null) {
+            return economy.withdrawPlayer(
+                    scs.getServer().getOfflinePlayer(playerId),
+                    amount
+            ).transactionSuccess();
+        }
+
+        return playerName != null
+            && economy.withdrawPlayer(
+                playerName,
+                amount
+            ).transactionSuccess();
     }
 
     @Override

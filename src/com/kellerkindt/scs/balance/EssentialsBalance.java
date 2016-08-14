@@ -17,92 +17,76 @@
 */
 package com.kellerkindt.scs.balance;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.api.Economy;
+import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
-public class EssentialsBalance implements Balance {
-    
-    private ShowCaseStandalone  scs;
-    private Essentials          essentials;
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public class EssentialsBalance extends NameBasedBalance implements Balance {
+
+    private Essentials essentials;
     
     public EssentialsBalance (ShowCaseStandalone scs, Plugin plugin) {
-        this.scs            = scs;
+        super(scs);
         this.essentials     = (Essentials)plugin;
     }
 
     @Override
-    public String getClassName() {
-        return Economy.class.getName();
+    public boolean isActive() {
+        return essentials.isEnabled();
     }
 
     @Override
-    public boolean hasEnough(UUID id, double amount) {
-        return hasEnough(scs.getPlayerName(id), amount);
+    public boolean exists(OfflinePlayer player, UUID playerId, String playerName) {
+        return (playerName = getPlayerName(player, playerId, playerName)) != null
+            && Economy.playerExists(playerName);
     }
-    
+
     @Override
-    public boolean hasEnough(Player p, double amount) {
-        return hasEnough(p.getName(), amount);
-    }
-    
-    private boolean hasEnough(String p, double amount) {
+    public boolean has(OfflinePlayer player, UUID playerId, String playerName, double amount) {
         try {
-            return Economy.hasEnough(p, new BigDecimal(amount));
-        } catch (UserDoesNotExistException udnee) {
+            return (playerName = getPlayerName(player, playerId, playerName)) != null
+                && Economy.hasEnough(playerName, new BigDecimal(amount));
+        } catch (UserDoesNotExistException e) {
             return false;
         }
     }
 
     @Override
-    public boolean isEnabled() {
-        return essentials.isEnabled();
-    }
-
-    @Override
-    public void add(Player p, double amount) {
-        add(p.getName(), amount);
-    }
-
-    @Override
-    public void add(UUID id, double amount) {
-        add(scs.getPlayerName(id), amount);
-    }
-    
-    
-    private void add(String p, double amount) {
+    public boolean add(OfflinePlayer player, UUID playerId, String playerName, double amount) {
         try {
-            Economy.add(p, new BigDecimal(amount));
-        } catch (Exception e) {
-            scs.getLogger().log(Level.SEVERE, "Couldn't add money to player: "+p, e);
+            if ((playerName = getPlayerName(player, playerId, playerName)) != null) {
+                Economy.add(playerName, new BigDecimal(amount));
+                return true;
+            }
+            return false;
+        } catch (UserDoesNotExistException e) {
+            return false;
+        } catch (NoLoanPermittedException e) {
+            return false;
         }
     }
 
     @Override
-    public void sub(Player p, double amount) {
-        sub(p.getName(), amount);
-    }
-
-    @Override
-    public void sub(UUID id, double amount) {
-        sub(scs.getPlayerName(id), amount);
-    }
-    
-    private void sub(String p, double amount) {
+    public boolean sub(OfflinePlayer player, UUID playerId, String playerName, double amount) {
         try {
-            // dude... typo :P
-            Economy.substract(p, new BigDecimal(amount));
-        } catch (Exception e) {
-            scs.getLogger().log(Level.SEVERE, "Couldn't subtract money to player: "+p, e);
+            if ((playerName = getPlayerName(player, playerId, playerName)) != null) {
+                // dude... typo :P
+                Economy.substract(playerName, new BigDecimal(amount));
+                return true;
+            }
+            return false;
+        } catch (UserDoesNotExistException e) {
+            return false;
+        } catch (NoLoanPermittedException e) {
+            return false;
         }
     }
 
