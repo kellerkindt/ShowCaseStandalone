@@ -294,9 +294,9 @@
             int     added = ItemStackUtilities.addToInventory(scpbe.getPlayer().getInventory(), shop.getItemStack(), scpbe.getQuantity());
             double    price = added * shop.getPrice();
 
-            if (!shop.isUnlimited() && shop.getOwnerId() != null) {
+            if (!shop.isUnlimited() && scs.getBalanceHandler().exists(shop.getOwner())) {
                 // the owner only gets the money if the shop is not unlimited
-                scs.getBalanceHandler().add(shop.getOwnerId(),   price);
+                scs.getBalanceHandler().add(shop.getOwner(), price);
             }
 
             // the costumer always has to pay the items
@@ -328,13 +328,13 @@
             double    price    = removed * shop.getPrice();
 
 
-            if (!shop.isUnlimited() && shop.getOwnerId() != null) {
+            if (!shop.isUnlimited() && scs.getBalanceHandler().exists(shop.getOwner())) {
                 // the owner only looses its money if it isn't a unlimited shop
-                scs.getBalanceHandler().sub(shop.getOwnerId(),    price);
+                scs.getBalanceHandler().sub(shop.getOwner(), price);
             }
 
             // the costumer has always to get its money
-            scs.getBalanceHandler().add(player,             price);
+            scs.getBalanceHandler().add(player, price);
 
 
             // add the amount that was removed

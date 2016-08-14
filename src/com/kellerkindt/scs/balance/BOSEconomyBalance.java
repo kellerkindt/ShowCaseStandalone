@@ -20,6 +20,8 @@ package com.kellerkindt.scs.balance;
 
 import java.util.UUID;
 
+import com.earth2me.essentials.api.Economy;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -29,78 +31,46 @@ import com.kellerkindt.scs.interfaces.Balance;
 import cosine.boseconomy.BOSEconomy;
 
 
-public class BOSEconomyBalance implements Balance {
-    
-    private ShowCaseStandalone  scs;
+public class BOSEconomyBalance extends NameBasedBalance implements Balance {
+
     private BOSEconomy          economy;
     
     public BOSEconomyBalance (ShowCaseStandalone scs, Plugin plugin) {
-        this.scs        = scs;
+        super(scs);
         this.economy    = (BOSEconomy)plugin;
     }
-    
+
     @Override
-    public String getClassName () {
-        return economy.getClass().getName();
-    }
-    
-    @Override
-    public boolean hasEnough(UUID id, double amount) {
-        return hasEnough(scs.getPlayerName(id), amount);
-    }
-    
-    @Override
-    public boolean hasEnough(Player p, double amount) {
-        return hasEnough(p.getName(), amount);
-    }
-    
-    private boolean hasEnough (String name, double amount) {
-        return economy.getPlayerMoneyDouble(name) >= amount;
-    }
-    
-    @Override
-    public boolean isEnabled () {
+    public boolean isActive() {
         return economy.isEnabled();
     }
-    
+
     @Override
-    public void add (Player p, double amount) {
-        add (p.getName(), amount);
+    public boolean exists(OfflinePlayer player, UUID playerId, String playerName) {
+        return (playerName = getPlayerName(player, playerId, playerName)) != null
+            && Economy.playerExists(playerName);
     }
-    
+
     @Override
-    public void add (UUID id, double amount) {
-        add(scs.getPlayerName(id), amount);
+    public boolean has(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return (playerName = getPlayerName(player, playerId, playerName)) != null
+            && economy.getPlayerMoneyDouble(playerName) >= amount;
     }
-    
-    private void add (String name, double amount) {
-        economy.addPlayerMoney(name, amount, false);
-    }
-        
-       
-    
+
     @Override
-    public void sub (Player p, double amount) {
-        sub(p.getName(), amount);
+    public boolean add(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return (playerName = getPlayerName(player, playerId, playerName)) != null
+            && economy.addPlayerMoney(playerName, amount, false);
     }
-    
+
     @Override
-    public void sub (UUID id, double amount) {
-        sub(scs.getPlayerName(id), amount);
-    }
-    
-    private void sub (String name, double amount) {
-        economy.addPlayerMoney(name, -amount, false);
+    public boolean sub(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return (playerName = getPlayerName(player, playerId, playerName)) != null
+            && economy.addPlayerMoney(playerName, -amount, false);
     }
 
     @Override
     public String format(double amount) {
-        String currency = economy.getMoneyNamePlural();
-
-        if(amount == 1)  {
-            currency = economy.getMoneyName();
-        }
-
-        return amount + " " + currency;
+        return economy.getMoneyFormatted(amount);
     }
 }

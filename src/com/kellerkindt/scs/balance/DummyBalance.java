@@ -17,45 +17,46 @@
  */
 package com.kellerkindt.scs.balance;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.interfaces.Balance;
+import org.bukkit.OfflinePlayer;
+
+import java.util.UUID;
 
 public class DummyBalance implements Balance {
     
     public DummyBalance(ShowCaseStandalone scs) {
         
     }
+
     @Override
-    public String getClassName() {
-        return this.getClass().getName();
+    public boolean isActive() {
+        return true;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean exists(OfflinePlayer player, UUID playerId, String playerName) {
+        // can only exist if at least one parameter is not null
+        return player != null || playerId != null || playerName != null;
+    }
+
+    @Override
+    public boolean has(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return true;
+    }
+
+    @Override
+    public boolean add(OfflinePlayer player, UUID playerId, String playerName, double amount) {
+        return true;
+    }
+
+    @Override
+    public boolean sub(OfflinePlayer player, UUID playerId, String playerName, double amount) {
         return true;
     }
 
     @Override
     public String format(double amount) {
-        return String.valueOf(amount);
+        return String.format("%.2f", amount);
     }
-    
-    @Override
-    public boolean hasEnough(Player p, double amount) {
-        return true;
-    }
-    
-    @Override
-    public boolean hasEnough(UUID id, double amount) {
-        return true;
-    }
-    @Override public void add(Player p, double amount) { }
-    @Override public void add(UUID id,     double amount) { }
-    @Override public void sub(Player p, double amount) { }
-    @Override public void sub(UUID id,     double amount) { }
-
 }

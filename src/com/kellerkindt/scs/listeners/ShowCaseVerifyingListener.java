@@ -202,7 +202,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // check money
-            else if (cost > 0 && !scs.getBalanceHandler().hasEnough(player.getUniqueId(), cost)) {
+            else if (cost > 0 && !scs.getBalanceHandler().has(player, cost)) {
                 scce.setCancelled(true);
                 scce.setCause(new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_MONEY_CREATE.get()));
             }
@@ -484,7 +484,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // insufficient money
-            else if (!scs.getBalanceHandler().hasEnough(player.getUniqueId(), amount*price)) {
+            else if (!scs.getBalanceHandler().has(player, amount*price)) {
                 cause = new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_MONEY_YOU.get());
             }
     
@@ -521,7 +521,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // insufficient money
-            else if (shop.getOwnerId() != null && !scs.getBalanceHandler().hasEnough(shop.getOwnerId(), amount*price)) {
+            else if (shop.getOwnerId() != null && scs.getBalanceHandler().exists(shop.getOwner()) && !scs.getBalanceHandler().has(shop.getOwner(), amount*price)) {
                 cause = new InsufficientResourcesException(Term.ERROR_INSUFFICIENT_MONEY_COSTUMER.get());
             }
     

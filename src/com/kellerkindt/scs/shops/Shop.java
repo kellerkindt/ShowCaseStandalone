@@ -265,6 +265,17 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                 }
         );
     }
+
+    /**
+     * Please be careful with the setters, changes in tthe {@link NamedUUID}
+     * are not going to be noticed. Use {@link #setOwner(NamedUUID)}, {@link #setOwner(UUID)}
+     * {@link #setOwner(String)} or {@link #setOwner(UUID, String)} instead
+     *
+     * @return The owner of this {@link Shop} as {@link NamedUUID}
+     */
+    public NamedUUID getOwner() {
+        return owner;
+    }
     
     /**
      * @return The {@link UUID} of the owner of this {@link Shop or null
