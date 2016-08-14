@@ -20,7 +20,7 @@
       <repository.url>${repository.url.host}${repository.url.path}</repository.url>
 
       <version.java.source>1.8</version.java.source>
-      <version.java.output>1.6</version.java.output>
+      <version.java.output>1.8</version.java.output>
   </properties>
   
   
