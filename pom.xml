@@ -416,12 +416,6 @@
           <repository>
              <id>tallbyte-repository</id>
              <url>${repository.url}</url>
-             <releases>
-                 <enabled>true</enabled>
-             </releases>
-             <snapshots>
-                <enabled>true</enabled>
-             </snapshots>
           </repository>
   </distributionManagement>
 
