@@ -4,6 +4,12 @@ A Minecraft-Bukkit-API Shop Plugin
 
 [Bukkit Project Page](http://dev.bukkit.org/bukkit-plugins/scs/)
 
+### This project is old!
+This project is, at the time of writing this, half a decade old and
+therefore contains code I wrote when I just learned how to program
+in Java.
+
+
 ## License
 This project is licensed under [GPLv3](LICENSE) 
 
