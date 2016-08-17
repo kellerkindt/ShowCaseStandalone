@@ -7,7 +7,7 @@ A Minecraft-Bukkit-API Shop Plugin
 ### This project is old!
 This project is, at the time of writing this, half a decade old and
 therefore contains code I wrote when I just learned how to program
-in Java.
+in Java - I cringe myself now and then on some of the old parts... ;)
 
 
 ## License
