@@ -10,7 +10,7 @@
   <properties>
       <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
       
-      <build.number>-1</build.number>
+      <build.number>${maven.build.timestamp}-custom</build.number>
       <build.date>${maven.build.timestamp}</build.date>
       <build.builder>UNKNOWN</build.builder>
       
