@@ -62,7 +62,7 @@ public class Properties {
     public static final int     VERSION_STORAGE_SHOP    = 7;
     public static final int     VERSION_STORAGE_PRICE   = 1;
     public static final int     VERSION_SESSION         = 1;
-    public static final int     VERSION_SHOP            = 3;
+    public static final int     VERSION_SHOP            = 4;
     public static final int     VERSION_NAMED_UUID      = 0;
       
     

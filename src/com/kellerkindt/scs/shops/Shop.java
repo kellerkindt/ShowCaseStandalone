@@ -674,7 +674,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         boolean importWorld1  = true;
         boolean importOwner1  = true;
         boolean importMember1 = true;
-        
+
         switch (version) {
             default:
             case 0:
@@ -812,7 +812,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                         }
                     }
                 }
-
+            case 3:
             case Properties.VERSION_SHOP:
                 break;
                 
@@ -850,6 +850,32 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                 listLocation.get(1),
                 listLocation.get(2)
         );
+
+        switch (version) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            {
+                /*
+                 * Previous versions may contain invalid UUIDs, try to remove them
+                 */
+
+
+                if (getOwnerId() != null && !ShowCaseStandalone.isValidOfflinePlayerUUID(getOwnerName(), getOwnerId())) {
+                    setOwner(null, getOwnerName());
+                }
+
+                for (NamedUUID member : getMembers()) {
+                    if (member.getId() != null && !ShowCaseStandalone.isValidOfflinePlayerUUID(member.getName(), member.getId())) {
+                        member.setId(null);
+                    }
+                }
+            }
+
+            case Properties.VERSION_SHOP:
+                break;
+        }
         
         /*
          * if something had to be imported,

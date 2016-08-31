@@ -18,6 +18,7 @@
 
 package com.kellerkindt.scs;
 
+import com.google.common.base.Charsets;
 import com.kellerkindt.scs.Properties.EconomySystem;
 import com.kellerkindt.scs.balance.*;
 import com.kellerkindt.scs.events.ShowCaseEvent;
@@ -364,10 +365,25 @@ public class ShowCaseStandalone extends JavaPlugin {
         
         // return the name if available
         if (playerOffline != null) {
-            return playerOffline.getUniqueId();
+            UUID uuid = playerOffline.getUniqueId();
+
+            if (isValidOfflinePlayerUUID(name, uuid)) {
+                return uuid;
+            }
         }
         
         return null;
+    }
+
+    /**
+     * @param playerName Name of the player to check the UUID for
+     * @param uuid UUID to check whether it is valid
+     * @return Whether the given UUID is valid
+     */
+    public static boolean isValidOfflinePlayerUUID(String playerName, UUID uuid) {
+        return uuid != null
+            && !"c1fc3ace-e6b2-37ed-a575-03e0d777d7f1".equals(uuid.toString())
+            && !UUID.nameUUIDFromBytes(("OfflinePlayer:"+playerName).getBytes(Charsets.UTF_8)).equals(uuid);
     }
     
     /**
