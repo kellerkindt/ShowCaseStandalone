@@ -129,7 +129,7 @@
               <file>${project.basedir}/target/classes/plugin.yml</file>
               <replacements>
                   <replacement>
-                      <token>version: [\d.]*</token>
+                      <token>version: ([-]?[\d.]+)*</token>
                       <value>version: ${build.number}</value>
                   </replacement>
                   
