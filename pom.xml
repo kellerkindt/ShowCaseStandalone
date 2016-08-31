@@ -223,12 +223,6 @@
           <url>http://repo.ess3.net/content/groups/</url>
       </repository>
       
-      <!-- Vault -->
-      <repository>
-          <id>Vault</id>
-          <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
-      </repository>
-      
       <!-- WorldEdit / WorldGuard and many more -->
       <repository>
           <id>sk89q</id>
@@ -262,14 +256,6 @@
           <version>2.14-SNAPSHOT</version>
       </dependency>
       
-      <!-- Vault -->
-      <dependency>
-          <groupId>net.milkbowl.vault</groupId>
-          <artifactId>VaultAPI</artifactId>
-          <scope>provided</scope>
-          <version>1.5</version>
-      </dependency>
-      
       <!-- WorldEdit -->
       <dependency>
           <groupId>com.sk89q</groupId>
@@ -288,6 +274,17 @@
       
       
       <!-- local -->
+
+
+      <!-- Vault -->
+      <dependency>
+          <groupId>net.milkbowl.vault</groupId>
+          <artifactId>VaultAPI</artifactId>
+          <version>1.5.6</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
+      </dependency>
+
       <dependency>
           <groupId>local</groupId>
           <artifactId>BOSEconomy</artifactId>
