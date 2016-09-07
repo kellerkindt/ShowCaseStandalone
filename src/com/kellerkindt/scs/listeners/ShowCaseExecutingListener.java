@@ -268,7 +268,7 @@
         @EventHandler (ignoreCancelled=true, priority=EventPriority.MONITOR)
         public void onShowCaseOwnerSetEvent (ShowCaseOwnerSetEvent scose) {
             scose.getShop().setOwner(scose.getNewOwner());
-            scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getNewOwner()));
+            scose.setMsgSuccessfully(Term.MESSAGE_SET_OWNER.get(""+scose.getShop().getOwner()));
         }
 
         /**
