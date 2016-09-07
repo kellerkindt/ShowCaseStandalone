@@ -62,7 +62,7 @@ public class VaultBalance implements Balance {
                     // allow to check for the name instead
                 } else {
                     // delegate the exception
-                    throw new RuntimeException(t);
+                    throw new RuntimeException("Not allowed to ignore, playerName="+playerName, t);
                 }
             }
         }
@@ -95,7 +95,7 @@ public class VaultBalance implements Balance {
                     // allow to check for the name instead
                 } else {
                     // delegate the exception
-                    throw new RuntimeException(t);
+                    throw new RuntimeException("Not allowed to ignore, playerName="+playerName, t);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class VaultBalance implements Balance {
                     // allow to check for the name instead
                 } else {
                     // delegate the exception
-                    throw new RuntimeException(t);
+                    throw new RuntimeException("Not allowed to ignore, playerName="+playerName, t);
                 }
             }
         }
@@ -172,7 +172,7 @@ public class VaultBalance implements Balance {
                     // allow to check for the name instead
                 } else {
                     // delegate the exception
-                    throw new RuntimeException(t);
+                    throw new RuntimeException("Not allowed to ignore, playerName="+playerName, t);
                 }
             }
         }
