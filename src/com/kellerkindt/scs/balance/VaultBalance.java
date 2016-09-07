@@ -46,9 +46,25 @@ public class VaultBalance implements Balance {
         }
 
         if (playerId != null) {
-            return economy.hasAccount(
-                    scs.getServer().getOfflinePlayer(playerId)
-            );
+            /*
+             * Workaround for #861 - "passing a null UUID to economy",
+             * getOfflinePlayer always returns an OfflinePlayer instance
+             * but itt might be, that only the given UUID is set while the
+             * Vault backend economy plugin requires the name, so in that case,
+             * ignore  the exception
+             */
+            try {
+                return economy.hasAccount(
+                        (player = scs.getServer().getOfflinePlayer(playerId))
+                );
+            } catch (Throwable t) {
+                if ((player == null || player.getName() == null) && playerName != null) {
+                    // allow to check for the name instead
+                } else {
+                    // delegate the exception
+                    throw new RuntimeException(t);
+                }
+            }
         }
 
         return playerName != null && economy.hasAccount(playerName);
@@ -62,10 +78,26 @@ public class VaultBalance implements Balance {
         }
 
         if (playerId != null) {
-            return economy.has(
-                    scs.getServer().getOfflinePlayer(playerId),
-                    amount
-            );
+            /*
+             * Workaround for #861 - "passing a null UUID to economy",
+             * getOfflinePlayer always returns an OfflinePlayer instance
+             * but itt might be, that only the given UUID is set while the
+             * Vault backend economy plugin requires the name, so in that case,
+             * ignore  the exception
+             */
+            try {
+                return economy.has(
+                        (player = scs.getServer().getOfflinePlayer(playerId)),
+                        amount
+                );
+            } catch (Throwable t) {
+                if ((player == null || player.getName() == null) && playerName != null) {
+                    // allow to check for the name instead
+                } else {
+                    // delegate the exception
+                    throw new RuntimeException(t);
+                }
+            }
         }
 
         return playerName != null
@@ -84,10 +116,26 @@ public class VaultBalance implements Balance {
         }
 
         if (playerId != null) {
-            return economy.depositPlayer(
-                    scs.getServer().getOfflinePlayer(playerId),
-                    amount
-            ).transactionSuccess();
+            /*
+             * Workaround for #861 - "passing a null UUID to economy",
+             * getOfflinePlayer always returns an OfflinePlayer instance
+             * but itt might be, that only the given UUID is set while the
+             * Vault backend economy plugin requires the name, so in that case,
+             * ignore  the exception
+             */
+            try {
+                return economy.depositPlayer(
+                        (player = scs.getServer().getOfflinePlayer(playerId)),
+                        amount
+                ).transactionSuccess();
+            } catch (Throwable t) {
+                if ((player == null || player.getName() == null) && playerName != null) {
+                    // allow to check for the name instead
+                } else {
+                    // delegate the exception
+                    throw new RuntimeException(t);
+                }
+            }
         }
 
         return playerName != null
@@ -107,10 +155,26 @@ public class VaultBalance implements Balance {
         }
 
         if (playerId != null) {
-            return economy.withdrawPlayer(
-                    scs.getServer().getOfflinePlayer(playerId),
-                    amount
-            ).transactionSuccess();
+            /*
+             * Workaround for #861 - "passing a null UUID to economy",
+             * getOfflinePlayer always returns an OfflinePlayer instance
+             * but itt might be, that only the given UUID is set while the
+             * Vault backend economy plugin requires the name, so in that case,
+             * ignore  the exception
+             */
+            try {
+                return economy.withdrawPlayer(
+                        (player = scs.getServer().getOfflinePlayer(playerId)),
+                        amount
+                ).transactionSuccess();
+            } catch (Throwable t) {
+                if ((player == null || player.getName() == null) && playerName != null) {
+                    // allow to check for the name instead
+                } else {
+                    // delegate the exception
+                    throw new RuntimeException(t);
+                }
+            }
         }
 
         return playerName != null
