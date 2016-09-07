@@ -363,7 +363,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         // get the offline instance
         playerOffline = server.getOfflinePlayer(name);
         
-        // return the name if available
+        // return the UUID if available
         if (playerOffline != null) {
             UUID uuid = playerOffline.getUniqueId();
 
