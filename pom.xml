@@ -234,6 +234,11 @@
           <id>sk89q</id>
           <url>http://maven.sk89q.com/artifactory/libs-snapshot-local/</url>
       </repository>
+
+      <repository>
+          <id>minebuilders-repo</id>
+          <url>http://minebuilders.me:8080/plugin/repository/everything/</url>
+      </repository>
   </repositories>
   
   <dependencies>
@@ -285,6 +290,13 @@
           <scope>provided</scope>
           <version>6.1.1-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+          <groupId>me.minebuilders</groupId>
+          <artifactId>clearlag-core</artifactId>
+          <version>2.9.0-SNAPSHOT</version>
+      </dependency>
+
       
       
       <!-- local -->
@@ -368,7 +380,6 @@
           <scope>system</scope>
           <systemPath>${project.basedir}/lib/Towny.jar</systemPath>
       </dependency>
-
 
 
       <dependency>
