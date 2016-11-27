@@ -27,8 +27,8 @@ import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.MaterialNames;
 import com.kellerkindt.scs.utilities.Term;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -760,7 +760,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         // TODO experimental
         if (scs.getConfiguration().isCustomNameVisible()) {
             String text = scs.getConfiguration().customNameFormat();
-            String itemName = WordUtils.capitalize(item.getItemStack().getType().toString().toLowerCase().replaceAll("_", " "));
+            String itemName = MaterialNames.getItemName(itemStack);
             if (meta != null && meta.hasDisplayName())
                 itemName = meta.getDisplayName();
             text = text.replaceAll("%name%", itemName);
