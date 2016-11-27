@@ -761,6 +761,12 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             meta.setDisplayName(shop.getId().toString());
         }
 
+        // TODO experimental
+        if (scs.getConfiguration().isCustomNameVisible()) {
+            item.setCustomName(Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+            item.setCustomNameVisible(true);
+        }
+
         // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
 
         if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {

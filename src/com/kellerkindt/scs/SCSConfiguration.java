@@ -45,6 +45,8 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_CREATEPRICE_SELLSHOP     = "CreatePrice.SellShop";
     public static final String KEY_CREATEPRICE_DISPLAY      = "CreatePrice.Display";
     public static final String KEY_CREATEPRICE_EXCHANGE     = "CreatePrice.Exchange";
+
+    public static final String KEY_VISIBLE_CUSTOM_NAME      = "Visible.CustomName";
     
     public static final String KEY_SAVE_INTERVAL            = "Save.Interval";
     
@@ -177,6 +179,10 @@ public class SCSConfiguration extends Configuration {
     
     public long getSaveInterval () {
         return getForced(KEY_SAVE_INTERVAL, 60l);
+    }
+
+    public boolean isCustomNameVisible() {
+        return getForced(KEY_VISIBLE_CUSTOM_NAME, true);
     }
 
     public boolean isDebuggingSave() {
