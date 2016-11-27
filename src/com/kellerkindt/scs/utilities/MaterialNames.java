@@ -18,6 +18,7 @@
 
 package com.kellerkindt.scs.utilities;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -47,7 +48,7 @@ public class MaterialNames {
                 if (itemMeta.getDisplayName() != null) {
                     return itemMeta.getDisplayName();
                 } else {
-                    return stack.getType().toString()+" ["+ id + ":" + meta+"]";
+                    return WordUtils.capitalize(stack.getType().toString().toLowerCase().replaceAll("_", " "))+" ["+ id + ":" + meta+"]";
                 }
             case 0: return "Air";
             case 1: return "Stone";
