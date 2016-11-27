@@ -756,16 +756,24 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         Item     item = shop.getWorld().dropItem(spawnLocation, itemStack);
         ItemMeta meta = item.getItemStack().getItemMeta();
 
+        // TODO experimental
+        if (scs.getConfiguration().isCustomNameVisible()) {
+            String text = scs.getConfiguration().customNameFormat();
+            String itemName = item.getItemStack().getType().toString().toLowerCase();
+            if (meta != null && meta.hasDisplayName())
+                itemName = meta.getDisplayName();
+            text = text.replaceAll("%name%", itemName);
+            text = text.replaceAll("%price%", Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+            item.setCustomName(text);
+            item.setCustomNameVisible(true);
+        }
+
         // prevent item from being merged (at least in some cases)
         if (meta != null) {
             meta.setDisplayName(shop.getId().toString());
         }
 
-        // TODO experimental
-        if (scs.getConfiguration().isCustomNameVisible()) {
-            item.setCustomName(Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
-            item.setCustomNameVisible(true);
-        }
+
 
         // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
 
