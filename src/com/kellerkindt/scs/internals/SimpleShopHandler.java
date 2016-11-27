@@ -762,8 +762,8 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             String itemName = item.getName();
             if (meta != null)
                 itemName = meta.getDisplayName();
-            text.replaceAll("%displayname%", itemName);
-            text.replaceAll("%price%", Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+            text = text.replaceAll("%name%", itemName);
+            text = text.replaceAll("%price%", Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
             item.setCustomName(text);
             item.setCustomNameVisible(true);
         }
