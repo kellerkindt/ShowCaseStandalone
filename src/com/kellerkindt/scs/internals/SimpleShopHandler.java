@@ -759,7 +759,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         // TODO experimental
         if (scs.getConfiguration().isCustomNameVisible()) {
             String text = scs.getConfiguration().customNameFormat();
-            String itemName = itemStack.getType().name();
+            String itemName = shop.getItemStack().getType().toString();
             if (meta != null)
                 itemName = meta.getDisplayName();
             else if (item.getName() != null)
