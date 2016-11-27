@@ -27,19 +27,23 @@ import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
@@ -742,14 +746,20 @@ public class SimpleShopHandler implements ShopHandler, Listener {
                  *     although they can use it ^^
                  */
             itemStack.setAmount(scs.getConfiguration().getSpawnCount());
+
+            // since mc 1.11 an amount of zero does not seem to work anymore?
+            if (itemStack.getAmount() == 0) {
+                itemStack.setAmount(1);
+            }
         }
 
-
-
-        Item item = shop.getWorld().dropItem(spawnLocation, itemStack);
+        Item     item = shop.getWorld().dropItem(spawnLocation, itemStack);
+        ItemMeta meta = item.getItemStack().getItemMeta();
 
         // prevent item from being merged (at least in some cases)
-        item.getItemStack().getItemMeta().setDisplayName(shop.getId().toString());
+        if (meta != null) {
+            meta.setDisplayName(shop.getId().toString());
+        }
 
         // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
 
@@ -759,9 +769,6 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             return;
             // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
         }
-
-
-
 
             /*
              *  barrier 2, astronomy high pickup delay which can't
