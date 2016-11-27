@@ -47,6 +47,7 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_CREATEPRICE_EXCHANGE     = "CreatePrice.Exchange";
 
     public static final String KEY_VISIBLE_CUSTOM_NAME      = "Visible.CustomName";
+    public static final String KEY_VISIBLE_CUSTOM_FORMAT    = "Visible.CustomFormat";
     
     public static final String KEY_SAVE_INTERVAL            = "Save.Interval";
     
@@ -183,6 +184,10 @@ public class SCSConfiguration extends Configuration {
 
     public boolean isCustomNameVisible() {
         return getForced(KEY_VISIBLE_CUSTOM_NAME, true);
+    }
+
+    public String customNameFormat() {
+        return getForced(KEY_VISIBLE_CUSTOM_FORMAT, "%name%: $%price%");
     }
 
     public boolean isDebuggingSave() {

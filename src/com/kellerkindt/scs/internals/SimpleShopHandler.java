@@ -27,6 +27,7 @@ import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.MaterialNames;
 import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -763,7 +764,11 @@ public class SimpleShopHandler implements ShopHandler, Listener {
 
         // TODO experimental
         if (scs.getConfiguration().isCustomNameVisible()) {
-            item.setCustomName(Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+            String text = scs.getConfiguration().customNameFormat();
+            String itemName = MaterialNames.getItemName(itemStack);
+            text = text.replaceAll("%name%", itemName);
+            text = text.replaceAll("%price%", Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+            item.setCustomName(text);
             item.setCustomNameVisible(true);
         }
 
