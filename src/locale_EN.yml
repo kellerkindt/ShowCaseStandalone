@@ -166,6 +166,7 @@ HELP_27:                                     "`g/scs member <add|remove> {name} 
 HELP_28:                                     "`g/scs about `G - Shows information about this plugin"
 HELP_29:                                     "`g/scs version `G - Shows information about this version"
 HELP_30:                                     "`g/scs range <remove/material/global> <material/min> [max] `G - Creates or removes a PriceRange for the requested Material or globally"
+HELP_31:                                     "`g/scs hovertext {text}`G - Text to hover above shop or no text to remove"
 HELP_ADMIN_1:                                "`g/scs clear `G- Temporarily clear the floating shop items."
 HELP_ADMIN_2:                                "`g/scs disable `G- Disable all of the shops."
 HELP_ADMIN_3:                                "`g/scs enable `G- Enable all of the shops."
@@ -212,3 +213,20 @@ RESTORE_START:                               "`yGoing to repair ShowCases."
 RESTORE_END:                                 "`gRepaired %1 damaged ShowCases."
 DELETE_START:                                "`yGoing to delete ShowCases."
 DELETE_END:                                  "`gDeleted %1 damaged ShowCases."
+
+
+##
+## The custom name value for the item
+## that is floating above the shop
+##
+## %1   material name
+## %2   formatted price
+## %3   shop owner
+## %4   shop type
+## %5   shop amount
+## %6   whether unlimited
+##
+SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "Selling %1 for %2 each"
+SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "Buying %1 for %2 each"
+SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "Trading %1"
+SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         "Displaying %1"

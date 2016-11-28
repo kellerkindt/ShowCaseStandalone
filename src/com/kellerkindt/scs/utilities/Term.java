@@ -17,6 +17,8 @@
  */
 package com.kellerkindt.scs.utilities;
 
+import com.kellerkindt.scs.shops.*;
+
 public enum Term {
     ABORT,
     DISABLE,
@@ -186,6 +188,7 @@ public enum Term {
     HELP_28,    // about
     HELP_29,    // version
     HELP_30,    // range
+    HELP_31,    // hover text
     HELP_ADMIN_1,
     HELP_ADMIN_2,
     HELP_ADMIN_3,
@@ -249,8 +252,55 @@ public enum Term {
     RESTORE_END,
     DELETE_START,
     DELETE_END,
-    
-    
+
+    /**
+     * The custom name value for the item
+     * that is floating above the shop
+     *
+     * %1   material name
+     * %2   formatted price
+     * %3   shop owner
+     * %4   shop amount
+     * %5   whether unlimited
+     */
+    SHOP_ITEM_CUSTOM_NAME_TYPE_SELL,
+
+    /**
+     * The custom name value for the item
+     * that is floating above the shop
+     *
+     * %1   material name
+     * %2   formatted price
+     * %3   shop owner
+     * %4   shop amount
+     * %5   whether unlimited
+     */
+    SHOP_ITEM_CUSTOM_NAME_TYPE_BUY,
+
+    /**
+     * The custom name value for the item
+     * that is floating above the shop
+     *
+     * %1   material name
+     * %2   formatted price
+     * %3   shop owner
+     * %4   shop amount
+     * %5   whether unlimited
+     * %6   exchange material name
+     */
+    SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE,
+
+    /**
+     * The custom name value for the item
+     * that is floating above the shop
+     *
+     * %1   material name
+     * %2   formatted price
+     * %3   shop owner
+     * %4   shop amount
+     * %5   whether unlimited
+     */
+    SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY
     ;
     
     private String term        = null;

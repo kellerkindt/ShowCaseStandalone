@@ -79,6 +79,17 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
         return list;
     }
 
+    @Override
+    public String getHoverText() {
+        return getHoverText(Term.SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE);
+    }
+
+    @Override
+    protected String getHoverText(Term term, List<String> parameters) {
+        parameters.add(MaterialNames.getItemName(getExchangeItemStack()));
+        return super.getHoverText(term, parameters);
+    }
+
     /**
      * @see com.kellerkindt.scs.shops.Shop#serialize()
      */

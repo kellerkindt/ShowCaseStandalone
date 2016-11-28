@@ -79,6 +79,11 @@ public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
         return list;
     }
 
+    @Override
+    public String getHoverText() {
+        return getHoverText(Term.SHOP_ITEM_CUSTOM_NAME_TYPE_BUY);
+    }
+
     /**
      * @param amount The new max amount to buy for this {@link BuyShop}
      * @return itself

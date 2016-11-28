@@ -46,7 +46,9 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_CREATEPRICE_DISPLAY      = "CreatePrice.Display";
     public static final String KEY_CREATEPRICE_EXCHANGE     = "CreatePrice.Exchange";
 
-    public static final String KEY_VISIBLE_CUSTOM_NAME      = "Visible.CustomName";
+    public static final String KEY_HOVER_TEXT_ENABLED                       = "HoverText.Enabled";
+    public static final String KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_ENABLED    = "HoverText.PlayerCustomNameEnabled";
+    public static final String KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_MAX_LENGTH = "HoverText.PlayerCustomNameMaxLength";
     
     public static final String KEY_SAVE_INTERVAL            = "Save.Interval";
     
@@ -99,6 +101,7 @@ public class SCSConfiguration extends Configuration {
         // "import" old values / apply updates
         rename("DefaultUnit",                       "Default.Unit");                     // 2014-03-02
         rename("DefaultShowTransactionMessages",    "Default.ShowTransactionMessages"); // 2014-03-02
+        rename("Visible.CustomName",                "HoverText.Enabled");               // 2016-11-28
         
         
         // update / set the configuration with default values
@@ -181,8 +184,16 @@ public class SCSConfiguration extends Configuration {
         return getForced(KEY_SAVE_INTERVAL, 60l);
     }
 
-    public boolean isCustomNameVisible() {
-        return getForced(KEY_VISIBLE_CUSTOM_NAME, true);
+    public boolean isHoverTextEnabled() {
+        return getForced(KEY_HOVER_TEXT_ENABLED, true);
+    }
+
+    public boolean isHoverTextPlayerCustomNameEnabled() {
+        return getForced(KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_ENABLED, true);
+    }
+
+    public int getHoverTextPlayerCustomNameMaxLength() {
+        return getForced(KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_MAX_LENGTH, 32);
     }
 
     public boolean isDebuggingSave() {

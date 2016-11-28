@@ -70,6 +70,11 @@ public class DisplayShop extends Shop {
         return list;
     }
 
+    @Override
+    public String getHoverText() {
+        return getHoverText(Term.SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY);
+    }
+
     /**
      * @see ConfigurationSerializable
      */

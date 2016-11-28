@@ -166,6 +166,7 @@ HELP_27:                                     "`g/scs member <add|remove> {name} 
 HELP_28:                                     "`g/scs about `G - Zeigt informationen ueber dieses Plugin an"
 HELP_29:                                     "`g/scs version `G - Zeigt informationen ueber diese Version an"
 HELP_30:                                     "`g/scs range <remove/material/global> <material/min> [max] `G - Erstellt oder entfernt eine Preisbeschraenkung fuer das angegeben Material oder global"
+HELP_31:                                     "`g/scs hovertext {text}`G - Zu hovernder Text oder nichts zum entfernen"
 HELP_ADMIN_1:                                "`g/scs clear `G- entfernt temporaer alle schwebenden Items."
 HELP_ADMIN_2:                                "`g/scs disable `G- deaktiviert alle ShowCase."
 HELP_ADMIN_3:                                "`g/scs enable `G- aktiviert alle ShowCase."
@@ -211,3 +212,20 @@ RESTORE_START:                               "`yStelle ShowCases wieder her..."
 RESTORE_END:                                 "`gWiederherstellung von %1 ShowCases beendet."
 DELETE_START:                                "`yL�sche ShowCases."
 DELETE_END:                                  "`g%1 ShowCases wurden gel�scht"
+
+
+##
+## The custom name value for the item
+## that is floating above the shop
+##
+## %1   material name
+## %2   formatted price
+## %3   shop owner
+## %4   shop type
+## %5   shop amount
+## %6   whether unlimited
+##
+SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "Verkaufe %1 fuer jeweils %2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "Kaufe %1 fuer jeweils %2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "Tausche %1"
+SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         "Zeige %1"

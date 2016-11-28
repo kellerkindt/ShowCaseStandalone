@@ -25,13 +25,14 @@ import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
 import com.kellerkindt.scs.interfaces.Changeable;
 import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
+import com.kellerkindt.scs.shops.BuyShop;
+import com.kellerkindt.scs.shops.SellShop;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
+import com.kellerkindt.scs.utilities.MaterialNames;
+import com.kellerkindt.scs.utilities.Messaging;
 import com.kellerkindt.scs.utilities.Term;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -762,8 +763,20 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         }
 
         // TODO experimental
-        if (scs.getConfiguration().isCustomNameVisible()) {
-            item.setCustomName(Term.SIGN_PRICE.get(String.format("%.2f", shop.getPrice())));
+        if (scs.getConfiguration().isHoverTextEnabled()) {
+            if (scs.getConfiguration().isHoverTextPlayerCustomNameEnabled() && shop.getCustomHoverText() != null) {
+                String hoverText = shop.getCustomHoverText();
+
+                if (hoverText.length() > scs.getConfiguration().getHoverTextPlayerCustomNameMaxLength()) {
+                    hoverText = hoverText.substring(0, scs.getConfiguration().getHoverTextPlayerCustomNameMaxLength());
+                }
+
+                // mark player text differently so one can distinguish between original SCS price and fake price
+                item.setCustomName(ChatColor.YELLOW+"["+hoverText+"]");
+
+            } else {
+                item.setCustomName(ChatColor.GREEN+shop.getHoverText());
+            }
             item.setCustomNameVisible(true);
         }
 

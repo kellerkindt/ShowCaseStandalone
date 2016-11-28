@@ -73,7 +73,6 @@ public class Help extends SimpleCommand {
                 Term.HELP_27.get(),
                 Term.HELP_14.get(),
                 Term.HELP_15.get(),
-                
                 Term.HELP_24.get()
                 )));
         
@@ -90,7 +89,8 @@ public class Help extends SimpleCommand {
                 Term.HELP_22.get(),
                 Term.HELP_28.get(),
                 Term.HELP_29.get(),
-                Term.HELP_30.get()
+                Term.HELP_30.get(),
+                Term.HELP_31.get()
                 )));
         
     }

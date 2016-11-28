@@ -49,6 +49,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public static final String KEY_UNLIMITED    = "unlimited";
     public static final String KEY_ITEMSTACK    = "itemstack";
     public static final String KEY_MEMBERS      = "members";
+    public static final String KEY_CUSTOM_HOVER = "customHoverText";
 
     public static final String KEY_OWNER        = "owner";
     public static final String KEY_WORLD        = "world";
@@ -70,6 +71,8 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     protected NamedUUID         world   = null;
     protected NamedUUID         owner   = null;
     protected List<NamedUUID>   members = new ArrayList<NamedUUID>();
+
+    protected String customHoverText    = null;
 
 
     protected Shop () {
@@ -644,8 +647,8 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         for (NamedUUID member : getMembers()) {
             members.add(member);
         }
-        map.put(KEY_MEMBERS,     members);
-
+        map.put(KEY_MEMBERS,      members);
+        map.put(KEY_CUSTOM_HOVER, customHoverText);
 
         map.put(KEY_OWNER,     owner);
         map.put(KEY_WORLD,     world);
@@ -828,8 +831,11 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         this.members.clear();
         this.members.addAll((List<NamedUUID>)map.get(KEY_MEMBERS));
 
+        this.customHoverText = (String)map.get(KEY_CUSTOM_HOVER);
+
         this.owner  = (NamedUUID)map.get(KEY_OWNER);
         this.world  = (NamedUUID)map.get(KEY_WORLD);
+
 
 
         List<Double> listLocation = (List<Double>)map.get(KEY_LOCATION);
@@ -896,6 +902,59 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
      * @return {@link List} of {@link String}s, representing a line each, for the description of this {@link Shop}
      */
     public abstract List<String> getDescription();
+
+    /**
+     * @return The hover text of this {@link Shop}
+     */
+    public abstract String getHoverText();
+
+    /**
+     * @param term {@link Term} to get the hover text from
+     * @return The hover text with default values passed to the given {@link Term}
+     */
+    protected String getHoverText(Term term) {
+        return getHoverText(
+                term,
+                Arrays.asList(
+                        MaterialNames.getItemName(getItemStack()),
+                        scs.getBalanceHandler().format(getPrice()),
+                        getOwnerName(),
+                        Integer.toString(getAmount()),
+                        Boolean.toString(isUnlimited())
+                )
+        );
+    }
+
+    /**
+     * @param term {@link Term} to get the hover text from
+     * @param parameters {@link List} of parameters to pass to the {@link Term}
+     * @return The hover text of this {@link Shop}
+     */
+    protected String getHoverText(Term term, List<String> parameters) {
+        return term.get(
+                parameters.toArray(
+                        new String[parameters.size()]
+                )
+        );
+    }
+
+    /**
+     * @return The custom hover text for this {@link Shop}
+     */
+    public String getCustomHoverText() {
+        return customHoverText;
+    }
+
+    /**
+     * @param text The new custom hover text for this {@link Shop}
+     * @return itself
+     */
+    public T setCustomHoverText(String text) {
+        return setChanged(
+                !Objects.equals(text, customHoverText),
+                () -> this.customHoverText = text
+        );
+    }
 
     /**
      * Adds a description for {@link Enchantment}s on the
