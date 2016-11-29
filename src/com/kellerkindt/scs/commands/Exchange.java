@@ -17,14 +17,10 @@
  */
 package com.kellerkindt.scs.commands;
 
-import com.kellerkindt.scs.ShopManipulator;
 import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
 import com.kellerkindt.scs.interfaces.MultiStageCommand;
-import com.kellerkindt.scs.interfaces.RunLater;
 import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.shops.ExchangeShop;
-import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.Term;
 import com.kellerkindt.scs.utilities.Utilities;
 import org.bukkit.command.CommandSender;
