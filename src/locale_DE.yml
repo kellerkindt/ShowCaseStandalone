@@ -211,7 +211,7 @@ REPAIR_HELP_2:                               "`gBenutze /scs repair delete  um `
 RESTORE_START:                               "`yStelle ShowCases wieder her..."
 RESTORE_END:                                 "`gWiederherstellung von %1 ShowCases beendet."
 DELETE_START:                                "`yLösche ShowCases."
-DELETE_END:                                  "`g%1 ShowCases wurden gel�scht"
+DELETE_END:                                  "`g%1 ShowCases wurden gelöscht"
 
 
 ##
