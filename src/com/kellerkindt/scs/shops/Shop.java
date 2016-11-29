@@ -19,6 +19,7 @@ package com.kellerkindt.scs.shops;
 
 
 import com.kellerkindt.scs.Properties;
+import com.kellerkindt.scs.SCSConfiguration;
 import com.kellerkindt.scs.ShowCaseStandalone;
 import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.internals.SimpleChangeable;
@@ -913,12 +914,22 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
      * @return The hover text with default values passed to the given {@link Term}
      */
     protected String getHoverText(Term term) {
+        String           formattedPrice = scs.getBalanceHandler().format(getPrice());
+        SCSConfiguration configuration  = scs.getConfiguration();
+
+        if (formattedPrice.length() > configuration.getHoverTextPlayerCustomNameMaxLength()) {
+            formattedPrice = String.format(
+                    configuration.getHoverTextBalanceFormatter(),
+                    getPrice()
+            );
+        }
+
         return getHoverText(
                 term,
                 new ArrayList<>(
                         Arrays.asList(
                                 MaterialNames.getItemName(getItemStack()),
-                                scs.getBalanceHandler().format(getPrice()),
+                                formattedPrice,
                                 getOwnerName(),
                                 Integer.toString(getAmount()),
                                 Boolean.toString(isUnlimited())

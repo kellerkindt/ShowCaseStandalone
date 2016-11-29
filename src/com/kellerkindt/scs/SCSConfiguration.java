@@ -49,6 +49,8 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_HOVER_TEXT_ENABLED                       = "HoverText.Enabled";
     public static final String KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_ENABLED    = "HoverText.PlayerCustomNameEnabled";
     public static final String KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_MAX_LENGTH = "HoverText.PlayerCustomNameMaxLength";
+    public static final String KEY_HOVER_TEXT_BALANCE_MAX_LENGTH            = "HoverText.BalanceMaxLength";
+    public static final String KEY_HOVER_TEXT_BALANCE_FORMATTER             = "HoverText.BalanceFormatter";
     
     public static final String KEY_SAVE_INTERVAL            = "Save.Interval";
     
@@ -194,6 +196,17 @@ public class SCSConfiguration extends Configuration {
 
     public int getHoverTextPlayerCustomNameMaxLength() {
         return getForced(KEY_HOVER_TEXT_PLAYER_CUSTOM_NAME_MAX_LENGTH, 32);
+    }
+
+    /**
+     * @return The maximum allowed length of the hover text if formatted by the balance hook
+     */
+    public int getHoverTextBalanceMaxLength() {
+        return getForced(KEY_HOVER_TEXT_BALANCE_MAX_LENGTH, 7);
+    }
+
+    public String getHoverTextBalanceFormatter() {
+        return getForced(KEY_HOVER_TEXT_BALANCE_FORMATTER, ".2f$");
     }
 
     public boolean isDebuggingSave() {
