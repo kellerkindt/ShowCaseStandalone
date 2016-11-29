@@ -27,6 +27,7 @@ import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.utilities.MaterialNames;
 import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -81,7 +82,7 @@ public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
 
     @Override
     public String getHoverText() {
-        return getHoverText(Term.SHOP_ITEM_CUSTOM_NAME_TYPE_BUY);
+        return ChatColor.GREEN+getHoverText(Term.SHOP_ITEM_CUSTOM_NAME_TYPE_BUY);
     }
 
     /**

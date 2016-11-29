@@ -772,12 +772,15 @@ public class SimpleShopHandler implements ShopHandler, Listener {
                 }
 
                 // mark player text differently so one can distinguish between original SCS price and fake price
-                item.setCustomName(ChatColor.YELLOW+"["+hoverText+"]");
+                item.setCustomName(ChatColor.GOLD+"["+hoverText+"]");
+                item.setCustomNameVisible(true);
 
             } else {
-                item.setCustomName(ChatColor.GREEN+shop.getHoverText());
+                if (shop.getHoverText() != null && shop.getHoverText().length() > 0) {
+                    item.setCustomName(shop.getHoverText());
+                    item.setCustomNameVisible(true);
+                }
             }
-            item.setCustomNameVisible(true);
         }
 
         // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());

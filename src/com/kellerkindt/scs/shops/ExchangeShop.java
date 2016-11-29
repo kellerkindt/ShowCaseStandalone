@@ -23,6 +23,7 @@ import com.kellerkindt.scs.internals.NamedUUID;
 import com.kellerkindt.scs.utilities.MaterialNames;
 import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -87,7 +88,7 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
     @Override
     protected String getHoverText(Term term, List<String> parameters) {
         parameters.add(MaterialNames.getItemName(getExchangeItemStack()));
-        return super.getHoverText(term, parameters);
+        return ChatColor.AQUA+super.getHoverText(term, parameters);
     }
 
     /**

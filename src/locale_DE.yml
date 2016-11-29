@@ -173,10 +173,10 @@ HELP_ADMIN_3:                                "`g/scs enable `G- aktiviert alle S
 HELP_ADMIN_4:                                "`g/scs import [file/minidb/showcase/ffss] `G- Importiert ShowCase."
 HELP_ADMIN_5:                                "`g/scs reload `G- Laedt alle ShowCase erneut."
 HELP_ADMIN_6:                                "`g/scs destroy `G- Zerstoert ein Showcase ohne die Items zu erhalten."
-HELP_ADMIN_7:                                "`g/scs list <spielername> `G- Listet details �ber einen Spieler auf"
+HELP_ADMIN_7:                                "`g/scs list <spielername> `G- Listet details über einen Spieler auf"
 HELP_ADMIN_8:                                "`g/scs purge <w:weltname|spielername> {weltname|*} `G- Loescht alle ShowCases eines Spielers auf der angegebenen Welt"
 HELP_ADMIN_9:                                "`g/scs report `G- Erstellt eine Datei die benoetigt wird, falls du ein Support-Ticket erstellst"
-HELP_ADMIN_10:                               "`g/scs repair `G- Sucht und repariert besch�digte ShowCases"
+HELP_ADMIN_10:                               "`g/scs repair `G- Sucht und repariert beschädigte ShowCases"
 HELP_TITLE:                                  "`B<|------------  `bShow`YCase`RStandalone `gHelp %1/2 `B-----------|>"
 HELP_TITLE_ADMIN:                            "`B<|-----------  `bShow`YCase`RStandalone `gAdmin Help  `B----------|>"
 
@@ -205,12 +205,12 @@ INFO_UNDO_6:                                 "`GEinzelpreis: `Y%1 `GTransaktions
 INFO_UNDO_7:                                 "`GRestzeit um die Transaktion rueckgaengig zu machen: `Y%1 `G Sekunden."
 INFO_UNDO_8:                                 "`GTransaktion kann nicht rueckgaengig gemacht werden (Zeit abgelaufen)."
 
-REPAIR_INFO:                                 "`y%1`g besch�digte ShowCases gefunden."
+REPAIR_INFO:                                 "`y%1`g beschädigte ShowCases gefunden."
 REPAIR_HELP_1:                               "`gBenutze /scs repair restore um `y%1`g ShowCases wiederherzustellen."
-REPAIR_HELP_2:                               "`gBenutze /scs repair delete  um `y%1`g ShowCases zu l�schen."
+REPAIR_HELP_2:                               "`gBenutze /scs repair delete  um `y%1`g ShowCases zu löschen."
 RESTORE_START:                               "`yStelle ShowCases wieder her..."
 RESTORE_END:                                 "`gWiederherstellung von %1 ShowCases beendet."
-DELETE_START:                                "`yL�sche ShowCases."
+DELETE_START:                                "`yLösche ShowCases."
 DELETE_END:                                  "`g%1 ShowCases wurden gel�scht"
 
 
@@ -224,8 +224,9 @@ DELETE_END:                                  "`g%1 ShowCases wurden gel�scht"
 ## %4   shop type
 ## %5   shop amount
 ## %6   whether unlimited
+## %7   exchange material name (only on exchange)
 ##
-SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "Verkaufe %1 fuer jeweils %2"
-SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "Kaufe %1 fuer jeweils %2"
-SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "Tausche %1"
-SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         "Zeige %1"
+SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         ""

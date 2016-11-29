@@ -58,7 +58,7 @@ public class Properties {
 
         
     // don't forget to update these versions on locale, storage or shop changes
-    public static final double  VERSION_LOCALE          = 3.22;
+    public static final double  VERSION_LOCALE          = 3.3;
     public static final int     VERSION_STORAGE_SHOP    = 7;
     public static final int     VERSION_STORAGE_PRICE   = 1;
     public static final int     VERSION_SESSION         = 1;

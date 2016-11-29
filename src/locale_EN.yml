@@ -225,8 +225,9 @@ DELETE_END:                                  "`gDeleted %1 damaged ShowCases."
 ## %4   shop type
 ## %5   shop amount
 ## %6   whether unlimited
+## %7   exchange material name (only on exchange)
 ##
-SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "Selling %1 for %2 each"
-SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "Buying %1 for %2 each"
-SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "Trading %1"
-SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         "Displaying %1"
+SHOP_ITEM_CUSTOM_NAME_TYPE_SELL:            "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_BUY:             "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_EXCHANGE:        "%2"
+SHOP_ITEM_CUSTOM_NAME_TYPE_DISPLAY:         ""
