@@ -206,7 +206,7 @@ public class SCSConfiguration extends Configuration {
     }
 
     public String getHoverTextBalanceFormatter() {
-        return getForced(KEY_HOVER_TEXT_BALANCE_FORMATTER, ".2f$");
+        return getForced(KEY_HOVER_TEXT_BALANCE_FORMATTER, "%.2f$");
     }
 
     public boolean isDebuggingSave() {
