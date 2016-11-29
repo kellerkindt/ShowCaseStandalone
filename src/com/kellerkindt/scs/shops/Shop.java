@@ -915,12 +915,14 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     protected String getHoverText(Term term) {
         return getHoverText(
                 term,
-                Arrays.asList(
-                        MaterialNames.getItemName(getItemStack()),
-                        scs.getBalanceHandler().format(getPrice()),
-                        getOwnerName(),
-                        Integer.toString(getAmount()),
-                        Boolean.toString(isUnlimited())
+                new ArrayList<>(
+                        Arrays.asList(
+                                MaterialNames.getItemName(getItemStack()),
+                                scs.getBalanceHandler().format(getPrice()),
+                                getOwnerName(),
+                                Integer.toString(getAmount()),
+                                Boolean.toString(isUnlimited())
+                        )
                 )
         );
     }
