@@ -917,7 +917,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         String           formattedPrice = scs.getBalanceHandler().format(getPrice());
         SCSConfiguration configuration  = scs.getConfiguration();
 
-        if (formattedPrice.length() > configuration.getHoverTextPlayerCustomNameMaxLength()) {
+        if (formattedPrice.length() > configuration.getHoverTextBalanceMaxLength()) {
             formattedPrice = String.format(
                     configuration.getHoverTextBalanceFormatter(),
                     getPrice()
