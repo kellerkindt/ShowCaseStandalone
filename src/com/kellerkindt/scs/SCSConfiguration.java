@@ -17,12 +17,12 @@
  */
 package com.kellerkindt.scs;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.configuration.file.FileConfiguration;
+import java.util.*;
 
 /**
  * @author kellerkindt <michael at kellerkindt.com>
@@ -289,8 +289,119 @@ public class SCSConfiguration extends Configuration {
         return getForced(KEY_BLOCKLIST_BLACKLIST, true);
     }
     
-    public List<String> getBlockListBlocks () {
-        return getForced(KEY_BLOCKLIST_BLOCKS, new ArrayList<String>());
+    public Collection<String> getBlockListBlocks () {
+        // somewhere along the way the list got wiped,
+        // so empty lists are going to be refilled
+        List<String> list = getForced(KEY_BLOCKLIST_BLOCKS, Collections.emptyList());
+        if (list != null && !list.isEmpty()) {
+            return list;
+        }
+        return getForced(KEY_BLOCKLIST_BLOCKS, Arrays.asList(
+                Material.LEAVES.toString(),
+                Material.LEAVES_2.toString(),
+                Material.WEB.toString(),
+                Material.LONG_GRASS.toString(),
+                Material.DEAD_BUSH.toString(),
+                Material.YELLOW_FLOWER.toString(),
+                Material.CHORUS_FLOWER.toString(),
+                Material.BROWN_MUSHROOM.toString(),
+                Material.RED_MUSHROOM.toString(),
+                Material.TORCH.toString(),
+                Material.LADDER.toString(),
+                Material.SNOW.toString(),
+                Material.SNOW_BLOCK.toString(),
+                Material.ICE.toString(),
+                Material.LAVA.toString(),
+                Material.VINE.toString(),
+                Material.WATER_LILY.toString(),
+                Material.WATER.toString(),
+                Material.CARPET.toString(),
+                Material.CARROT.toString(),
+                Material.WHEAT.toString(),
+                Material.DOUBLE_PLANT.toString(),
+                Material.PAINTING.toString(),
+                Material.SIGN.toString(),
+                Material.BED.toString(),
+                Material.ITEM_FRAME.toString(),
+                Material.FLOWER_POT.toString(),
+                Material.SKULL.toString(),
+                Material.ARMOR_STAND.toString(),
+                Material.BANNER.toString(),
+                Material.TNT.toString(),
+                Material.GOLD_PLATE.toString(),
+                Material.IRON_PLATE.toString(),
+                Material.STONE_PLATE.toString(),
+                Material.WOOD_PLATE.toString(),
+                Material.TRAP_DOOR.toString(),
+                Material.IRON_TRAPDOOR.toString(),
+                Material.STONE_BUTTON.toString(),
+                Material.WOOD_BUTTON.toString(),
+                Material.TRIPWIRE_HOOK.toString(),
+                Material.TRIPWIRE.toString(),
+                Material.DAYLIGHT_DETECTOR.toString(),
+                Material.DAYLIGHT_DETECTOR_INVERTED.toString(),
+                Material.REDSTONE_BLOCK.toString(),
+                Material.REDSTONE_COMPARATOR.toString(),
+                Material.REDSTONE_COMPARATOR_ON.toString(),
+                Material.REDSTONE_COMPARATOR_OFF.toString(),
+                Material.REDSTONE_WIRE.toString(),
+                Material.REDSTONE_TORCH_ON.toString(),
+                Material.REDSTONE_TORCH_OFF.toString(),
+                Material.DIODE.toString(),
+                Material.DIODE_BLOCK_ON.toString(),
+                Material.DIODE_BLOCK_OFF.toString(),
+                Material.ACACIA_DOOR.toString(),
+                Material.BIRCH_DOOR.toString(),
+                Material.IRON_DOOR.toString(),
+                Material.JUNGLE_DOOR.toString(),
+                Material.WOOD_DOOR.toString(),
+                Material.WOODEN_DOOR.toString(),
+                Material.SPRUCE_DOOR.toString(),
+                Material.RAILS.toString(),
+                Material.ACTIVATOR_RAIL.toString(),
+                Material.DETECTOR_RAIL.toString(),
+                Material.POWERED_RAIL.toString(),
+                Material.AIR.toString(),
+                Material.CACTUS.toString(),
+                Material.CAKE_BLOCK.toString(),
+                Material.CROPS.toString(),
+                Material.FIRE.toString(),
+                Material.FENCE_GATE.toString(),
+                Material.MELON_STEM.toString(),
+                Material.PISTON_BASE.toString(),
+                Material.PISTON_EXTENSION.toString(),
+                Material.PISTON_MOVING_PIECE.toString(),
+                Material.PISTON_STICKY_BASE.toString(),
+                Material.RED_ROSE.toString(),
+                Material.SAPLING.toString(),
+                Material.STATIONARY_WATER.toString(),
+                Material.STATIONARY_LAVA.toString(),
+                Material.BURNING_FURNACE.toString(),
+                Material.FURNACE.toString(),
+                Material.DISPENSER.toString(),
+                Material.WORKBENCH.toString(),
+                Material.MONSTER_EGG.toString(),
+                Material.MONSTER_EGGS.toString(),
+                Material.NETHER_WARTS.toString(),
+                Material.NETHER_WART_BLOCK.toString(),
+                Material.ENCHANTMENT_TABLE.toString(),
+                Material.BREWING_STAND.toString(),
+                Material.CAULDRON.toString(),
+                Material.ENDER_PORTAL.toString(),
+                Material.ENDER_PORTAL_FRAME.toString(),
+                Material.ENDER_STONE.toString(),
+                Material.GRAVEL.toString(),
+                Material.SAND.toString(),
+                Material.SOUL_SAND.toString(),
+                Material.DRAGON_EGG.toString(),
+                Material.JUKEBOX.toString(),
+                Material.PUMPKIN_STEM.toString(),
+                Material.CHEST.toString(),
+                Material.MOB_SPAWNER.toString(),
+                Material.NOTE_BLOCK.toString(),
+                Material.SIGN_POST.toString(),
+                Material.WALL_SIGN.toString()
+        ));
     }
     
     public boolean isSellItemListBlacklist () {
