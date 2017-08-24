@@ -227,7 +227,7 @@
       <!-- WorldEdit / WorldGuard and many more -->
       <repository>
           <id>sk89q</id>
-          <url>http://maven.sk89q.com/artifactory/libs-snapshot-local/</url>
+          <url>http://maven.sk89q.com/repo/</url>
       </repository>
 
       <repository>
