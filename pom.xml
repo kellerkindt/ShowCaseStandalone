@@ -241,9 +241,9 @@
       <!-- BUKKIT -->
       <dependency>
           <groupId>org.bukkit</groupId>
-          <artifactId>bukkit</artifactId>
+          <artifactId>spigot-api</artifactId>
           <scope>provided</scope>
-          <version>1.11-R0.1-SNAPSHOT</version>
+          <version>1.12.2-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
