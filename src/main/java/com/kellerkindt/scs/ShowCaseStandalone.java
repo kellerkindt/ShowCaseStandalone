@@ -519,7 +519,7 @@ public class ShowCaseStandalone extends JavaPlugin {
      * @return Whether the event was cancelled
      */
     public boolean callShowCaseEvent (ShowCaseEvent event, CommandSender sender) {
-        getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
         
         if (sender != null) {
             // send the error message

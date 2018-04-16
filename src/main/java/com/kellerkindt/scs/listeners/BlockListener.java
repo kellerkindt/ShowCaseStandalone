@@ -17,6 +17,7 @@
  */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Hanging;
