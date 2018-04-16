@@ -44,9 +44,19 @@ public class BlockListener implements Listener{
     
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
     public void onBlockPlace (BlockPlaceEvent e) {
-        if ( scs.getShopHandler().isShopBlock(e.getBlock()) )
-                    e.setCancelled(true);
-        else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
+        if (scs.getShopHandler().isShopBlock(e.getBlock())) {
+            // allow placing blocks to restore glitched shops
+            // e.setCancelled(true);
+
+            // still forbid black listed blocks
+            if (!e.getBlock().getType().isSolid()
+            || !e.getBlock().getType().isBlock()
+            ||  scs.getConfiguration().isBlockListBlacklist() == scs.getConfiguration().getBlockListBlocks().contains(e.getBlock().getType().toString())) {
+                e.setCancelled(true);
+                scs.sendMessage(e.getPlayer(), Term.BLACKLIST_BLOCK.get());
+            }
+
+        } else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
             //This is the block above.
                     //CHeck for attchables for the block being placed.
                     if(!(Material.STEP.equals(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock().getType())))

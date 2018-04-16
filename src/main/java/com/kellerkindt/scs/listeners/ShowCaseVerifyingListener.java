@@ -228,7 +228,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // check black list block
-            else if (config.isBlockListBlacklist() == config.getBlockListBlocks().contains(shop.getBlock().getType().toString())) {
+            else if (!shop.getBlock().getType().isSolid() || !shop.getBlock().getType().isBlock() || config.isBlockListBlacklist() == config.getBlockListBlocks().contains(shop.getBlock().getType().toString())) {
                 scce.setCancelled(true);
                 scce.setCause(new InsufficientPermissionException(Term.BLACKLIST_BLOCK.get()));
             }
