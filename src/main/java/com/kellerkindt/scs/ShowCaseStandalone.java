@@ -1062,24 +1062,7 @@ public class ShowCaseStandalone extends JavaPlugin {
             registerEvents(new WorldGuardListener(this, plugin));
             logger.info("Hooked into WorldGuard");
         }
-
-        // Towny
-        if (className.equals("com.palmergames.bukkit.towny.Towny")) {
-            logger.info("Hooked into Towny");
-            registerEvents(new TownyListener(this));
-        }
         
-        // Residence
-        if (className.equals("com.bekvon.bukkit.residence.Residence") && getConfiguration().getResidenceHookInto()) {
-            logger.info("Hooked into Residence");
-            registerEvents(new ResidenceListener(this));
-        }
-
-        // FBascis, need to workaround Anti-InventoryDupe thingy
-        if (className.equals("org.originmc.fbasics.FBasics") && getConfiguration().isDisablingFBasicsInventoryDupeListener()) {
-            logger.info("Hooked into FBasics");
-            registerEvents(new FBasicsAntiInventoryDupeListener(this, plugin));
-        }
         
         // Vault
         if (className.equals("net.milkbowl.vault.Vault") && isAllowedEconomySystem(className)) {
@@ -1109,21 +1092,6 @@ public class ShowCaseStandalone extends JavaPlugin {
     public void unHookPlugin (Plugin plugin) {
         String className    = plugin.getClass().getName();
         
-        if (className.equals("com.iConomy.iConomy")) {
-            logger.info("Un-hooked iConomy");
-            this.balance = new DummyBalance(this);
-        }
-        
-        if (className.equals("com.iCo6.iConomy")) {
-            logger.info("Un-hooked iConomy");
-            this.balance = new DummyBalance(this);
-        }
-        
-        if (className.equals("com.iCo8.iConomy")) {
-            logger.info("Un-hooked iConomy");
-            this.balance = new DummyBalance(this);
-        }
-        
         if (this.permission != null) {
             if (!this.permission.isEnabled()) {
                 logger.info("Un-hooked Permissions");
@@ -1131,11 +1099,6 @@ public class ShowCaseStandalone extends JavaPlugin {
             }
         }
 
-        // Towny
-        if (className.equals("com.palmergames.bukkit.towny.Towny")) {
-            logger.info("Un-hooked Towny");
-            // TODO un-hook
-        }
     }
     
     /**
