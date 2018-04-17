@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kellerkindt</groupId>
   <artifactId>ShowCaseStandalone</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>ShowCaseStandalone</name>
   <description>Plugin for Bukkits Minecraft Api</description>
   
@@ -20,9 +20,7 @@
       <repository.url.path>pub/mvn/</repository.url.path>
       <repository.url>${repository.url.host}${repository.url.path}</repository.url>
   </properties>
-  
-  
-  
+
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
@@ -146,15 +144,9 @@
       <!-- For spigot -->
       <repository>
           <id>md5-repo</id>
-          <url>http://repo.md-5.net/content/groups/public/</url>
+          <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
           <releases><enabled>true</enabled></releases>
           <snapshots><enabled>true</enabled></snapshots>
-      </repository>
-
-      <!-- essentials -->
-      <repository>
-          <id>ess-repo</id>
-          <url>http://repo.ess3.net/content/groups/essentials/</url>
       </repository>
 
       <!-- Vault -->
@@ -167,11 +159,6 @@
       <repository>
           <id>sk89q-mvn2</id>
           <url>http://maven.sk89q.com/repo</url>
-      </repository>
-
-      <repository>
-          <id>minebuilders-repo</id>
-          <url>http://minebuilders.me:8080/plugin/repository/everything/</url>
       </repository>
 
       <!-- Maven central -->
