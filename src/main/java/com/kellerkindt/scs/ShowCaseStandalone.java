@@ -1057,11 +1057,6 @@ public class ShowCaseStandalone extends JavaPlugin {
     public void hookInto (Plugin plugin) {
         String className    = plugin.getClass().getName();
 
-        if (className.equals("me.minebuilders.clearlag.Clearlag")) {
-            registerEvents(new ClearLagListener(this, plugin));
-            logger.info("Hooked into ClearLag");
-        }
-
         // WorldGuard
         if (className.equals("com.sk89q.worldguard.bukkit.WorldGuardPlugin")) {
             registerEvents(new WorldGuardListener(this, plugin));
