@@ -208,6 +208,12 @@
           <scope>provided</scope>
           <version>1.6</version>
           <optional>true</optional>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.bukkit</groupId>
+                  <artifactId>bukkit</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
       
       <!-- WorldEdit -->
@@ -216,6 +222,12 @@
           <artifactId>worldedit-bukkit</artifactId>
           <scope>provided</scope>
           <version>6.1.2</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.bukkit</groupId>
+                  <artifactId>bukkit</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
       
       <!-- WorldGuard -->
@@ -224,6 +236,12 @@
           <artifactId>worldguard</artifactId>
           <scope>provided</scope>
           <version>6.1</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.bukkit</groupId>
+                  <artifactId>bukkit</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
 
       <dependency>
