@@ -803,6 +803,8 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             // add to lists
             shopItems.put(shop, item);
             itemShops.put(item, shop);
+        } else {
+            scs.getLogger().warning("Unable to drop air for shop id="+shop.getId()+", owner="+shop.getOwner()+", world=[id="+shop.getWorldId()+",name="+shop.getWorldName()+"], location="+shop.getLocation());
         }
         // set visible
         shop.setVisible(true);
