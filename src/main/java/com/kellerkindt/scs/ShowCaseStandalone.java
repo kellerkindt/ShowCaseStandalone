@@ -51,7 +51,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +69,6 @@ public class ShowCaseStandalone extends JavaPlugin {
     
     private Permission  permission         = null;
 
-    private Metrics                 metrics         = null;
-    private MetricsHandler          metricsHandler  = null;
     private ShopHandler             shopHandler     = null;
     private PlayerSessionHandler    sessionHandler  = null;
     private PriceRangeHandler       priceHandler    = null;
@@ -261,37 +258,6 @@ public class ShowCaseStandalone extends JavaPlugin {
         setCreatePermission(BuyShop     .class, Properties.PERMISSION_CREATE_BUY);
         setCreatePermission(DisplayShop .class, Properties.PERMISSION_CREATE_DISPLAY);
         setCreatePermission(ExchangeShop.class, Properties.PERMISSION_CREATE_EXCHANGE);
-        
-
-        
-
-        try {
-            logger.info("Initilazing Metrics");
-            // init metrics
-            this.metrics    = new Metrics(this);
-            
-            // does the server owner want to use this?
-            if (!metrics.isOptOut()) {
-                
-                // init handler
-                this.metricsHandler = new MetricsHandler(shopHandler, metrics);
-                
-                // add listener
-                registerEvents(metricsHandler);
-                
-                // start metrics
-                this.metrics.start();
-                
-                logger.info("Metrics successfully initialized");
-            } else {
-                logger.info("Metrics is deactivated, ShowCaseStandalone respects your decision and won't use Metrics");
-            }
-        
-        } catch (IOException ioe) {
-            logger.log(Level.WARNING, "Couldn't activate metrics. This won't affect the functionality of "+getDescription().getName(), ioe);
-        }
-        
-
 
         if (Properties.BUILD_ISDEV) {
             // just to be sure, give a warning that this isn't a stable build

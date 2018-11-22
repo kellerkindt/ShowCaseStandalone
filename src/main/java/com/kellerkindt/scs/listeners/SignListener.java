@@ -22,11 +22,13 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 import com.kellerkindt.scs.events.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -60,9 +62,9 @@ public class SignListener implements Listener {
 
 
         // block needs to be a sign
-        if (block.getState() instanceof Sign) {
-            Sign  sign   = (Sign)block.getState();
-            Block behind = Utilities.getBlockBehind(sign);
+        if (block.getType() == Material.WALL_SIGN) {
+            WallSign sign = (WallSign) block.getBlockData();
+            Block behind = Utilities.getBlockBehind(block);
             Shop  shop   = scs.getShopHandler().getShop(behind);
 
             if (shop != null) {
@@ -82,11 +84,11 @@ public class SignListener implements Listener {
 
 
 
-                        if (last == null || (last+6) < sign.getWorld().getTime()) {
+                        if (last == null || (last+6) < block.getLocation().getWorld().getTime()) {
                             event = new ShowCaseInfoEvent(pie.getPlayer(), shop);
                         }
 
-                        lastEvents.put(pie.getPlayer().getUniqueId(), sign.getWorld().getTime());
+                        lastEvents.put(pie.getPlayer().getUniqueId(), block.getLocation().getWorld().getTime());
                         break;
                 }
 
@@ -102,8 +104,8 @@ public class SignListener implements Listener {
 
     @EventHandler(ignoreCancelled=true, priority=EventPriority.LOW)
     public void onShowCaseInteractEvent (ShowCaseInteractEvent event) {
-        if (event.getPlayer().getItemInHand() != null) {
-            if (event.getPlayer().getItemInHand().getType() == Material.SIGN && event.hasRightClicked()) {
+        if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SIGN && event.hasRightClicked()) {
                 // cancel the event and allow a player to place the sign
                 event.setCancelled(true);
             }
@@ -119,34 +121,23 @@ public class SignListener implements Listener {
         }
         
         // get the block information
-        Sign    sign    = (Sign)event.getBlock().getState();
-        Block    behind    = Utilities.getBlockBehind(sign);
-            
-        // get shop
-        final Shop        fShop     = scs.getShopHandler().getShop(behind);
-        
-        // actually... not a shop-block
-        if (fShop == null) {
-            return;
-        }
-        
-        
-        /*
-         * Has to be called after the event,
-         * because the Sign is not available
-         * at this moment
-         */
-        scs.getServer().getScheduler().callSyncMethod(scs, new Callable<Void>() {
-
-            @Override
-            public Void call() throws Exception {
-                // call the event to format the sign
-                updateSign(fShop);
-                
-                return null;
+        if(event.getBlock().getType() == Material.WALL_SIGN) {
+            Block behind = Utilities.getBlockBehind(event.getBlock());
+            final Shop fShop = scs.getShopHandler().getShop(behind);
+            if (fShop == null) {
+                return;
             }
-        });
-        
+            scs.getServer().getScheduler().callSyncMethod(scs, new Callable<Void>() {
+
+                @Override
+                public Void call() throws Exception {
+                    // call the event to format the sign
+                    updateSign(fShop);
+                    return null;
+                }
+            });
+        }
+
     }
 
     @EventHandler(ignoreCancelled=true, priority=EventPriority.MONITOR)
@@ -232,7 +223,7 @@ public class SignListener implements Listener {
         
         // collect information
         Location    loc      = shop.getLocation();
-        World       world    = shop.getWorld();
+        World       world    = Bukkit.getWorld(shop.getWorldId());
         int         x        = loc.getBlockX();
         int         y        = loc.getBlockY();
         int         z        = loc.getBlockZ();
@@ -250,7 +241,7 @@ public class SignListener implements Listener {
                 Sign sign = (Sign)block.getState();
                 
                 // is the sign attached to me?
-                if (Utilities.isShopBehind(sign, shop)) {
+                if (Utilities.isShopBehind(block, shop)) {
                     signs.add((Sign)block.getState());
                 }
             }

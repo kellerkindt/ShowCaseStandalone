@@ -60,7 +60,7 @@ public class BlockListener implements Listener{
         } else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
             //This is the block above.
                     //CHeck for attchables for the block being placed.
-                    if(!(Material.STEP.equals(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock().getType())))
+                    if(!(Material.LEGACY_STEP.equals(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock().getType())))
                         e.setCancelled(true);
                 }
         

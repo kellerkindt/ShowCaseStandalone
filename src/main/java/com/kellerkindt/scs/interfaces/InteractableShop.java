@@ -29,7 +29,7 @@ public interface InteractableShop {
      * @param isAdmin            if the request sender is an admin 
      * @param senderCanManage    if the request sender can manage a showcase
      * @param sender            the sender of this request
-     * @param ownder            the new owner
+     * @param owner            the new owner
      * @return true if the request was successfully, false if not
      * @throws InsufficientPermissionException    If the sender does not have the needed permissions
      */

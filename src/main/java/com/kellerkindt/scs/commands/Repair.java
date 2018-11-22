@@ -72,11 +72,11 @@ public class Repair extends SimpleCommand {
             Block itemBlock = shopBlock.getWorld().getBlockAt( shopBlock.getX(), shopBlock.getY() + 1, shopBlock.getZ() );
             
             //decide what to do with a shop
-            if ( shopBlock.getTypeId() == 0 && itemBlock.getTypeId() != 0 ) {
+            if ( shopBlock.getType() == Material.AIR && itemBlock.getType() != Material.AIR ) {
                 deleteable.add( shop );
-            } else if ( shopBlock.getTypeId() == 0 ) {
+            } else if ( shopBlock.getType() == Material.AIR ) {
                 restoreable.add( shop );
-            } else if ( itemBlock.getTypeId() != 0 ) {
+            } else if ( itemBlock.getType() != Material.AIR ) {
                 deleteable.add( shop );
             }
             

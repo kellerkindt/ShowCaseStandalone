@@ -237,9 +237,7 @@ public abstract class ItemStackUtilities {
                     return false;
                 }
             }
-            
-
-            return is1.getTypeId() == is2.getTypeId() && is1.getDurability() == is2.getDurability();
+            return is1.getType() == is2.getType() && is1.getItemMeta() == is2.getItemMeta();
         }
         
         // TODO: remove comment
@@ -288,10 +286,10 @@ public abstract class ItemStackUtilities {
             boolean found    = false;
             
             for (Enchantment een2 : en2.keySet())
-                if (een1.getId()             == een2.getId()
+                if (een1.getKey() == een2.getKey()
                  && een1.getMaxLevel()        == een2.getMaxLevel()
                  && een1.getStartLevel()    == een2.getStartLevel()
-                 && en1.get(een1)            == en2.get(een2))
+                 && en1.get(een1) == en2.get(een2))
                     found = true;
             
             if (!found)

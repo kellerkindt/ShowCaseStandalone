@@ -76,7 +76,7 @@ public interface PlayerSessionHandler extends Iterable<PlayerSession>, ResourceD
     public boolean removeSession (Player player);
     
     /**
-     * @param session {@link Players} to remove
+     * @param session {@link PlayerSession} to remove
      * @return Whether hte {@link PlayerSession} was set
      */
     public boolean removeSession (PlayerSession session);

@@ -27,7 +27,6 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
@@ -37,12 +36,18 @@ import com.kellerkindt.scs.commands.CommandException;
 import com.kellerkindt.scs.interfaces.MultiStageCommand;
 import com.kellerkindt.scs.interfaces.RunLater;
 import com.kellerkindt.scs.interfaces.TriggerableRunLater;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.registry.LegacyMapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Attachable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -53,6 +58,7 @@ import org.bukkit.material.MaterialData;
 import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
 import com.kellerkindt.scs.shops.Shop;
+import org.bukkit.material.Sign;
 
 
 public class Utilities {
@@ -128,57 +134,23 @@ public class Utilities {
         try {
             Material m        = Material.getMaterial(args[0].toUpperCase());
             SCSConfiguration cfg = ShowCaseStandalone.get().getConfiguration(); // singleton, bad...
-
-            if (m == null)
-                m               = Material.getMaterial(Integer.parseInt(args[0]));
-            int     data     = Integer.parseInt(args[1]);
+            if (m == null) {
+                BlockState state = LegacyMapper.getInstance().getBlockFromLegacy(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+                if(state !=null){
+                    m = BukkitAdapter.adapt(state.getBlockType());
+                }
+            }
             int        amount    = 0;
-
-
-            
             if (cfg.isSpawningToMax()) {
                 amount = m.getMaxStackSize();
             } else {
                 amount = cfg.getSpawnCount();
             }
             
-            // for the books (getHandle().tag...)
-            return new ItemStack(m, amount, (short)data);
-//            return new ItemStack(m, 1, (short)data);
-            //return new MaterialData (m, (byte)data);
+            return new ItemStack(m, amount);
         } catch (Exception e) {
             throw new IOException (e);
         }
-    }
-    
-    public static MaterialData getMaterialsFromString (String material) throws IOException {
-        String args[] = new String[3];
-        
-        args[0]    = material;
-        args[1] = "0";
-        
-        // load
-        if (material.contains(":"))
-            args = material.split(":");
-        
-        try {
-            Material m    = Material.getMaterial(args[0].toUpperCase());
-            
-            if (m == null)
-                m = Material.getMaterial(Integer.parseInt(args[0]));
-            
-            int data = Integer.parseInt(args[1]);
-            
-            return new MaterialData (m, (byte)data);
-        } catch (Exception e) {
-            throw new IOException (e);
-        }
-    }
-    
-    public static String getStringFromMaterial (MaterialData material) {
-        byte    data    = material.getData();
-        String     name    = material.toString();
-        return name+":"+((int)data);
     }
 
     /**
@@ -235,15 +207,7 @@ public class Utilities {
             throw new MissingOrIncorrectArgumentException();
         }
     }
-    
-//    public static Activity getActivity (String string) {
-//        for (Activity a : Activity.values())
-//            if (a.toString().equalsIgnoreCase(string))
-//                return a;
-//        return null;
-//    }
-    
-    @Deprecated
+
     public static Enchantment getEnchantmentFromString(String e){
         
         Enchantment ench = null;
@@ -257,8 +221,9 @@ public class Utilities {
         }
         
         try{
-            ench = Enchantment.getById(Integer.parseInt(args[0]));
-        } catch (NumberFormatException nfe) {
+
+            ench = Enchantment.getByKey(NamespacedKey.minecraft(args[0]));
+        } catch (NullPointerException nfe) {
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -295,61 +260,28 @@ public class Utilities {
      * From https://github.com/davboecki/SignCodePad/blob/master/de/davboecki/signcodepad/event/SignCreate.java
      * but changed by kellerkindt
      * 
-     * @param sign     The Sign
-     * @return         The block where the sign is placed on
+     * @param block    A Wall Sign Block
+     * @return         The block where the sign is attached
      */
-    public static Block getBlockBehind(Sign sign) {
-        Location signloc = sign.getBlock().getLocation();
-        double x = -1;
-        double y = signloc.getY();
-        double z = -1;
-
-        switch ((int) sign.getRawData()) {
-            //west
-            case 2:
-                x = signloc.getX();
-                z = signloc.getZ() + 1;
-    
-                break;
-    
-            //east
-            case 3:
-                x = signloc.getX();
-                z = signloc.getZ() - 1;
-    
-                break;
-    
-            //south
-            case 4:
-                x = signloc.getX() + 1;
-                z = signloc.getZ();
-    
-                break;
-    
-            //north
-            case 5:
-                x = signloc.getX() - 1;
-                z = signloc.getZ();
-    
-                break;
-            default:
-                return null;
-                
+    public static Block getBlockBehind(Block block) {
+        try {
+            BlockFace face = ((WallSign) block.getBlockData()).getFacing().getOppositeFace();
+            return block.getRelative(face);
+        }catch (ClassCastException e){
+            return null;
         }
-
-        return sign.getBlock().getWorld().getBlockAt(new Location(sign.getBlock().getWorld(), x, y, z));
     }
     
     
     /**
      * Checks if the Shop is behind the Sign
-     * @param sign
+     * @param wallsign
      * @param shop
      * @return
      */
-    public static boolean isShopBehind (Sign sign, Shop shop) {
+    public static boolean isShopBehind (Block wallsign, Shop shop) {
         
-        Block    block    = getBlockBehind(sign);
+        Block    block    = getBlockBehind(wallsign);
         
         if (block == null)
             return false;
@@ -428,10 +360,7 @@ public class Utilities {
      * @return Representative String for the ItemStack
      */
     public static String toString (ItemStack itemStack) {
-        int id     = itemStack.getTypeId();
-        int dur    = itemStack.getDurability();
-        
-        return id + ":" + dur;
+        return itemStack.getType().name();
     }
     
     /**
@@ -442,14 +371,22 @@ public class Utilities {
      */
     public static ItemStack toItemStack (String string, int amount) {
         Validate.notNull(string);
-        
         String     splitted[]     = string.split(":");
         int     id            = Integer.parseInt(splitted[0]);
-        
         if (splitted.length > 1) {
-            return new ItemStack(id, amount, Short.parseShort(splitted[1]));
+            return new ItemStack(retrieveFromLegacyIdData(id,Short.parseShort(splitted[1])), amount);
         } else {
-            return new ItemStack(id, amount);
+            return new ItemStack(retrieveFromLegacyIdData(id,(short)0), amount);
+        }
+    }
+
+    @Deprecated
+    private static Material retrieveFromLegacyIdData(int id, short data){
+        try{
+            Material mat = BukkitAdapter.adapt(LegacyMapper.getInstance().getBlockFromLegacy(id,data).getBlockType());
+            return mat;
+        }catch (NullPointerException e){
+            return null;
         }
     }
 }

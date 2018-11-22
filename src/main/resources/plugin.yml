@@ -2,7 +2,7 @@ name: ShowCaseStandalone
 main: com.kellerkindt.scs.ShowCaseStandalone
 authors: [kellerkindt, sorklin, bitfreeze, Ryzko, rtainc]
 version: ${plugin.version}
-
+api-version: legacy
 softdepend:
   - My Worlds
   - Multiverse
