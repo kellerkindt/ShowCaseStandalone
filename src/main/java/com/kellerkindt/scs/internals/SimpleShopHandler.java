@@ -731,15 +731,15 @@ public class SimpleShopHandler implements ShopHandler, Listener {
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.NORMAL)
     public void onShowCaseItemSpawnEvent(ShowCaseItemSpawnEvent event) {
-    
+
         // spawn new item
         Shop shop = event.getShop();
         Location spawnLocation = event.getLocation();
         ItemStack itemStack = shop.getItemStack().clone();
-    
+
         if (scs.getConfiguration().isSpawningToMax()) {
             itemStack.setAmount(itemStack.getMaxStackSize());
-        
+
         } else {
             /*
              *  barrier 1, an amount of 0 does not cause any pickup event (seems to be so)
@@ -747,7 +747,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
              *     although they can use it ^^
              */
             itemStack.setAmount(scs.getConfiguration().getSpawnCount());
-        
+
             // since mc 1.11 an amount of zero does not seem to work anymore?
             if (itemStack.getAmount() == 0) {
                 itemStack.setAmount(1);
@@ -755,27 +755,26 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         }
         if (itemStack.getType() != Material.AIR) {
             Item item = Bukkit.getWorld(shop.getWorldId()).dropItem(spawnLocation, itemStack);
-    
             ItemMeta meta = item.getItemStack().getItemMeta();
-    
+
             // prevent item from being merged (at least in some cases)
             if (meta != null) {
                 meta.setDisplayName(shop.getId().toString());
             }
-    
+
             // TODO experimental
             if (scs.getConfiguration().isHoverTextEnabled()) {
                 if (scs.getConfiguration().isHoverTextPlayerCustomNameEnabled() && shop.getCustomHoverText() != null) {
                     String hoverText = shop.getCustomHoverText();
-            
+
                     if (hoverText.length() > scs.getConfiguration().getHoverTextPlayerCustomNameMaxLength()) {
                         hoverText = hoverText.substring(0, scs.getConfiguration().getHoverTextPlayerCustomNameMaxLength());
                     }
-            
+
                     // mark player text differently so one can distinguish between original SCS price and fake price
                     item.setCustomName(ChatColor.GOLD + "[" + hoverText + "]");
                     item.setCustomNameVisible(true);
-            
+
                 } else {
                     if (shop.getHoverText() != null && shop.getHoverText().length() > 0) {
                         item.setCustomName(shop.getHoverText());
@@ -783,16 +782,16 @@ public class SimpleShopHandler implements ShopHandler, Listener {
                     }
                 }
             }
-    
+
             // System.out.println("droppedItem, Item-id: "+item.getEntityId()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
-    
+
             if (item.getItemStack().getType() == Material.STONE && shop.getItemStack().getType() != Material.STONE) {
                 scs.getLogger().severe("Failed to drop Item (Item cannot be dropped), shop=" + shop.getId() + ", loc=" + shop.getLocation());
                 item.remove();
                 return;
                 // System.out.println("failure, original: "+shop.getItemStack()+", material="+shop.getItemStack().getType()+", meta="+shop.getItemStack().getItemMeta()+", loc="+shop.getLocation()+", world="+shop.getWorld().getName());
             }
-    
+
             /*
              *  barrier 2, astronomy high pickup delay which can't
              *  be reached in a normal Item life
@@ -800,7 +799,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
              */
             item.setPickupDelay(Properties.DEFAULT_PICKUP_DELAY);
             item.setVelocity(new Vector(0, 0.01, 0));
-    
+
             // add to lists
             shopItems.put(shop, item);
             itemShops.put(item, shop);
