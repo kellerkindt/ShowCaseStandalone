@@ -17,8 +17,6 @@
  */
 package com.kellerkindt.scs.utilities;
 
-import com.kellerkindt.scs.shops.*;
-
 public enum Term {
     ABORT,
     DISABLE,
@@ -335,7 +333,6 @@ public enum Term {
     
     /**
      * Sets the Language and value of this Term
-     * @param language
      * @param term
      */
     public void setTerm (String term) {

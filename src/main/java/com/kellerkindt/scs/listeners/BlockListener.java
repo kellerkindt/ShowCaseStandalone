@@ -18,8 +18,8 @@
 package com.kellerkindt.scs.listeners;
 
 import com.kellerkindt.scs.utilities.Term;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
@@ -57,10 +57,13 @@ public class BlockListener implements Listener{
                 scs.sendMessage(e.getPlayer(), Term.BLACKLIST_BLOCK.get());
             }
 
-        } else if ( scs.getShopHandler().isShopBlock(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock()) ){
+        }
+        Block blockbelow = e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock();
+        if ( scs.getShopHandler().isShopBlock(blockbelow) ){
             //This is the block above.
                     //CHeck for attchables for the block being placed.
-                    if(!(Material.LEGACY_STEP.equals(e.getBlockPlaced().getLocation().subtract(0, 1, 0).getBlock().getType())))
+
+                    if(!(blockbelow.getBlockData() instanceof Slab))
                         e.setCancelled(true);
                 }
         

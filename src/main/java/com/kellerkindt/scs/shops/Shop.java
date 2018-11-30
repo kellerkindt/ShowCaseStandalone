@@ -71,7 +71,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
     protected NamedUUID         world   = null;
     protected NamedUUID         owner   = null;
-    protected List<NamedUUID>   members = new ArrayList<NamedUUID>();
+    protected List<NamedUUID>   members = new ArrayList<>();
 
     protected String customHoverText    = null;
 
@@ -116,12 +116,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setId(final UUID id) {
         return setChanged(
                 !Objects.equals(this.id, id),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.id = id;
-                    }
-                }
+                () -> Shop.this.id = id
         );
     }
 
@@ -152,12 +147,9 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         // can be null on creation
         return setChanged(
                 !Objects.equals(this.location, location),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.location = location;
-                        Shop.this.setWorld(location.getWorld());
-                    }
+                () -> {
+                    Shop.this.location = location;
+                    Shop.this.setWorld(location.getWorld());
                 }
         );
     }
@@ -216,15 +208,10 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         // save the new world
         return setChanged(
                 !(Objects.equals(world.getUID(), this.world.getId()) && Objects.equals(world.getName(), this.world.getName())),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.world.update(
-                                world.getUID(),
-                                world.getName()
-                        );
-                    }
-                }
+                () -> Shop.this.world.update(
+                        world.getUID(),
+                        world.getName()
+                )
         );
     }
     
@@ -260,12 +247,9 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setOwner(final UUID id, final String name) {
         return setChanged(
                 !Objects.equals(owner.getId(), id) || !Objects.equals(owner.getName(), name),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        owner.setId  (id);
-                        owner.setName(name);
-                    }
+                () -> {
+                    owner.setId  (id);
+                    owner.setName(name);
                 }
         );
     }
@@ -302,12 +286,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setItemStack (final ItemStack itemStack) {
         return setChanged(
                 !Objects.equals(this.itemStack, itemStack),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.itemStack = itemStack;
-                    }
-                }
+                () -> Shop.this.itemStack = itemStack
         );
     }
     
@@ -325,12 +304,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setAmount (final int amount) {
         return setChanged(
                 this.amount != amount,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.amount = amount;
-                    }
-                }
+                () -> Shop.this.amount = amount
         );
     }
     
@@ -348,12 +322,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setPrice (final double price) {
         return setChanged(
                 this.price != price,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.price = price;
-                    }
-                }
+                () -> Shop.this.price = price
         );
     }
     
@@ -371,12 +340,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setUnlimited (final boolean unlimited) {
         return setChanged(
                 this.unlimited != unlimited,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.unlimited = unlimited;
-                    }
-                }
+                () -> Shop.this.unlimited = unlimited
         );
     }
     
@@ -393,12 +357,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     public T setVisible (final boolean visible) {
         return setChanged(
                 this.visible = visible,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.visible = visible;
-                    }
-                }
+                () -> Shop.this.visible = visible
         );
     }
     
@@ -476,12 +435,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
         return setChanged(
                 add,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        members.add(new NamedUUID(id, name));
-                    }
-                }
+                () -> members.add(new NamedUUID(id, name))
         );
     }
 
@@ -546,12 +500,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         final NamedUUID remove = toRemove;
         return setChanged(
                 toRemove != null,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Shop.this.members.remove(remove);
-                    }
-                }
+                () -> Shop.this.members.remove(remove)
         );
     }
 
@@ -635,7 +584,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put(KEY_VERSION,   Properties.VERSION_SHOP);
         map.put(KEY_ID,        getId().toString());
@@ -644,7 +593,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
         map.put(KEY_UNLIMITED, isUnlimited());
         map.put(KEY_ITEMSTACK, getItemStack());
         
-        List<NamedUUID> members = new ArrayList<NamedUUID>();
+        List<NamedUUID> members = new ArrayList<>();
         for (NamedUUID member : getMembers()) {
             members.add(member);
         }
@@ -702,8 +651,8 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
                     // convert the owners name to its UUID
                     map.put(KEY_OWNER, new NamedUUID(
-                            owner != null && owner instanceof String && ((String)owner).length() > 0 ? scs.getPlayerUUID((String)owner) : null,
-                            owner != null && owner instanceof String && ((String)owner).length() > 0 ? (String)owner : null
+                            owner instanceof String && ((String) owner).length() > 0 ? scs.getPlayerUUID((String)owner) : null,
+                            owner instanceof String && ((String) owner).length() > 0 ? (String)owner : null
                     ));
 
                     // already at output state of case1
@@ -717,7 +666,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
                 try {
                     // convert the members from names to UUIDs
                     List<String>    names   = (List<String>)map.get(KEY_MEMBERS);
-                    List<NamedUUID> members = new ArrayList<NamedUUID>();
+                    List<NamedUUID> members = new ArrayList<>();
 
                     for (String name : names) {
                         if (name == null || name.length() == 0) {
@@ -772,7 +721,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
 
                 // import members
                 if (importMember1) {
-                    List<NamedUUID> members = new ArrayList<NamedUUID>();
+                    List<NamedUUID> members = new ArrayList<>();
                     for (String id : ((List<String>)map.get(KEY_MEMBERS))) {
                         try {
                             members.add(new NamedUUID(
@@ -946,7 +895,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
     protected String getHoverText(Term term, List<String> parameters) {
         return term.get(
                 parameters.toArray(
-                        new String[parameters.size()]
+                        new String[0]
                 )
         );
     }
@@ -983,7 +932,7 @@ public abstract class Shop<T extends Shop<?>> extends SimpleChangeable<T> implem
             list.add(Term.INFO_SHOP_ENCHANTMENTS.get(MaterialNames.getItemName(getItemStack())));
             for (Map.Entry<Enchantment, Integer> entry : getItemStack().getEnchantments().entrySet()) {
                 list.add(Term.INFO_SHOP_ENCHANTMENT.get(
-                        entry.getKey().getName(),
+                        entry.getKey().getKey().getKey(),
                         ""+entry.getValue()
                 ));
             }

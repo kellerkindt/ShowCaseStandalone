@@ -18,7 +18,6 @@
 package com.kellerkindt.scs.utilities;
 
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -244,8 +243,7 @@ public class Messaging {
      */
     public static void mlSend(CommandSender p, List<String> msg){
         Messaging.sender = p;
-        for (Iterator<String> it = msg.iterator(); it.hasNext();) {
-            String s = it.next();
+        for (String s : msg) {
             send(p, s);
         }
     }

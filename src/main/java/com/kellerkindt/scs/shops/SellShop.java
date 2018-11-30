@@ -27,7 +27,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class SellShop extends Shop {
 
     @Override
     public List<String> getDescription() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Term         term = isUnlimited() ? Term.INFO_SHOP_SELL_UNLIMITED : Term.INFO_SHOP_SELL;
         String       name = scs.getPlayerNameOrNull(owner);
 

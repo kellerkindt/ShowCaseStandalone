@@ -66,7 +66,7 @@ public class Transaction implements ConfigurationSerializable {
         @Override
         public Map<String, Object> serialize() {
             // create the map
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             
             // save
             map.put(KEY, name);
@@ -181,7 +181,7 @@ public class Transaction implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         // map to serialize to
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         
         // store
         map.put(KEY_PLAYER_NAME,    playerName);

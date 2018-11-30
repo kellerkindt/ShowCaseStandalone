@@ -37,12 +37,12 @@ import com.kellerkindt.scs.utilities.Term;
  */
 public class Help extends SimpleCommand {
 
-    private Map<String, Entry<String, List<String>>> sites = new HashMap<String, Entry<String, List<String>>>();
+    private Map<String, Entry<String, List<String>>> sites = new HashMap<>();
     
     public Help(ShowCaseStandalone scs, String ... permissions) {
         super(scs, permissions);
         
-        sites.put("admin", new AbstractMap.SimpleEntry<String, List<String>>(permissions[1], Arrays.asList(
+        sites.put("admin", new AbstractMap.SimpleEntry<>(permissions[1], Arrays.asList(
                 Term.HELP_TITLE_ADMIN.get(),
                 Term.HELP_ADMIN_1.get(),
                 Term.HELP_ADMIN_2.get(),
@@ -54,9 +54,9 @@ public class Help extends SimpleCommand {
                 Term.HELP_ADMIN_8.get(),
                 Term.HELP_ADMIN_9.get(),
                 Term.HELP_ADMIN_10.get()
-                )));
+        )));
         
-        sites.put("1", new AbstractMap.SimpleEntry<String, List<String>>(permissions[0], Arrays.asList(
+        sites.put("1", new AbstractMap.SimpleEntry<>(permissions[0], Arrays.asList(
                 Term.HELP_TITLE.get("1"),
                 Term.HELP_1.get(),
                 Term.HELP_2.get(),
@@ -74,9 +74,9 @@ public class Help extends SimpleCommand {
                 Term.HELP_14.get(),
                 Term.HELP_15.get(),
                 Term.HELP_24.get()
-                )));
+        )));
         
-        sites.put("2", new AbstractMap.SimpleEntry<String, List<String>>(permissions[0], Arrays.asList(
+        sites.put("2", new AbstractMap.SimpleEntry<>(permissions[0], Arrays.asList(
                 Term.HELP_TITLE.get("2"),
                 Term.HELP_16.get(),
                 Term.HELP_12.get(),
@@ -91,7 +91,7 @@ public class Help extends SimpleCommand {
                 Term.HELP_29.get(),
                 Term.HELP_30.get(),
                 Term.HELP_31.get()
-                )));
+        )));
         
     }
 
@@ -104,7 +104,7 @@ public class Help extends SimpleCommand {
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
         // get the requested page
         String             page     = args.length > 0 ? args[0] : "";
-        List<String>    list    = new ArrayList<String>();
+        List<String>    list    = new ArrayList<>();
         
         for (Entry<String, Entry<String, List<String>>> entry : sites.entrySet()) {
             if (entry.getKey().startsWith(page) && scs.hasPermission(sender, entry.getValue().getKey())) {

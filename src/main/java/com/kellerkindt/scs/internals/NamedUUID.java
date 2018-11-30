@@ -66,12 +66,7 @@ public class NamedUUID extends SimpleChangeable<NamedUUID> implements Configurat
     public NamedUUID setId(final UUID id) {
         return setChanged(
                 !Objects.equals(this.id, id),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        NamedUUID.this.id = id;
-                    }
-                }
+                () -> NamedUUID.this.id = id
         );
     }
 
@@ -89,12 +84,7 @@ public class NamedUUID extends SimpleChangeable<NamedUUID> implements Configurat
     public NamedUUID setName(final String name) {
         return setChanged(
                 !Objects.equals(this.name, name),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        NamedUUID.this.name = name;
-                    }
-                }
+                () -> NamedUUID.this.name = name
         );
     }
 
@@ -104,19 +94,16 @@ public class NamedUUID extends SimpleChangeable<NamedUUID> implements Configurat
      * @return itself
      */
     public NamedUUID update(final UUID id, final String name) {
-        this.bulkChanges(new Runnable() {
-            @Override
-            public void run() {
-                NamedUUID.this.setId  (id);
-                NamedUUID.this.setName(name);
-            }
+        this.bulkChanges(() -> {
+            NamedUUID.this.setId  (id);
+            NamedUUID.this.setName(name);
         });
         return this;
     }
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put(KEY_VERSION,    Properties.VERSION_NAMED_UUID);
 

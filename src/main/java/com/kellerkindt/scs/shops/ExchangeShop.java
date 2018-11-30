@@ -62,7 +62,7 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
 
     @Override
     public List<String> getDescription() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Term         term = isUnlimited() ? Term.INFO_SHOP_EXCHANGE_UNLIMITED : Term.INFO_SHOP_EXCHANGE;
         String       name = scs.getPlayerNameOrNull(owner);
 
@@ -135,12 +135,7 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
     public T setExchangeAmount (final int amount) {
         return setChanged(
                 this.exchangeAmount != amount,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ExchangeShop.this.exchangeAmount = amount;
-                    }
-                }
+                () -> ExchangeShop.this.exchangeAmount = amount
         );
     }
 
@@ -158,12 +153,7 @@ public class ExchangeShop<T extends ExchangeShop<?>> extends Shop<T> {
     public T setExchangeItemStack (final ItemStack itemStack) {
         return setChanged(
                 !Objects.equals(this.exItemStack, itemStack),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ExchangeShop.this.exItemStack = itemStack;
-                    }
-                }
+                () -> ExchangeShop.this.exItemStack = itemStack
         );
     }
 }

@@ -17,10 +17,7 @@
  */
 package com.kellerkindt.scs.utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -61,7 +58,7 @@ public abstract class ItemStackUtilities {
      * @return
      */
     public static int countCompatibleItemStacks (Inventory inventory, ItemStack itemStack, boolean checkNBT) {
-        List<ItemStack>    list    = new ArrayList<ItemStack>();
+        List<ItemStack>    list    = new ArrayList<>();
                         list.add(itemStack);
         return countCompatibleItemStacks(inventory, list, checkNBT);
     }
@@ -209,7 +206,7 @@ public abstract class ItemStackUtilities {
      * @return The amount of items that were actually removed 
      */
     public static int removeFromInventory (Inventory inventory, ItemStack itemStack, int amount, boolean checkNBT) {
-        return removeFromInventory(inventory, Arrays.asList(itemStack), amount, checkNBT);
+        return removeFromInventory(inventory, Collections.singletonList(itemStack), amount, checkNBT);
     }
     
     /**

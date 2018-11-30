@@ -62,15 +62,12 @@ public class WorldListener implements Listener {
 
             // System.out.println("canceled ItemDespawnEvent");
 
-            scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, new Runnable() {
-                @Override
-                public void run() {
-                    /*
-                     * since canceling the event does not guarantee the further existence of the Item,
-                     * recheck the shop show state as soon as this event has ended
-                     */
-                    scs.getShopHandler().recheckShopShowState(shop);
-                }
+            scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, () -> {
+                /*
+                 * since canceling the event does not guarantee the further existence of the Item,
+                 * recheck the shop show state as soon as this event has ended
+                 */
+                scs.getShopHandler().recheckShopShowState(shop);
             });
         }
     }

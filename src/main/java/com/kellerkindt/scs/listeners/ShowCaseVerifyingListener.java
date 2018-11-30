@@ -234,7 +234,7 @@ public class ShowCaseVerifyingListener implements ShowCaseListener {
             }
             
             // check black list world
-            else if (config.getWorldsBlacklisted().contains(shop.getWorld())) {
+            else if (config.getWorldsBlacklisted().contains(shop.getWorldName())) {
                 scce.setCancelled(true);
                 scce.setCause(new InsufficientPermissionException(Term.BLACKLIST_WORLD.get()));
             }

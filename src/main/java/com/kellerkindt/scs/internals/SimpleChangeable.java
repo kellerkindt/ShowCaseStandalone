@@ -35,7 +35,7 @@ public abstract class SimpleChangeable<T extends SimpleChangeable<?>> implements
     public SimpleChangeable() {
         this.changed   = false;
         this.contact   = true;
-        this.listeners = new ArrayList<ChangeListener<T>>();
+        this.listeners = new ArrayList<>();
     }
 
     @Override

@@ -52,7 +52,7 @@ public class Member extends SimpleCommand {
 
     @Override
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
-        List<String> list     = new ArrayList<String>();
+        List<String> list     = new ArrayList<>();
         String         current= args.length > 0 ? args[0] : "";
         
         for (String cmd : LIST_TAB) {

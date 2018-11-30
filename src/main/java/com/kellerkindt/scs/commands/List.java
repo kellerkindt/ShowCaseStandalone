@@ -48,7 +48,7 @@ public class List extends SimpleCommand {
         String                     player        = args[0];
         int                        ownerOf        = 0;
         int                        memberOf    = 0;
-        java.util.List<String>    worlds        = new ArrayList<String>();
+        java.util.List<String>    worlds        = new ArrayList<>();
         StringBuilder            sWorlds        = new StringBuilder();
         
         for (Shop p : scs.getShopHandler()) {

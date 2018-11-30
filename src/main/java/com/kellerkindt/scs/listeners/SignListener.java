@@ -29,7 +29,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -45,7 +44,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class SignListener implements Listener {
     
     private ShowCaseStandalone    scs;
-    private Map<UUID, Long> lastEvents = new WeakHashMap<UUID, Long>();
+    private Map<UUID, Long> lastEvents = new WeakHashMap<>();
     
     public SignListener (ShowCaseStandalone scs) {
         this.scs    = scs;
@@ -76,9 +75,9 @@ public class SignListener implements Listener {
                         break;
 
                     case LEFT_CLICK_BLOCK:
-                        /**
-                         * Fire the event only on button pu to down moment,
-                         * so removing the actual sign is possible
+                        /*
+                          Fire the event only on button pu to down moment,
+                          so removing the actual sign is possible
                          */
                         Long last = lastEvents.get(pie.getPlayer().getUniqueId());
 
@@ -127,14 +126,10 @@ public class SignListener implements Listener {
             if (fShop == null) {
                 return;
             }
-            scs.getServer().getScheduler().callSyncMethod(scs, new Callable<Void>() {
-
-                @Override
-                public Void call() throws Exception {
-                    // call the event to format the sign
-                    updateSign(fShop);
-                    return null;
-                }
+            scs.getServer().getScheduler().callSyncMethod(scs, (Callable<Void>) () -> {
+                // call the event to format the sign
+                updateSign(fShop);
+                return null;
             });
         }
 
@@ -218,8 +213,8 @@ public class SignListener implements Listener {
      */
     public List<Sign> getSigns (Shop shop) {
         // init lists
-        List<Block> blocks    = new ArrayList<Block>();
-        List<Sign>    signs    = new ArrayList<Sign>();
+        List<Block> blocks    = new ArrayList<>();
+        List<Sign>    signs    = new ArrayList<>();
         
         // collect information
         Location    loc      = shop.getLocation();

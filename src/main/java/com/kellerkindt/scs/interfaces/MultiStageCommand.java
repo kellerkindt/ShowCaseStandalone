@@ -29,5 +29,5 @@ public interface MultiStageCommand extends RunLater {
     /**
      * @see {@link com.kellerkindt.scs.commands.Command#execute(CommandSender, String[])}
      */
-    void execute(CommandSender sender, String args[]) throws CommandException;
+    void execute(CommandSender sender, String[] args) throws CommandException;
 }

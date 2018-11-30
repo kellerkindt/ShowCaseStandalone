@@ -37,7 +37,7 @@ import com.kellerkindt.scs.interfaces.PlayerSessionHandler;
  */
 public class SimplePlayerSessionHandler implements PlayerSessionHandler {
 
-    protected Map<UUID, PlayerSession>      sessions         = new HashMap<UUID, PlayerSession>();
+    protected Map<UUID, PlayerSession>      sessions         = new HashMap<>();
     protected StorageHandler<PlayerSession> storageHandler;
     protected SCSConfiguration              configuration;
     

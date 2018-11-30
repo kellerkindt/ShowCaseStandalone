@@ -54,12 +54,12 @@ public interface Command {
      * @param args        Arguments at the moment tab complete has been requested
      * @return A {@link List} of possible completions for the last argument or null
      */
-    public List<String> getTabCompletions (CommandSender sender, String args[]);
+    public List<String> getTabCompletions (CommandSender sender, String[] args);
     
     /**
      * @param sender        {@link CommandSender} that requested the execution
      * @param args            Additional arguments
-     * @throws Exception    Only if it wasn't possible to execute the command
+     * @throws CommandException    Only if it wasn't possible to execute the command
      */
-    public void execute (CommandSender sender, String args[]) throws CommandException;
+    public void execute (CommandSender sender, String[] args) throws CommandException;
 }

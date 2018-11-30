@@ -35,7 +35,7 @@ import com.kellerkindt.scs.interfaces.ConfigurationChangedListener;
 public abstract class Configuration {
     
     private FileConfiguration config;
-    private Map<String, List<ConfigurationChangedListener>>    listeners = new HashMap<String, List<ConfigurationChangedListener>>();
+    private Map<String, List<ConfigurationChangedListener>>    listeners = new HashMap<>();
 
     public Configuration (FileConfiguration config) {
         this.config = config;
@@ -67,7 +67,7 @@ public abstract class Configuration {
         Object value = getRaw(key);
 
         // is the value valid?
-        if (value != null && clazz.isInstance(value)) {
+        if (clazz.isInstance(value)) {
             try {
                 // if it is possible to cast, everything is fine
                 return (T)value;
@@ -134,7 +134,7 @@ public abstract class Configuration {
     
     /**
      * @param dst Destination {@link File} to save to
-     * @throws IOException
+     * @throws IOException if save fails
      */
     public void save (File dst) throws IOException {
         this.config.save(dst);
@@ -143,18 +143,13 @@ public abstract class Configuration {
     /**
      * Adds the given listeners, so it will be contacted,
      * if the value for the given key has been changed
-     * @param key
-     * @param listener
+     * @param key the key
+     * @param listener the listener
      */
     public void register (String key, ConfigurationChangedListener listener) {
         // get the list
-        List<ConfigurationChangedListener> list = listeners.get(key);
-        
-        if (list == null) {
-            list = new ArrayList<ConfigurationChangedListener>();
-            listeners.put(key, list);
-        }
-        
+        List<ConfigurationChangedListener> list = listeners.computeIfAbsent(key, k -> new ArrayList<>());
+
         list.add(listener);
     }
     

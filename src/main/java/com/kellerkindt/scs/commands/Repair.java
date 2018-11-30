@@ -48,7 +48,7 @@ public class Repair extends SimpleCommand {
     @Override
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
         
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         
         for (String s : LIST_TAB) {
             if (args.length == 0 || s.toLowerCase().startsWith(args[0].toLowerCase())) {
@@ -62,8 +62,8 @@ public class Repair extends SimpleCommand {
     @Override
     public void execute(CommandSender sender, String[] args) throws CommandException {
         
-        Set<Shop> restoreable     = new HashSet<Shop>();
-        Set<Shop> deleteable     = new HashSet<Shop>();
+        Set<Shop> restoreable     = new HashSet<>();
+        Set<Shop> deleteable     = new HashSet<>();
         
         //prepare
         for ( Shop shop : this.scs.getShopHandler() ) {

@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class ThreadedController {
 
-    protected List<Threaded> list = new ArrayList<Threaded>();
+    protected List<Threaded> list = new ArrayList<>();
     protected Logger         logger;
 
     public ThreadedController(Logger logger) {

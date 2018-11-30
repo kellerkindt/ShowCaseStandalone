@@ -18,11 +18,9 @@
 package com.kellerkindt.scs.interfaces;
 
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
 
-import com.kellerkindt.scs.internals.NamedUUID;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;

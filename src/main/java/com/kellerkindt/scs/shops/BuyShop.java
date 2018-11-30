@@ -64,7 +64,7 @@ public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
 
     @Override
     public List<String> getDescription() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Term         term = isUnlimited() ? Term.INFO_SHOP_BUY_UNLIMITED : Term.INFO_SHOP_BUY;
         String       name = scs.getPlayerNameOrNull(owner);
 
@@ -92,12 +92,7 @@ public class BuyShop<T extends BuyShop<?>> extends Shop<T> {
     public T setMaxAmount (final int amount) {
         return setChanged(
                 this.maxAmount != amount,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        BuyShop.this.maxAmount = amount;
-                    }
-                }
+                () -> BuyShop.this.maxAmount = amount
         );
     }
     

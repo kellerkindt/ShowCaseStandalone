@@ -40,7 +40,7 @@ public class Purge extends SimpleCommand {
     public static final String PREFIX_WORLD    = "w:";
     public static final String PREFIX_UUID    = "u:";
     
-    private Map<String, List<Shop>>    toDelete    = new HashMap<String, List<Shop>>();
+    private Map<String, List<Shop>>    toDelete    = new HashMap<>();
 
     public Purge (ShowCaseStandalone scs, String...permissions) {
         super(scs, permissions, false, 1);
@@ -49,7 +49,7 @@ public class Purge extends SimpleCommand {
     @Override
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
         
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         
         if (args.length == 0 || args[0].startsWith(PREFIX_WORLD)) {
             for (World world : scs.getServer().getWorlds()) {
@@ -114,16 +114,12 @@ public class Purge extends SimpleCommand {
         
         // first call: find the shops
         if (toRemove == null) {
-            toRemove    = new ArrayList<Shop>();
+            toRemove    = new ArrayList<>();
             
             for (Shop p : scs.getShopHandler()) {
                 
                 // get the world name safely
-                String worldMatcher = !isUUID && p.getWorld() != null
-                        ? p.getWorld().getName()
-                        : isUUID
-                            ? p.getWorldId().toString()
-                            : null;
+                String worldMatcher = !isUUID && p.getWorldId() != null ? p.getWorldName(): isUUID ? p.getWorldId().toString() : null;
             
                 if ( isPlayer && p.isOwner( scs.getPlayerUUID(name) ) && (ignoreWorld || world.equals(worldMatcher) )) {
                     toRemove.add(p);

@@ -56,7 +56,7 @@ public class DisplayShop extends Shop {
 
     @Override
     public List<String> getDescription() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         String       name = scs.getPlayerNameOrNull(owner);
 
         list.add(Term.INFO_SHOP_DISPLAY.get(

@@ -52,7 +52,7 @@ public class YamlPriceStorage extends SimpleThreaded<YamlPriceStorage.Type, Pric
     }
     
     protected File             file;
-    protected List<PriceRange> loadedList = new ArrayList<PriceRange>();
+    protected List<PriceRange> loadedList = new ArrayList<>();
     
     public YamlPriceStorage (Logger logger, File file) {
         super(logger);
@@ -122,11 +122,11 @@ public class YamlPriceStorage extends SimpleThreaded<YamlPriceStorage.Type, Pric
     public Collection<PriceRange> loadAll() throws IOException {
         if (!file.exists()) {
             // nothing to load
-            return new ArrayList<PriceRange>(0);
+            return new ArrayList<>(0);
         }
 
         YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
-        List<PriceRange>  list = new ArrayList<PriceRange>();
+        List<PriceRange>  list = new ArrayList<>();
 
         int version = conf.getInt(KEY_VERSION, 0); // has been introduced with version being 1
 

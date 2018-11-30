@@ -30,8 +30,6 @@ import com.kellerkindt.scs.internals.SimpleThreaded;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.kellerkindt.scs.PlayerSession;
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.interfaces.PlayerSessionHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
@@ -54,7 +52,7 @@ public class YamlPlayerSessionStorage extends SimpleThreaded<YamlPlayerSessionSt
     }
 
     protected File                file;
-    protected List<PlayerSession> loadedList = new ArrayList<PlayerSession>();
+    protected List<PlayerSession> loadedList = new ArrayList<>();
     
     public YamlPlayerSessionStorage (Logger logger, File file) {
         super(logger);
@@ -121,7 +119,7 @@ public class YamlPlayerSessionStorage extends SimpleThreaded<YamlPlayerSessionSt
     @Override
     public Collection<PlayerSession> loadAll() throws IOException {
 
-        List<PlayerSession> sessions = new ArrayList<PlayerSession>();
+        List<PlayerSession> sessions = new ArrayList<>();
 
         // nothing to load if the file does not exist
         if (file.exists()) {

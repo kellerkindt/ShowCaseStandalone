@@ -87,12 +87,7 @@ public class PriceRange extends SimpleChangeable<PriceRange> implements Configur
     public PriceRange setMin(final double min) {
         return setChanged(
                 !Objects.equals(min, this.min),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        PriceRange.this.min = min;
-                    }
-                }
+                () -> PriceRange.this.min = min
         );
     }
 
@@ -119,12 +114,7 @@ public class PriceRange extends SimpleChangeable<PriceRange> implements Configur
     public PriceRange setMax(final double max) {
         return setChanged(
                 !Objects.equals(this.max, max),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        PriceRange.this.max = max;
-                    }
-                }
+                () -> PriceRange.this.max = max
         );
     }
     
@@ -157,7 +147,7 @@ public class PriceRange extends SimpleChangeable<PriceRange> implements Configur
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put(KEY_MATERIAL,   material != null ? material.toString() : null);
         map.put(KEY_MIN,        min);

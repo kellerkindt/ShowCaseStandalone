@@ -17,7 +17,6 @@
  */
 package com.kellerkindt.scs.commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;

@@ -42,7 +42,7 @@ public abstract class Create extends SimpleCommand {
     public static final List<String>     TAB_MATERIAL_LIST;
     
     static {
-        TAB_MATERIAL_LIST    = new ArrayList<String>();
+        TAB_MATERIAL_LIST    = new ArrayList<>();
         TAB_MATERIAL_LIST.add(MATERIAL_CURRENT);
         
         for (Material material : Material.values()) {
@@ -96,7 +96,7 @@ public abstract class Create extends SimpleCommand {
         
         // first argument is the material type
         if (tabCompleteForArgumentSize(args.length)) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             
             for (String name : TAB_MATERIAL_LIST) {
                 if (name.toLowerCase().startsWith(args[args.length-1].toLowerCase())) {

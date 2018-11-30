@@ -22,7 +22,7 @@ import com.kellerkindt.scs.utilities.Term;
 
 
 public class MissingOrIncorrectArgumentException extends CommandException {
-    private final static long serialVersionUID = 1l;
+    private final static long serialVersionUID = 1L;
 
     
     public MissingOrIncorrectArgumentException () {

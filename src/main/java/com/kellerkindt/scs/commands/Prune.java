@@ -18,15 +18,9 @@
 package com.kellerkindt.scs.commands;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.interfaces.ShopHandler;
-import com.kellerkindt.scs.interfaces.StorageHandler;
-import com.kellerkindt.scs.shops.Shop;
-import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  *

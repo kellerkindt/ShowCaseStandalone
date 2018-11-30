@@ -75,12 +75,7 @@ public class PlayerSession extends SimpleChangeable<PlayerSession> implements Co
     public void setLatestTransaction (final Transaction transaction) {
         setChanged(
                 !Objects.equals(transaction, this.latestTransaction),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        PlayerSession.this.latestTransaction = transaction;
-                    }
-                }
+                () -> PlayerSession.this.latestTransaction = transaction
         );
     }
     
@@ -97,12 +92,7 @@ public class PlayerSession extends SimpleChangeable<PlayerSession> implements Co
     public void setShowTransactionMessage (final boolean show) {
         setChanged(
                 this.showTransactionMessage != show,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        PlayerSession.this.showTransactionMessage = show;
-                    }
-                }
+                () -> PlayerSession.this.showTransactionMessage = show
         );
     }
     
@@ -119,12 +109,7 @@ public class PlayerSession extends SimpleChangeable<PlayerSession> implements Co
     public void setUnitSize (final int size) {
         setChanged(
                 this.unitSize != size,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        PlayerSession.this.unitSize = size;
-                    }
-                }
+                () -> PlayerSession.this.unitSize = size
         );
     }
     
@@ -138,7 +123,7 @@ public class PlayerSession extends SimpleChangeable<PlayerSession> implements Co
     
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put(KEY_VERSION,                Properties.VERSION_SESSION);
         map.put(KEY_ID,                     playerId.toString());

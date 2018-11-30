@@ -29,8 +29,8 @@ public class Properties {
         BOSEconomy          (new String[]{"cosine.boseconomy.BOSEconomy"}),
         Vault               (new String[]{"net.milkbowl.vault.Vault"}),
         ;
-        public final String classNames[];
-        private EconomySystem (String classNames[]) {
+        public final String[] classNames;
+        private EconomySystem (String[] classNames) {
             this.classNames    = classNames;
         }
         

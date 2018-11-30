@@ -45,7 +45,7 @@ public class Range extends SimpleCommand {
     @Override
     public List<String> getTabCompletions(CommandSender sender, String[] args) {
         
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         
         // materials to range
         if (args.length <= 1) {

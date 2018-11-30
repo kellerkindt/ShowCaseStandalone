@@ -40,7 +40,7 @@ public abstract class SimpleThreaded<T extends Enum<T>, V> implements Threaded, 
 
     protected Logger logger;
 
-    protected final Queue<Entry> entries = new LinkedList<Entry>();
+    protected final Queue<Entry> entries = new LinkedList<>();
 
     public SimpleThreaded(Logger logger) {
         this(logger, null);
@@ -165,15 +165,12 @@ public abstract class SimpleThreaded<T extends Enum<T>, V> implements Threaded, 
     public synchronized void start() {
         if (!running) {
             this.shallRun = true;
-            this.worker   = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        started();
-                        SimpleThreaded.this.run();
-                    } finally {
-                        stopped();
-                    }
+            this.worker   = new Thread(() -> {
+                try {
+                    started();
+                    SimpleThreaded.this.run();
+                } finally {
+                    stopped();
                 }
             }, workerName);
 

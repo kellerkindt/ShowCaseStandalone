@@ -37,7 +37,7 @@ public class SimplePriceRangeHandler implements PriceRangeHandler {
     protected Logger                     logger;
     protected StorageHandler<PriceRange> storage;
 
-    protected Map<Material, PriceRange>  map = new HashMap<Material, PriceRange>();
+    protected Map<Material, PriceRange>  map = new HashMap<>();
 
     public SimplePriceRangeHandler(Logger logger, StorageHandler<PriceRange> storageHandler) {
         this.logger  = logger;

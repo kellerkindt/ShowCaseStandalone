@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Random;
@@ -32,33 +33,25 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import com.kellerkindt.scs.SCSConfiguration;
 import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.commands.CommandException;
-import com.kellerkindt.scs.interfaces.MultiStageCommand;
 import com.kellerkindt.scs.interfaces.RunLater;
 import com.kellerkindt.scs.interfaces.TriggerableRunLater;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.registry.LegacyMapper;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Attachable;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
-import com.kellerkindt.scs.Properties;
 import com.kellerkindt.scs.exceptions.MissingOrIncorrectArgumentException;
 import com.kellerkindt.scs.shops.Shop;
-import org.bukkit.material.Sign;
 
 
 public class Utilities {
@@ -73,17 +66,17 @@ public class Utilities {
      * Quelle: http://www.anyexample.com/programming/java/java_simple_class_to_compute_sha_1_hash.xml
      */
     public static String convertToHex(byte[] data) { 
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < data.length; i++) { 
-            int halfbyte = (data[i] >>> 4) & 0x0F;
+        StringBuilder buf = new StringBuilder();
+        for (byte datum : data) {
+            int halfbyte = (datum >>> 4) & 0x0F;
             int two_halfs = 0;
-            do { 
-                if ((0 <= halfbyte) && (halfbyte <= 9)) 
+            do {
+                if ((0 <= halfbyte) && (halfbyte <= 9))
                     buf.append((char) ('0' + halfbyte));
-                else 
+                else
                     buf.append((char) ('a' + (halfbyte - 10)));
-                halfbyte = data[i] & 0x0F;
-            } while(two_halfs++ < 1);
+                halfbyte = datum & 0x0F;
+            } while (two_halfs++ < 1);
         } 
         return buf.toString();
     } 
@@ -93,7 +86,7 @@ public class Utilities {
             MessageDigest md;
             md = MessageDigest.getInstance("SHA-1");
             byte[] sha1hash = new byte[40];
-            md.update(text.getBytes("iso-8859-1"), 0, text.length());
+            md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());
             sha1hash = md.digest();
             return convertToHex(sha1hash);
         } catch (Exception e) {
@@ -102,7 +95,7 @@ public class Utilities {
     }
     
     public static String getRandomSha1 () {
-        byte    bytes[]    = new byte[64];
+        byte[] bytes = new byte[64];
         new Random().nextBytes(bytes);
         
         return getRandomSha1(new String(bytes));
@@ -123,7 +116,7 @@ public class Utilities {
      * Returns MaterialData for log:2,Wool:4 etc
      */
     public static ItemStack getItemStackFromString (String material) throws IOException {
-        String args[] = new String[2];
+        String[] args = new String[2];
         if (material.contains(":"))
             args = material.split(":");
         else {
@@ -199,7 +192,7 @@ public class Utilities {
         try {
             if(arg.equalsIgnoreCase(ITEM_NAME_ITEM_IN_HAND)){
                 // get rid of the CraftBukkit version ... causes errors later
-                return new ItemStack( player.getItemInHand() );
+                return new ItemStack( player.getInventory().getItemInMainHand() );
             } else {
                 return Utilities.getItemStackFromString(arg.toUpperCase());
             }
@@ -211,8 +204,8 @@ public class Utilities {
     public static Enchantment getEnchantmentFromString(String e){
         
         Enchantment ench = null;
-        
-        String args[] = new String[2];
+
+        String[] args = new String[2];
         if (e.contains(":"))
                 args = e.split(":");
         else {
@@ -235,7 +228,7 @@ public class Utilities {
     public static int getEnchantmentLevelFromString(String e){
         
         int strength = 1;
-        String args[] = new String[2];
+        String[] args = new String[2];
         if (e.contains(":"))
                 args = e.split(":");
         else {
@@ -371,7 +364,7 @@ public class Utilities {
      */
     public static ItemStack toItemStack (String string, int amount) {
         Validate.notNull(string);
-        String     splitted[]     = string.split(":");
+        String[] splitted = string.split(":");
         int     id            = Integer.parseInt(splitted[0]);
         if (splitted.length > 1) {
             return new ItemStack(retrieveFromLegacyIdData(id,Short.parseShort(splitted[1])), amount);

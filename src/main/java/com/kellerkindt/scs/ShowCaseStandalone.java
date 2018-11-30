@@ -32,6 +32,7 @@ import com.kellerkindt.scs.storage.YamlShopStorage;
 import com.kellerkindt.scs.utilities.Messaging;
 import com.kellerkindt.scs.utilities.Term;
 import com.kellerkindt.scs.utilities.TermLoader;
+import io.papermc.lib.PaperLib;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -78,8 +79,8 @@ public class ShowCaseStandalone extends JavaPlugin {
     private SCSConfiguration    config            = null;
     private Logger              logger;
     
-    private Map<Class<? extends Shop>, String>    createPerms     = new HashMap<Class<? extends Shop>, String>();
-    private Map<Class<? extends Shop>, Double>    createCosts        = new HashMap<Class<? extends Shop>, Double>();
+    private Map<Class<? extends Shop>, String>    createPerms     = new HashMap<>();
+    private Map<Class<? extends Shop>, Double>    createCosts        = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -109,7 +110,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         // static setups
         scs         = this;
         startup     = new Date();
-        warnings    = new HashMap<Date, String>();
+        warnings    = new HashMap<>();
 
         logger = getLogger();
         logger.info("Starting b"+getDescription().getVersion()+", created by "+Properties.BUILD_AUTHOR +" with great contribution by "+Properties.BUILD_CONTRIBUTOR);
@@ -266,6 +267,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         
         // done
         logger.info("Enabled");
+        PaperLib.suggestPaper(this);
     }
     
     /**
@@ -542,7 +544,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     @SuppressWarnings("deprecation") // at the moment there is no other way?
     public boolean registerShopManipulator (final Player player, final ShopManipulator manipulator) {
         // update as soon as possible
-        Block block = player.getTargetBlock((Set<Material>)null, 50);
+        Block block = player.getTargetBlock(null, 50);
         Shop  shop  = getShopHandler().getShop(block);
         
         if (shop != null) {
@@ -643,7 +645,7 @@ public class ShowCaseStandalone extends JavaPlugin {
         if (list != null && list.size() > 0) {
             runLater = (RunLater)list.get(0).value();
 
-            if (runLater != null && castTo.isInstance(runLater)) {
+            if (castTo.isInstance(runLater)) {
                 return castTo.cast(runLater);
             }
         }
@@ -879,7 +881,7 @@ public class ShowCaseStandalone extends JavaPlugin {
     public boolean isAllowedEconomySystem (String className) {
         // default
         EconomySystem    system     = EconomySystem.getForName( getConfiguration().getEconomySystem() );
-        String            names[]    = system != null ? system.classNames : new String[0];
+        String[] names = system != null ? system.classNames : new String[0];
         
         // invalid EconomySystem set?
         if (system == null) {

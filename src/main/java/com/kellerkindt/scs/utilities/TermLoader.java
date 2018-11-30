@@ -42,13 +42,10 @@ public class TermLoader {
      */
     public static void loadTerms (File file) throws IOException {
         // init the input stream
-        InputStream fis        = new FileInputStream    (file);
-        
-        try {
+
+        try (InputStream fis = new FileInputStream(file)) {
             // load the terms
             loadTerms(fis);
-        } finally {
-            fis.close();
         }
     }
     
@@ -62,7 +59,7 @@ public class TermLoader {
         BufferedReader            br        = new BufferedReader    (isr);
         
         String                    line    = null;
-        HashMap<String, String>    terms    = new HashMap<String, String>();
+        HashMap<String, String>    terms    = new HashMap<>();
         
         while ((line = br.readLine()) != null) {
             String key        = line.replaceAll(regexFilter, regexKey);

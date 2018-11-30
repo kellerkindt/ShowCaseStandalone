@@ -25,13 +25,9 @@
     import com.kellerkindt.scs.utilities.ItemStackUtilities;
     import com.kellerkindt.scs.utilities.MaterialNames;
     import com.kellerkindt.scs.utilities.Term;
-    import org.bukkit.enchantments.Enchantment;
     import org.bukkit.entity.Player;
-    import org.bukkit.event.EventException;
     import org.bukkit.event.EventHandler;
     import org.bukkit.event.EventPriority;
-
-    import java.util.Map.Entry;
 
     /**
      * This class executes the request behind the event

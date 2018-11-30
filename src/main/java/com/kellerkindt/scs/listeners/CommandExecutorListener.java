@@ -37,7 +37,7 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
     
     private ShowCaseStandalone     scs;
     
-    private List<com.kellerkindt.scs.commands.Command> commands = new ArrayList<com.kellerkindt.scs.commands.Command>();
+    private List<com.kellerkindt.scs.commands.Command> commands = new ArrayList<>();
     
     public CommandExecutorListener (ShowCaseStandalone scs) {
         this.scs = scs;
@@ -83,7 +83,7 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
         
         // hasn't found a sub-command yet
         if (args.length < 1) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             
             for (com.kellerkindt.scs.commands.Command cmd : commands) {
                 list.add(cmd.getName());
@@ -91,7 +91,7 @@ public class CommandExecutorListener implements CommandExecutor, TabCompleter {
             
             
         } else if (args.length == 1) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             
             for (com.kellerkindt.scs.commands.Command cmd : commands) {
                 if (cmd.getName().startsWith(args[0]) && cmd.hasPermissions(sender)) {

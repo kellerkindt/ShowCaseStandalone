@@ -183,7 +183,7 @@ public class SCSConfiguration extends Configuration {
     }
     
     public long getSaveInterval () {
-        return getForced(KEY_SAVE_INTERVAL, 60l);
+        return getForced(KEY_SAVE_INTERVAL, 60L);
     }
 
     public boolean isHoverTextEnabled() {
@@ -456,7 +456,7 @@ public class SCSConfiguration extends Configuration {
     }
     
     public List<String> getSellItemListItemList () {
-        return getForced(KEY_SELLITEMLIST_ITEMS, new ArrayList<String>());
+        return getForced(KEY_SELLITEMLIST_ITEMS, new ArrayList<>());
     }
     
     public boolean isBuyItemListBlackList () {
@@ -464,10 +464,10 @@ public class SCSConfiguration extends Configuration {
     }
     
     public List<String> getBuyItemListItemList () {
-        return getForced(KEY_BUYITEMLIST_ITEMS, new ArrayList<String>());
+        return getForced(KEY_BUYITEMLIST_ITEMS, new ArrayList<>());
     }
     
     public List<String> getWorldsBlacklisted () {
-        return getForced(KEY_WORLDBLACKLIST, new ArrayList<String>());
+        return getForced(KEY_WORLDBLACKLIST, new ArrayList<>());
     }
 }

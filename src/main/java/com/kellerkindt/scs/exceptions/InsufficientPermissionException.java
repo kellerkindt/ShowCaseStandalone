@@ -20,7 +20,7 @@ package com.kellerkindt.scs.exceptions;
 import com.kellerkindt.scs.utilities.Term;
 
 public class InsufficientPermissionException extends Exception {
-    private final static long serialVersionUID = 1l;
+    private final static long serialVersionUID = 1L;
     private String message;
     
     /*

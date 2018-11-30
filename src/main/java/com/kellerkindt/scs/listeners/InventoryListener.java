@@ -47,8 +47,8 @@ public class InventoryListener implements Listener {
     public static final int MAX_INVENTORY_SIZE    = 6*9;
     
     private ShowCaseStandalone   scs;
-    private Map<Shop, Inventory> inventories    = new HashMap<Shop, Inventory>();
-    private Map<Shop, int[]>     amountOpened   = new HashMap<Shop, int[]>();
+    private Map<Shop, Inventory> inventories    = new HashMap<>();
+    private Map<Shop, int[]>     amountOpened   = new HashMap<>();
     
     public InventoryListener (ShowCaseStandalone scs) {
         this.scs    = scs;
@@ -199,7 +199,7 @@ public class InventoryListener implements Listener {
         }
         
         // get and remove the value
-        int before[]     = amountOpened.remove(shop);
+        int[] before = amountOpened.remove(shop);
         
         // normal items
         countAndAddItemStack(inventory, player, shop, shop.getItemStack(), before[0]);
@@ -257,7 +257,7 @@ public class InventoryListener implements Listener {
         ExchangeShop exchange = shop instanceof ExchangeShop ? (ExchangeShop)shop : null;
         
         // limit by inventory size
-        int     amount[]    = new int[2];
+        int[] amount = new int[2];
         amount[0]        = (exchange != null ? (MAX_INVENTORY_SIZE / 2) : MAX_INVENTORY_SIZE) * shop.getItemStack().getMaxStackSize();
         amount[1]        = (exchange != null ? (MAX_INVENTORY_SIZE / 2) * exchange.getExchangeItemStack().getMaxStackSize() : 0);
         

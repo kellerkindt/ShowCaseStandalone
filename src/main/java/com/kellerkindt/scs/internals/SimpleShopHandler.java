@@ -25,24 +25,17 @@ import com.kellerkindt.scs.events.ShowCaseShopHandlerChangedEvent;
 import com.kellerkindt.scs.interfaces.Changeable;
 import com.kellerkindt.scs.interfaces.ShopHandler;
 import com.kellerkindt.scs.interfaces.StorageHandler;
-import com.kellerkindt.scs.shops.BuyShop;
-import com.kellerkindt.scs.shops.SellShop;
 import com.kellerkindt.scs.shops.Shop;
 import com.kellerkindt.scs.utilities.ItemStackUtilities;
-import com.kellerkindt.scs.utilities.MaterialNames;
-import com.kellerkindt.scs.utilities.Messaging;
-import com.kellerkindt.scs.utilities.Term;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -55,16 +48,16 @@ import java.util.logging.Level;
 public class SimpleShopHandler implements ShopHandler, Listener {
 
 
-    protected HashMap<Item, Shop>             itemShops   = new HashMap<Item, Shop>();
-    protected HashMap<Shop, Item>             shopItems   = new HashMap<Shop, Item>();
-    protected HashMap<Block, Shop>            blockShops  = new HashMap<Block, Shop>();
-    protected HashMap<UUID, Shop>             uuidShops   = new HashMap<UUID, Shop>();
-    protected HashMap<UUID, Integer>          shopOwners  = new HashMap<UUID, Integer>();
-    protected HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<Shop, List<ItemFrame>>();
-    protected HashMap<ItemFrame, Shop>        frameShops  = new HashMap<ItemFrame, Shop>();
-    protected ArrayList<Shop>                 shops       = new ArrayList<Shop>();    // for fast iteration
+    protected HashMap<Item, Shop>             itemShops   = new HashMap<>();
+    protected HashMap<Shop, Item>             shopItems   = new HashMap<>();
+    protected HashMap<Block, Shop>            blockShops  = new HashMap<>();
+    protected HashMap<UUID, Shop>             uuidShops   = new HashMap<>();
+    protected HashMap<UUID, Integer>          shopOwners  = new HashMap<>();
+    protected HashMap<Shop, List<ItemFrame>>  shopFrames  = new HashMap<>();
+    protected HashMap<ItemFrame, Shop>        frameShops  = new HashMap<>();
+    protected ArrayList<Shop>                 shops       = new ArrayList<>();    // for fast iteration
 
-    protected List<Shop>                 visibleShops   = new LinkedList<Shop>();
+    protected List<Shop>                 visibleShops   = new LinkedList<>();
 
     protected ShowCaseStandalone    scs           = null;
     protected boolean               fireEvents    = true;
@@ -102,8 +95,8 @@ public class SimpleShopHandler implements ShopHandler, Listener {
      * @param shops {@link Iterable} of {@link Shop}s to check the show state for
      */
     protected void recheckShopShowState(Iterable<Shop> shops) {
-        List<Shop> toShow = new LinkedList<Shop>();
-        List<Shop> toHide = new LinkedList<Shop>();
+        List<Shop> toShow = new LinkedList<>();
+        List<Shop> toHide = new LinkedList<>();
 
         for (Shop shop : shops) {
             recheckShopShowState(shop, toShow, toHide);
@@ -128,7 +121,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
     protected void recheckShopShowState(Shop shop, List<Shop> toShow, List<Shop> toHide) {
         try {
             // regular getChunk().isLoaded() causes bukkit to load the chunk... (on getChunk())
-            if (!isChunkLoaded(shop.getSpawnLocation())) {
+            if (!isChunkLoaded(shop.getLocation())) {
                 toHide.add(shop);
                 return;
             }
@@ -241,7 +234,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
     private void setFrames (Shop shop) {
         
         // clear
-        shopFrames.put(shop, new ArrayList<ItemFrame>());
+        shopFrames.put(shop, new ArrayList<>());
         
         // Iterate through the found frames
         for (ItemFrame frame : getItemFrames(shop)) {
@@ -280,14 +273,10 @@ public class SimpleShopHandler implements ShopHandler, Listener {
      */
     private void addFrame (Shop shop, ItemFrame frame) {
         // get list
-        List<ItemFrame> list = shopFrames.get(shop);
+        List<ItemFrame> list = shopFrames.computeIfAbsent(shop, k -> new ArrayList<>());
         
         // list does not exist yet?
-        if (list == null) {
-            list = new ArrayList<ItemFrame>();
-            shopFrames.put(shop, list);
-        }
-        
+
         // add frame
         list.add(frame);
         
@@ -366,13 +355,8 @@ public class SimpleShopHandler implements ShopHandler, Listener {
 
     
     private void incrementShopAmount( UUID shopOwner ) {
-        Integer amount = this.shopOwners.get( shopOwner );
-        
-        if ( amount == null ) {
-            this.shopOwners.put( shopOwner, 1 );
-        } else {
-            this.shopOwners.put( shopOwner, amount + 1 );
-        }
+
+        this.shopOwners.merge(shopOwner, 1, (a, b) -> a + b);
     }
     
     private void decrementShopAmount( UUID shopOwner ) {
@@ -404,13 +388,13 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             for (Shop shop : this) {
 
                 // ignore shops without a valid world
-                if (shop.getWorld() == null) {
+                if (shop.getWorldId() == null) {
                     scs.getLogger().severe("Found showcase on not existing world! To remove perform: /scs purge u:" + shop.getWorldId());
                     continue;
                 }
 
 
-                if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
+                if (isInChunk(shop.getLocation(), Bukkit.getWorld(shop.getWorldId()), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
                         scs.getLogger().info("Found shop to show: "+shop.getId());
                     }
@@ -440,16 +424,16 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         }
 
         try {
-            List<Shop> toHide = new ArrayList<Shop>();
+            List<Shop> toHide = new ArrayList<>();
 
             for (Shop shop : visibleShops) {
 
-                if (shop.getWorld() == null) {
+                if (shop.getWorldId() == null) {
                     scs.getLogger().info("Found showcase in not existing world! To remove perform: /scs purge u:" + shop.getWorldId());
                     continue;
                 }
 
-                if (isInChunk(shop.getSpawnLocation(), shop.getWorld(), chunk)) {
+                if (isInChunk(shop.getLocation(), Bukkit.getWorld(shop.getWorldId()), chunk)) {
                     if (scs.getConfiguration().isDebuggingChunks()) {
                         scs.getLogger().info("Found scs to unload: " + shop.getId());
                     }
@@ -705,7 +689,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         
         else {
             // spawn location set? world valid?
-            if (shop.getSpawnLocation() == null || shop.getWorld() == null) {
+            if (shop.getSpawnLocation() == null || Bukkit.getWorld(shop.getWorldId()) == null) {
                 // no spawn location set
                 return;
             }
@@ -817,10 +801,10 @@ public class SimpleShopHandler implements ShopHandler, Listener {
     public List<ItemFrame> getItemFrames (Shop shop) {
         
         // list to return
-        List<ItemFrame> list = new ArrayList<ItemFrame>();
+        List<ItemFrame> list = new ArrayList<>();
         
         // block valid? world valid?
-        if (shop.getBlock() != null && shop.getWorld() != null)  {
+        if (shop.getBlock() != null && shop.getWorldId() != null)  {
             
             // get Blocks
             Block blockUp     = shop.getBlock().getRelative(BlockFace.UP);
@@ -832,7 +816,7 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             
             
             // Search the ItemFrame, TODO: find a faster / better solution
-            for (ItemFrame frame : shop.getWorld().getEntitiesByClass(ItemFrame.class)) {
+            for (ItemFrame frame : Bukkit.getWorld(shop.getWorldId()).getEntitiesByClass(ItemFrame.class)) {
 
                 BlockFace    face    = frame.getFacing();
                 
@@ -894,56 +878,52 @@ public class SimpleShopHandler implements ShopHandler, Listener {
     public void addItemFrame(final ItemFrame frame) {
         
         // delayed, because the ItemFrame is added after this event
-        scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, new Runnable() {
-            
-            @Override
-            public void run() {
-                
-                // blocks to check
-                List<Block>    blocks        = new ArrayList<Block>();
-                
-                // get main blocks
-                Block frameBlock         = frame.getLocation().getBlock();
-                Block frameBlockDown    = frameBlock.getRelative(BlockFace.DOWN);
-                
-                // add them
-                blocks.add(frameBlock);
-                blocks.add(frameBlockDown);
-                
-                // allowed block faces
-                List<BlockFace> faces     = new ArrayList<BlockFace>();
-                
-                // add them
-                faces.add(BlockFace.NORTH);
-                faces.add(BlockFace.EAST);
-                faces.add(BlockFace.SOUTH);
-                faces.add(BlockFace.WEST);
-                faces.add(BlockFace.DOWN);
-                
-                // iterate through the blocks
-                for (Block block : blocks) {
-                
-                    // iterate through all block faces
-                    for (BlockFace face : faces) {
-                        
-                        Block     blockRelative     = block.getRelative(face);
-                        Shop    shop            = getShop(blockRelative);
-                        
-                        // Shop found?
-                        if (shop != null) {
-                            
-                            // add the frames
-                            setFrames(shop);
+        scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, () -> {
 
-                            // apply changes
-                            hide(shop);
-                            show(shop);
-                        
-                        }
+            // blocks to check
+            List<Block>    blocks        = new ArrayList<>();
+
+            // get main blocks
+            Block frameBlock         = frame.getLocation().getBlock();
+            Block frameBlockDown    = frameBlock.getRelative(BlockFace.DOWN);
+
+            // add them
+            blocks.add(frameBlock);
+            blocks.add(frameBlockDown);
+
+            // allowed block faces
+            List<BlockFace> faces     = new ArrayList<>();
+
+            // add them
+            faces.add(BlockFace.NORTH);
+            faces.add(BlockFace.EAST);
+            faces.add(BlockFace.SOUTH);
+            faces.add(BlockFace.WEST);
+            faces.add(BlockFace.DOWN);
+
+            // iterate through the blocks
+            for (Block block : blocks) {
+
+                // iterate through all block faces
+                for (BlockFace face : faces) {
+
+                    Block     blockRelative     = block.getRelative(face);
+                    Shop    shop            = getShop(blockRelative);
+
+                    // Shop found?
+                    if (shop != null) {
+
+                        // add the frames
+                        setFrames(shop);
+
+                        // apply changes
+                        hide(shop);
+                        show(shop);
+
                     }
                 }
-                
             }
+
         });
     }
     
@@ -959,7 +939,6 @@ public class SimpleShopHandler implements ShopHandler, Listener {
         
         // not above a shop?
         if (shop == null) {
-            return;
         }
         
         // above a shop, hide item and show in ItemFrame
@@ -971,14 +950,10 @@ public class SimpleShopHandler implements ShopHandler, Listener {
             removeFrame(frame);
             
             // delayed, because the ItemFrame is removed after this event
-            scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, new Runnable() {
-                
-                @Override
-                public void run() {
+            scs.getServer().getScheduler().scheduleSyncDelayedTask(scs, () -> {
 
-                    hide(shop);
-                    show(shop);
-                }
+                hide(shop);
+                show(shop);
             });
         }
     }

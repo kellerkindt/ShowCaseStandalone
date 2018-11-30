@@ -158,7 +158,7 @@ public class YamlShopStorage extends SimpleThreaded<YamlShopStorage.Type, Shop> 
         flush();
 
         // list of loaded shops
-        List<Shop> shops  = new ArrayList<Shop>();
+        List<Shop> shops  = new ArrayList<>();
         File[]     files  = shopDir.listFiles();
 
         if (files != null) {

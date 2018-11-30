@@ -32,7 +32,7 @@ import java.util.WeakHashMap;
  */
 public class That extends SimpleCommand {
 
-    protected Map<Player, Runnable> runnables = new WeakHashMap<Player, Runnable>();
+    protected Map<Player, Runnable> runnables = new WeakHashMap<>();
 
     public That(ShowCaseStandalone scs, String ...permissions) {
         super(scs, permissions, true);
