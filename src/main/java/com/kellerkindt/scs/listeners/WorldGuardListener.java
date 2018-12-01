@@ -63,19 +63,26 @@ public class WorldGuardListener implements Listener {
             scs.getLogger().info("Entered ShowCaseExecutingListener::onShowCaseCreateEvent");
         }
 
-        // TODO update WG integration
-        Location location = event.getShop().getLocation();
-        Player   player   = event.getPlayer();
-        RegionContainer manager   = wgApi.getPlatform().getRegionContainer();
-        if(manager.createQuery().queryState(BukkitAdapter.adapt(location),worldGuard.wrapPlayer(player), Flags.BUILD)== StateFlag.State.DENY);
-         {
-            event.setCancelled(true);
-            event.setCause(new InsufficientPermissionException(
-                    Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()
-            ));
+        if (scs.getConfiguration().isWorldGuardBuildCheckEnabled()) {
+            // TODO update WG integration
+            Location location = event.getShop().getLocation();
+            Player player = event.getPlayer();
+            RegionContainer manager = wgApi.getPlatform().getRegionContainer();
+            if (manager.createQuery().queryState(BukkitAdapter.adapt(location), worldGuard.wrapPlayer(player), Flags.BUILD) == StateFlag.State.DENY)
+                ;
+            {
+                event.setCancelled(true);
+                event.setCause(new InsufficientPermissionException(
+                        Term.ERROR_INSUFFICIENT_PERMISSION_REGION.get()
+                ));
 
+                if (scs.getConfiguration().isDebuggingShopCreation()) {
+                    scs.getLogger().info("Declined cause player is not allowed to build here");
+                }
+            }
+        } else {
             if (scs.getConfiguration().isDebuggingShopCreation()) {
-                scs.getLogger().info("Declined cause player is not allowed to build here");
+                scs.getLogger().info("Skipping WorldGuard region check since RegionBuildCheck is false");
             }
         }
 

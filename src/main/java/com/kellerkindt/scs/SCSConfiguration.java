@@ -74,6 +74,8 @@ public class SCSConfiguration extends Configuration {
     public static final String KEY_DEBUG_LOG                = "Debug.Log";
     public static final String KEY_DEBUG_SHOP_CREATION      = "Debug.Shop.Creation";
 
+    public static final String KEY_WORLDGUARD_BUILD_CHECK   = "WorldGuard.RegionBuildCheck";
+
     public static final String KEY_DISABLE_FBASIC_ANTIDUPE  = "Disable.FBasicsInventoryDupeListener";
 
     public static final String KEY_LOCALIZATION_FILE        = "Localization.File";
@@ -264,7 +266,11 @@ public class SCSConfiguration extends Configuration {
     public boolean isDisablingFBasicsInventoryDupeListener() {
         return getForced(KEY_DISABLE_FBASIC_ANTIDUPE, true);
     }
-    
+
+    public boolean isWorldGuardBuildCheckEnabled() {
+        return getForced(KEY_WORLDGUARD_BUILD_CHECK, true);
+    }
+
     public String getLocalizationFile () {
         return getForced(KEY_LOCALIZATION_FILE, getLocalizationFileDefault());
     }
