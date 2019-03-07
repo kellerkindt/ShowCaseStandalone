@@ -227,14 +227,17 @@
       </repository>
       
       <!-- WorldEdit / WorldGuard and many more -->
+
       <repository>
           <id>sk89q</id>
           <url>http://maven.sk89q.com/repo/</url>
       </repository>
 
+
   </repositories>
   
   <dependencies>
+
       
       <!-- BUKKIT -->
       <dependency>
@@ -277,17 +280,27 @@
       </dependency>
       
       <!-- WorldGuard -->
+      <!-- having unresolvable dependencies
       <dependency>
           <groupId>com.sk89q.worldguard</groupId>
           <artifactId>worldguard-legacy</artifactId>
           <scope>provided</scope>
           <version>7.0.0-SNAPSHOT</version>
       </dependency>
+      -->
 
 
       
       
       <!-- local -->
+      <dependency>
+          <groupId>com.sk89q.worldguard</groupId>
+          <artifactId>worldguard-legacy</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/worldguard-legacy-7.0.0-beta-03.jar</systemPath>
+      </dependency>
+
       <dependency>
           <groupId>me.minebuilders</groupId>
           <artifactId>clearlag-core</artifactId>
