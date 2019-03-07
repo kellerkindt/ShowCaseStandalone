@@ -24,15 +24,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 
 /**
- * @author Pasukaru from: 
+ * @author Pasukaru from:
  * http://forums.bukkit.org/threads/how-to-convert-an-item-id-into-a-normal-name.23698/#post-430168
  * Updated by Sorklin.
  * updated by kellerkindt 2013-02-12
  */
 public class MaterialNames {
-    
-    
-    public static String getItemName(ItemStack stack){
-        return stack.getItemMeta().getDisplayName();
+
+
+    public static String getItemName(ItemStack stack) {
+        if (stack.getItemMeta().getDisplayName() == null || stack.getItemMeta().getDisplayName().isEmpty()) {
+            return stack.getType().name();
+        } else {
+            return stack.getItemMeta().getDisplayName();
+        }
     }
 }
