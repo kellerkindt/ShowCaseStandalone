@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 
 import com.kellerkindt.scs.ShowCaseStandalone;
@@ -69,17 +70,14 @@ public class Repair extends SimpleCommand {
         for ( Shop shop : this.scs.getShopHandler() ) {
             //get blocks
             Block shopBlock = shop.getBlock();
-            Block itemBlock = shopBlock.getWorld().getBlockAt( shopBlock.getX(), shopBlock.getY() + 1, shopBlock.getZ() );
+            Block itemBlock = shopBlock.getRelative(BlockFace.UP);
             
             //decide what to do with a shop
-            if ( shopBlock.getTypeId() == 0 && itemBlock.getTypeId() != 0 ) {
-                deleteable.add( shop );
-            } else if ( shopBlock.getTypeId() == 0 ) {
-                restoreable.add( shop );
-            } else if ( itemBlock.getTypeId() != 0 ) {
-                deleteable.add( shop );
+            if (shop.getItemStack() == null || shop.getItemStack().getType() == null || !shop.getItemStack().getType().isItem()) {
+                deleteable.add(shop);
+            } else {
+                restoreable.add(shop);
             }
-            
         }
         
         if ( args.length < 1 ) {
@@ -96,7 +94,8 @@ public class Repair extends SimpleCommand {
             
             //restore
             for ( Shop shop : restoreable ) {
-                shop.getBlock().setType( Material.BEDROCK );
+                shop.getBlock().setType( Material.STONE );
+                shop.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
             }
             
             // items may moved after block was set

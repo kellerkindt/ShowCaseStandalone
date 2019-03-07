@@ -206,11 +206,13 @@
           <id>spigot-repo</id>
           <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
       </repository>
-      
+
+      <!-- getting HTTP 500
       <repository>
           <id>Plugin Metrics</id>
           <url>http://repo.mcstats.org/content/repositories/public</url>
       </repository>
+      -->
       
       <!-- essentials -->
       <repository>
@@ -230,10 +232,6 @@
           <url>http://maven.sk89q.com/repo/</url>
       </repository>
 
-      <repository>
-          <id>minebuilders-repo</id>
-          <url>http://minebuilders.me:8080/plugin/repository/everything/</url>
-      </repository>
   </repositories>
   
   <dependencies>
@@ -243,7 +241,7 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <scope>provided</scope>
-          <version>1.13-R0.1-SNAPSHOT</version>
+          <version>1.13.2-R0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- mcstats / metrics -->
@@ -267,7 +265,7 @@
           <groupId>net.milkbowl.vault</groupId>
           <artifactId>VaultAPI</artifactId>
           <scope>provided</scope>
-          <version>1.6</version>
+          <version>1.7</version>
       </dependency>
       
       <!-- WorldEdit -->
@@ -275,26 +273,29 @@
           <groupId>com.sk89q.worldedit</groupId>
           <artifactId>worldedit-bukkit</artifactId>
           <scope>provided</scope>
-          <version>6.1.5</version>
+          <version>7.0.0-SNAPSHOT</version>
       </dependency>
       
       <!-- WorldGuard -->
       <dependency>
-          <groupId>com.sk89q</groupId>
-          <artifactId>worldguard</artifactId>
+          <groupId>com.sk89q.worldguard</groupId>
+          <artifactId>worldguard-legacy</artifactId>
           <scope>provided</scope>
-          <version>6.1.1-SNAPSHOT</version>
+          <version>7.0.0-SNAPSHOT</version>
       </dependency>
 
-      <dependency>
-          <groupId>me.minebuilders</groupId>
-          <artifactId>clearlag-core</artifactId>
-          <version>2.9.0-SNAPSHOT</version>
-      </dependency>
 
       
       
       <!-- local -->
+      <dependency>
+          <groupId>me.minebuilders</groupId>
+          <artifactId>clearlag-core</artifactId>
+          <version>UNKNOWN</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/lib/Clearlag.jar</systemPath>
+      </dependency>
+
       <dependency>
           <groupId>local</groupId>
           <artifactId>BOSEconomy</artifactId>

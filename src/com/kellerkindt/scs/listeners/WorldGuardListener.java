@@ -17,8 +17,16 @@
  */
 package com.kellerkindt.scs.listeners;
 
+import com.kellerkindt.scs.ShowCaseStandalone;
+import com.kellerkindt.scs.events.ShowCaseCreateEvent;
 import com.kellerkindt.scs.exceptions.InsufficientPermissionException;
 import com.kellerkindt.scs.utilities.Term;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,27 +34,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-import com.kellerkindt.scs.ShowCaseStandalone;
-import com.kellerkindt.scs.events.ShowCaseCreateEvent;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
-
 public class WorldGuardListener implements Listener {
 
     protected ShowCaseStandalone scs;
     protected WorldGuardPlugin   worldGuard;
-    
-    public WorldGuardListener (ShowCaseStandalone scs, Plugin wGuard) {
+
+    public WorldGuardListener(ShowCaseStandalone scs, Plugin wGuard) {
         this.scs = scs;
-        
-        if (wGuard instanceof WorldGuardPlugin)
-            worldGuard    = (WorldGuardPlugin)wGuard;
-        else
+
+        if (wGuard instanceof WorldGuardPlugin) {
+            worldGuard = (WorldGuardPlugin) wGuard;
+        } else {
             throw new ClassCastException("Given Plugin is not WorldGuard");
+        }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-    public void onShopCreate (ShowCaseCreateEvent event) {
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onShopCreate(ShowCaseCreateEvent event) {
         if (!event.verify()) {
             // nothing to do
             return;
@@ -59,10 +63,16 @@ public class WorldGuardListener implements Listener {
         // TODO update WG integration
         Location location = event.getShop().getLocation();
         Player   player   = event.getPlayer();
-        
-        GlobalRegionManager manager   = worldGuard.getGlobalRegionManager();
-        boolean             isAllowed = manager.canBuild(player, location);
-        
+
+        RegionContainer manager     = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        LocalPlayer     localPlayer = worldGuard.wrapPlayer(player);
+
+        boolean isAllowed = manager.createQuery().testState(
+                BukkitAdapter.adapt(location),
+                localPlayer,
+                Flags.BUILD
+        );
+
         if (!isAllowed) {
             event.setCancelled(true);
             event.setCause(new InsufficientPermissionException(
