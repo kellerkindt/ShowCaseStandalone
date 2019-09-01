@@ -296,7 +296,7 @@ public class SCSConfiguration extends Configuration {
         if (list != null && !list.isEmpty()) {
             return list;
         }
-        return getForced(KEY_BLOCKLIST_BLOCKS, Arrays.asList(
+        List<String> newList = new ArrayList<>(Arrays.asList(
                 Material.ACACIA_LEAVES.toString(),
                 Material.BIRCH_LEAVES.toString(),
                 Material.JUNGLE_LEAVES.toString(),
@@ -342,7 +342,7 @@ public class SCSConfiguration extends Configuration {
                 Material.CARROT.toString(),
                 Material.WHEAT.toString(),
                 Material.PAINTING.toString(),
-                Material.SIGN.toString(),
+                // Material.SIGN.toString(),
                 Material.BLACK_BED.toString(),
                 Material.BLUE_BED.toString(),
                 Material.BROWN_BED.toString(),
@@ -470,7 +470,7 @@ public class SCSConfiguration extends Configuration {
                 Material.MOVING_PISTON.toString(),
                 Material.STICKY_PISTON.toString(),
                 Material.ROSE_BUSH.toString(),
-                Material.ROSE_RED.toString(),
+                // Material.ROSE_RED.toString(),
                 Material.ACACIA_SAPLING.toString(),
                 Material.BIRCH_SAPLING.toString(),
                 Material.JUNGLE_SAPLING.toString(),
@@ -506,10 +506,17 @@ public class SCSConfiguration extends Configuration {
                 Material.PUMPKIN_STEM.toString(),
                 Material.CHEST.toString(),
                 Material.SPAWNER.toString(),
-                Material.NOTE_BLOCK.toString(),
-                Material.SIGN.toString(),
-                Material.WALL_SIGN.toString()
+                Material.NOTE_BLOCK.toString()//,
+                //Material.SIGN.toString(),
+                //Material.WALL_SIGN.toString()
         ));
+        for (Material material : Material.values()) {
+            String name = material.toString().toLowerCase();
+            if (name.contains("_sign") || name.contains("rose")) {
+                newList.add(material.toString());
+            }
+        }
+        return getForced(KEY_BLOCKLIST_BLOCKS, newList);
     }
     
     public boolean isSellItemListBlacklist () {
