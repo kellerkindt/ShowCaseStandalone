@@ -7,13 +7,13 @@ mirror:
         - git pull origin ${CI_COMMIT_REF_NAME}
         - git push -q https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git --all
 
-cache:
-    paths:
-        - .m2/repository
-        - target/
-
-build:
-    stage: build
-    image: maven
-    script:
-        mvn compile dependency:resolve dependency:sources -Dmaven.test.skip=true -Dmaven.javadoc.skip=true
+#cache:
+#    paths:
+#        - .m2/repository
+#        - target/
+#
+#build:
+#    stage: build
+#    image: maven
+#    script:
+#        mvn compile dependency:resolve dependency:sources -Dmaven.test.skip=true -Dmaven.javadoc.skip=true
