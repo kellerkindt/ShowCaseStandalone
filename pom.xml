@@ -2,18 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kellerkindt</groupId>
   <artifactId>ShowCaseStandalone</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>${spigot.version}</version>
   <name>ShowCaseStandalone</name>
   <description>Plugin for Bukkits Minecraft Api</description>
   
   
   <properties>
-      <plugin.version>${project.version}-${build.number}</plugin.version>
+      <plugin.version>${project.version} (${build.number})</plugin.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
       <spigot.api.version>1.13</spigot.api.version>
-      <spigot.version>${spigot.api.version}.2-R0.1-SNAPSHOT</spigot.version>
-      <build.number>${maven.build.timestamp}-custom</build.number>
+      <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
+      <build.number>${maven.build.timestamp}</build.number>
       <build.date>${maven.build.timestamp}</build.date>
 
       <env.Jenkins.Repository/>

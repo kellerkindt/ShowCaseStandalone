@@ -25,6 +25,7 @@ import com.kellerkindt.scs.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -61,7 +62,7 @@ public class SignListener implements Listener {
 
 
         // block needs to be a sign
-        if (block.getType() == Material.WALL_SIGN) {
+        if (Tag.WALL_SIGNS.isTagged(block.getType())) {
             WallSign sign = (WallSign) block.getBlockData();
             Block behind = Utilities.getBlockBehind(block);
             Shop  shop   = scs.getShopHandler().getShop(behind);
@@ -104,7 +105,7 @@ public class SignListener implements Listener {
     @EventHandler(ignoreCancelled=true, priority=EventPriority.LOW)
     public void onShowCaseInteractEvent (ShowCaseInteractEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand() != null) {
-            if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SIGN && event.hasRightClicked()) {
+            if (Tag.SIGNS.isTagged( event.getPlayer().getInventory().getItemInMainHand().getType() ) && event.hasRightClicked()) {
                 // cancel the event and allow a player to place the sign
                 event.setCancelled(true);
             }
@@ -120,7 +121,7 @@ public class SignListener implements Listener {
         }
         
         // get the block information
-        if(event.getBlock().getType() == Material.WALL_SIGN) {
+        if(Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
             Block behind = Utilities.getBlockBehind(event.getBlock());
             final Shop fShop = scs.getShopHandler().getShop(behind);
             if (fShop == null) {
