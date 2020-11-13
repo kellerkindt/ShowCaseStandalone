@@ -22,7 +22,6 @@ import com.kellerkindt.scs.utilities.Term;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -68,8 +67,7 @@ public class WorldGuardListener implements Listener {
             Location location = event.getShop().getLocation();
             Player player = event.getPlayer();
             RegionContainer manager = wgApi.getPlatform().getRegionContainer();
-            if (manager.createQuery().queryState(BukkitAdapter.adapt(location), worldGuard.wrapPlayer(player), Flags.BUILD) == StateFlag.State.DENY)
-                ;
+            if (!manager.createQuery().testState(BukkitAdapter.adapt(location), worldGuard.wrapPlayer(player), Flags.BUILD))
             {
                 event.setCancelled(true);
                 event.setCause(new InsufficientPermissionException(
