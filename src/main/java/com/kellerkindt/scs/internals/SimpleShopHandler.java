@@ -730,11 +730,12 @@ public class SimpleShopHandler implements ShopHandler, Listener {
              *  !! Mobs can pick the Item up, but do not drop it, since it has an amount of 0,
              *     although they can use it ^^
              */
-            itemStack.setAmount(scs.getConfiguration().getSpawnCount());
-
             // since mc 1.11 an amount of zero does not seem to work anymore?
-            if (itemStack.getAmount() == 0) {
+            // Warning : When setAmount(0), PaperMC resets the ItemStack to Material.AIR (Not Spigot)
+            if ( scs.getConfiguration().getSpawnCount() == 0 ) {
                 itemStack.setAmount(1);
+            } else {
+                itemStack.setAmount(scs.getConfiguration().getSpawnCount());
             }
         }
         if (itemStack.getType() != Material.AIR) {
