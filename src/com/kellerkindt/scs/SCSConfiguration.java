@@ -292,7 +292,7 @@ public class SCSConfiguration extends Configuration {
     public Collection<String> getBlockListBlocks () {
         // somewhere along the way the list got wiped,
         // so empty lists are going to be refilled
-        List<String> list = getForced(KEY_BLOCKLIST_BLOCKS, Collections.emptyList());
+        List<String> list = getForced(KEY_BLOCKLIST_BLOCKS, new ArrayList<>()); // not Collections.emptyList(), because getForced() will return an empty list
         if (list != null && !list.isEmpty()) {
             return list;
         }
